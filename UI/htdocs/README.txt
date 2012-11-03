@@ -36,5 +36,3 @@ Also, in sections, include START and END statements. A complete example of this 
         }
     </style>
 </html>
-
-2)
