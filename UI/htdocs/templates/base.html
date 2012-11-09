@@ -1,0 +1,28 @@
+$def with (page)
+<html>
+
+	<head>
+	    <title></title>
+        <link rel="stylesheet" href="style.css" type="text/css" />
+        <!-- bring in the OpenLayers javascript library
+             (here we bring it from the remote site, but you could
+             easily serve up this javascript yourself) -->
+        <script src="static/js/OpenLayers.js"></script>
+     
+        <!-- bring in the OpenStreetMap OpenLayers layers.
+             Using this hosted file will make sure we are kept up
+             to date with any necessary changes -->
+        <script src="static/js/OpenStreetMap.js"></script>
+     
+        <script src="static/js/RenderMap.js"></script>
+        
+        <link rel="stylesheet" href="static/css/style.css"  type="text/css">
+            
+	</head>
+	<body onload="init();">
+        <h1>Hi There, I am Sailbot.</h1>
+		<div style="width:600px; height:400px" id="pane1">
+		$:page
+		</div>
+	</body>
+</html>
