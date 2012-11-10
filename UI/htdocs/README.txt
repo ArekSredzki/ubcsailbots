@@ -1,7 +1,20 @@
-REAME:
+README:
 
-FOLDER STRUCTURE htdocs is as follows:
--jquery
+GENERAL OVERVIEW OF FOLDER STRUCTURE htdocs is as follows:
+- static 
+Contains all the static (non server-side) files associated with web.py framework
+- python
+Contains all python files, excluding the server file. All modules are kept here too
+- templates
+Contains the template files used by web.py framework
+- web
+Contains the web.py modules. DO NOT MODIFY THIS FOLDER
+
+
+BREAKDOWN OF 'static' FOLDER STRUCTURE
+-js 
+Contains the custom javascript files for the UI.
+-js/jquery
 Contains javascript and css files for both the jquery base and jquery UI (including the theme).
 Only three files have to be referenced to load all the current jquery base: two js files, one css files. 
 Please see index.html for an examples of this.
@@ -9,16 +22,9 @@ Please see index.html for an examples of this.
 -css 
 Contains the custom styles for the UI. This does NOT include the jquery UI theming css
 
--js 
-Contains the custom javascript files for the UI. This does NOT include the jquery js files.
-
--images
+-img
 Contains all the UI images
 
--templates 
-Contains our custom template files which will be loaded by the server based of our base page(s). We 
-still need to discuss what type of template language we are going to use, but I suggest that we emulate
-something similar to django. 
 
 COMMENTING:
 Comments are extremely important in all the code and styles. 
