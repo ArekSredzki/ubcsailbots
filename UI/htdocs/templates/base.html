@@ -1,4 +1,6 @@
 $def with (page)
+$# This base template should NOT be modified.
+$# It is designed to handle all changes via sub-templates or python call to a PageControl() instance
 <html>
 
 	<head>
@@ -6,5 +8,7 @@ $def with (page)
         $:page.headBlock
 	</head>
 	<body>
+	    $:page.navigationBar
+	    $:page.contentPane
 	</body>
 </html>

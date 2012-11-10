@@ -1,10 +1,6 @@
-* {
-    outline: none !important;
-}
-
 /* Import Google Fonts that have a Metro-Like style */
-@import url(http://fonts.googleapis.com/css?family=Josefin+Slab);
-@import url(http://fonts.googleapis.com/css?family=Antic);
+/* @import url(http://fonts.googleapis.com/css?family=Josefin+Slab); */
+/* @import url(http://fonts.googleapis.com/css?family=Antic); */
 
 
 html, body {
@@ -17,18 +13,45 @@ html, body {
 	font-family: Futura, "Century Gothic", AppleGothic, sans-serif, Lucida Sans,Lucida Grande,Calibri, Arial, Verdana, Colab, moderna !important;
 	}
 	
-#headerArea #navigationBar {
+#navigationBar {
     font-family:Arial,Verdana;
     position:fixed; 
     top:0px;
     left:7%;
-    width:auto;
+    width:100%;
+    height:200px;
     z-index:100;
-    color:#dedede;
+    color:white;
+    background-color:#0072c6;
     padding:10px;
     margin:0px;
-
 }
+
+#navigationBar ul {
+    background-color:red; 
+    display:block; 
+    float:left; 
+    width:100%;
+}
+
+#navigationBar li {
+    float:left;
+    display:block;
+}
+
+#contentPane {
+    position:relative;
+    left:0px;
+    top:200px;
+    padding:25px;
+    width:1200px;
+}
+
+#contentPane .widget {
+    width:500px; 
+}
+
+
 
 	
 	

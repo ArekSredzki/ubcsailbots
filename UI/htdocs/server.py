@@ -19,38 +19,52 @@ class index:
     def GET(self):
         page = PageControl()
 
-        page.setTitle('UBC Sailbots')
-        
+        page.setTitle('UBC Sailbots - Overview')
+        #page.addWidget('map')
         # Note how we are calling 'format' prior to passing the page
         page.format()
         
         page.navigationBar = render.navigationBar(page)
+        page.contentPane = render.overview(page)
         return render.base(page)
 
 class debug:
     def GET(self):
         page = PageControl()
+
         page.setTitle('UBC Sailbots - Debug')
-        #Note how we are calling 'format' prior to passing the page
+        #page.addWidget('map')
+        # Note how we are calling 'format' prior to passing the page
         page.format()
+        
+        page.navigationBar = render.navigationBar(page)
+        page.contentPane = render.overview(page)
         return render.base(page)
 
 class instructions:
     def GET(self):
         page = PageControl()
-        page.setTitle('UBC Sailbots - Instructions')
-        #Note how we are calling 'format' prior to passing the page
-        page.format()
-        return render.base(page)
 
+        page.setTitle('UBC Sailbots - Instructions')
+        #page.addWidget('map')
+        # Note how we are calling 'format' prior to passing the page
+        page.format()
+        
+        page.navigationBar = render.navigationBar(page)
+        page.contentPane = render.overview(page)
+        return render.base(page)
 class health:
     def GET(self):
         page = PageControl()
-        page.setTitle('UBC Sailbots - Health')
-        #Note how we are calling 'format' prior to passing the page
-        page.format()
-        return render.base(page)
 
+        page.setTitle('UBC Sailbots - Boat Health')
+        #page.addWidget('map')
+        # Note how we are calling 'format' prior to passing the page
+        page.format()
+        
+        page.navigationBar = render.navigationBar(page)
+        page.contentPane = render.overview(page)
+        return render.base(page)
 
 class shutdown: 
     def GET(self): 
