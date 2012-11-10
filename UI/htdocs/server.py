@@ -7,7 +7,7 @@ render = web.template.render('templates/')
 
 # Map our URLs
 urls = (
-    '/', 'index',
+    '/', 'overview',
     '/debug', 'debug',
     '/instructions', 'instructions',
     '/health', 'health',
@@ -15,7 +15,7 @@ urls = (
 )
 
 # Declare our classes for the case of each URL mapping
-class index:
+class overview:
     def GET(self):
         page = PageControl()
 
@@ -39,7 +39,7 @@ class debug:
         page.format()
         
         page.navigationBar = render.navigationBar(page)
-        page.contentPane = render.overview(page)
+        page.contentPane = render.debug(page)
         return render.base(page)
 
 class instructions:
@@ -52,7 +52,7 @@ class instructions:
         page.format()
         
         page.navigationBar = render.navigationBar(page)
-        page.contentPane = render.overview(page)
+        page.contentPane = render.instructions(page)
         return render.base(page)
 class health:
     def GET(self):
@@ -64,7 +64,7 @@ class health:
         page.format()
         
         page.navigationBar = render.navigationBar(page)
-        page.contentPane = render.overview(page)
+        page.contentPane = render.health(page)
         return render.base(page)
 
 class shutdown: 
