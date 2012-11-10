@@ -20,6 +20,7 @@ class index:
         page = PageControl()
 
         page.setTitle('UBC Sailbots - Overview')
+        #page.addCssHeadStyle("body { background-color:black; }")
         #page.addWidget('map')
         # Note how we are calling 'format' prior to passing the page
         page.format()

@@ -1,4 +1,5 @@
 $def with (page)
+<!DOCTYPE html>
 $# This base template should NOT be modified.
 $# It is designed to handle all changes via sub-templates or python call to a PageControl() instance
 <html>
@@ -7,7 +8,7 @@ $# It is designed to handle all changes via sub-templates or python call to a Pa
         <!-- Import the headBlock. The headBlock contains the title and default JS and CSS files -->
         $:page.headBlock
 	</head>
-	<body>
+	<body> 
 	    $:page.navigationBar
 	    $:page.contentPane
 	</body>

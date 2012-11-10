@@ -1,7 +1,12 @@
-var containerWidth = $('#navigationBar ul').width();
-var linksWidth = 0;
-    $('#navigationBar ul').children().each(function() {
-        linksWidth += $(this).width();
-    });
-    var linkSpacing = Math.floor((containerWidth - linksWidth) / ($('#navigationBar ul').children().length - 1));
-$('#navigationBar ul li:not(:last-child)').css('margin-right', linkSpacing + "px");
+/* Not all browsers support the following deverloper javascript console
+*  debug functions. Therefore, we'll create dummy functions
+*  in case the browser doesn't define them
+*/
+if (!window.console) console = {};
+console.log = console.log || function(){};
+console.warn = console.warn || function(){};
+console.error = console.error || function(){};
+console.info = console.info || function(){};
+
+console.info('base.js loaded')
+

@@ -2,24 +2,23 @@
 /* @import url(http://fonts.googleapis.com/css?family=Josefin+Slab); */
 /* @import url(http://fonts.googleapis.com/css?family=Antic); */
 
-
 html, body {
 	width:100%;
 	height:100%;
 	padding:0px;
-	text-align: left;
+	text-align:left;
 	margin:0px;
 	font-size:13pt;
-	font-family: Futura, "Century Gothic", AppleGothic, sans-serif, Lucida Sans,Lucida Grande,Calibri, Arial, Verdana, Colab, moderna !important;
-	}
-	
+	font-family: Futura, "Century Gothic", AppleGothic, sans-serif, Lucida Sans,Lucida Grande,Calibri, Arial, Verdana, Colab, moderna;
+}
+
 #navigationBar {
     font-family:Arial,Verdana;
     position:fixed; 
     top:0px;
-    left:7%;
+    left:0px;
     width:100%;
-    height:200px;
+    height:60px;
     z-index:100;
     color:white;
     background-color:#0072c6;
@@ -27,16 +26,46 @@ html, body {
     margin:0px;
 }
 
+#navigationBar h1 {
+    color:white;
+    margin:10px;
+    font-family:Futura; 
+    font-size:2.0em; 
+    display:inline;
+}
+
 #navigationBar ul {
-    background-color:red; 
-    display:block; 
-    float:left; 
-    width:100%;
+    list-style-type:none;
+    background-color:none;  
+    margin:auto;
+    display:inline;
 }
 
 #navigationBar li {
     float:left;
     display:block;
+    height:100%;
+}
+
+#navigationBar li:hover {
+    background: #88bfe8; /* Old browsers */
+    background: -moz-linear-gradient(top,  #88bfe8 0%, #70b0e0 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#88bfe8), color-stop(100%,#70b0e0)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #88bfe8 0%,#70b0e0 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #88bfe8 0%,#70b0e0 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #88bfe8 0%,#70b0e0 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #88bfe8 0%,#70b0e0 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#88bfe8', endColorstr='#70b0e0',GradientType=0 ); /* IE6-9 */
+}
+
+#navigationBar li a, #navigationBar li a:visited {
+    display:block;
+    width:100%;
+    height:100%;
+    padding:20px;
+    color:white;
+    font-size:1.5em;
+    text-decoration:none;
 }
 
 #contentPane {
@@ -50,8 +79,3 @@ html, body {
 #contentPane .widget {
     width:500px; 
 }
-
-
-
-	
-	
