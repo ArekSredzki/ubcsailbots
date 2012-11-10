@@ -26,7 +26,7 @@ class overview:
         page.format()
         
         page.navigationBar = render.navigationBar(page)
-        page.mapPane = render.map(page)
+        page.mapPane = render.mapWidget(page)
         page.contentPane = render.overview(page)
         return render.base(page)
 
