@@ -6,7 +6,7 @@
         var map; //complex object of type OpenLayers.Map
 
         //Initialise the 'map' object
-        function init() {
+        function initMapWidget() {
 
             map = new OpenLayers.Map("map", {
                 controls: [
