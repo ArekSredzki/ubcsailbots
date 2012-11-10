@@ -29,13 +29,13 @@ class PageControl:
         # These files will be included in absolutely every web page as part of the UI
         self.addJsInclude('jquery/js/jquery-1.8.2.js')
         self.addJsInclude('jquery/js/jquery-ui-1.9.1.custom.js')
+        self.addJsInclude('jquery/js/jcanvas-6.0.js')
         self.addJsInclude('base.js')
         
         self.addJsInclude('OpenLayers.js')
         self.addJsInclude('OpenStreetMap.js')
         self.addJsInclude('RenderMap.js')
         
-        self.addCssInclude('jquery/css/dark-hive/jquery-ui-1.9.1.custom.css')
         self.addCssInclude('base.css')
         
         self.addCssInclude('map-view.css')
@@ -91,7 +91,8 @@ class PageControl:
     def format(self):
         self.jsIncludes = '\n'.join(self.jsIncludes) + '\n'
         self.jsHeadFunctions = '\n'.join(self.jsHeadFunctions) + '\n'
-        self.cssIncludes = '\n'.join(self.cssIncludes) + '\n'
+        self.cssIncludes = '\n<link rel="stylesheet" type="text/css" href="/static/js/jquery/css/dark-hive/jquery-ui-1.9.1.custom.css" />\n' + '\n'.join(self.cssIncludes) + '\n'
+        
         self.cssHeadStyles = '\n'.join(self.cssHeadStyles) + '\n'
         # Include widgets last to ensure that all the jQuery files are already loaded
         for widget in self.widgets[:]:
