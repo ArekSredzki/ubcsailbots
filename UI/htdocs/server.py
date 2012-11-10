@@ -20,14 +20,14 @@ class overview:
         page = PageControl()
 
         page.setTitle('UBC Sailbots - Overview')
-        page.addCssHeadStyle("body { background-color:black; }")
+        #page.addCssHeadStyle("body { background-color:black; }")
         page.addWidget('map')
         # Note how we are calling 'format' prior to passing the page
         page.format()
         
         page.navigationBar = render.navigationBar(page)
-        page.contentPane = render.overview(page)
         page.mapPane = render.map(page)
+        page.contentPane = render.overview(page)
         return render.base(page)
 
 class debug:

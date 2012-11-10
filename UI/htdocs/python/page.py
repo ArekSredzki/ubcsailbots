@@ -22,6 +22,8 @@ class PageControl:
         self.cssHeadStyles = []
         self.widgets = []
         self.navigationBar = ''
+        self.contentPane = ''
+        self.mapPane = ''
         
         # Add default Javascript and CSS files for JQuery, JQuery UI and the base css file
         # These files will be included in absolutely every web page as part of the UI
