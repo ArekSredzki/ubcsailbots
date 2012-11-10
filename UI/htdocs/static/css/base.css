@@ -6,13 +6,14 @@ html, body {
 	width:100%;
 	height:100%;
 	padding:0px;
-	text-align:left;
+	text-align:center;
 	margin:0px;
 	font-size:13pt;
 	font-family: Futura, "Century Gothic", AppleGothic, sans-serif, Lucida Sans,Lucida Grande,Calibri, Arial, Verdana, Colab, moderna;
 }
 
 #navigationBar {
+    text-align:left;
     font-family:Arial,Verdana;
     position:fixed; 
     top:0px;
@@ -70,10 +71,25 @@ html, body {
 
 #contentPane {
     position:relative;
+    margin:0px auto;
     left:0px;
-    top:200px;
+    top:60px;
+    text-align:center;
+    color:#0072c6;
     padding:25px;
     width:1200px;
+}
+
+#contentPane #leftColumn, #contentPane #rightColumn {
+    width:50%;
+}
+
+#contentPane #leftColumn {
+    float:left;
+}
+
+#contentPane #rightColumn {
+    float:right;
 }
 
 #contentPane .widget {
