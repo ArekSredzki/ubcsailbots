@@ -1,0 +1,34 @@
+* {
+    outline: none !important;
+}
+
+/* Import Google Fonts that have a Metro-Like style */
+@import url(http://fonts.googleapis.com/css?family=Josefin+Slab);
+@import url(http://fonts.googleapis.com/css?family=Antic);
+
+
+html, body {
+	width:100%;
+	height:100%;
+	padding:0px;
+	text-align: left;
+	margin:0px;
+	font-size:13pt;
+	font-family: Futura, "Century Gothic", AppleGothic, sans-serif, Lucida Sans,Lucida Grande,Calibri, Arial, Verdana, Colab, moderna !important;
+	}
+	
+#headerArea #navBar {
+    font-family:Arial,Verdana;
+    position:fixed; 
+    top:0px;
+    left:7%;
+    width:auto;
+    z-index:100;
+    color:#dedede;
+    padding:10px;
+    margin:0px;
+
+}
+
+	
+	
