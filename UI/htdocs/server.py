@@ -18,10 +18,13 @@ urls = (
 class index:
     def GET(self):
         page = PageControl()
+
         page.setTitle('UBC Sailbots')
-        render.navigationBar(
-        #Note how we are calling 'format' prior to passing the page
+        
+        # Note how we are calling 'format' prior to passing the page
         page.format()
+        
+        page.navigationBar = render.navigationBar(page)
         return render.base(page)
 
 class debug:
