@@ -22,12 +22,13 @@ class overview:
         page.setTitle('UBC Sailbots - Overview')
 
         page.addWidget('mapWidget')
-        
+        page.addWidget('compassWidget')
         # Note how we are calling 'format' prior to passing the page
         page.format()
         
         page.navigationBar = render.navigationBar(page)
         page.mapWidget = render.mapWidget(page)
+        page.compassWidget = render.compassWidget(page)
 
         page.contentPane = render.overview(page)
         return render.base(page)
