@@ -12,6 +12,7 @@ urls = (
     '/instructions', 'instructions',
     '/health', 'health',
     '/shutdown', 'shutdown', 
+    '/debug/getlog','getlog',
 )
 
 # Declare our classes for the case of each URL mapping
@@ -38,6 +39,7 @@ class debug:
         page = PageControl()
 
         page.setTitle('UBC Sailbots - Debug')
+        page.addJsInclude('debug.js')
         #page.addWidget('map')
         # Note how we are calling 'format' prior to passing the page
         page.format()
@@ -70,6 +72,11 @@ class health:
         page.navigationBar = render.navigationBar(page)
         page.contentPane = render.health(page)
         return render.base(page)
+
+class getlog:
+    def GET(self):
+        
+        return "Debug Message"
 
 class shutdown: 
     def GET(self): 
