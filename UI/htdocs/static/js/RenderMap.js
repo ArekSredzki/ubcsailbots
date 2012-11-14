@@ -39,25 +39,31 @@
                 var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
                 map.setCenter(lonLat, zoom);
             }
+
+            //we create a new marker layer and add it to the map
+            var markers = new OpenLayers.Layer.Markers("Markers");
+            map.addLayer(markers);
                                  
             //now we call the add_marker function for adding a new marker_layer with the marker, we set it up to lon-lat for testing.
-            add_marker(map, lon, lat)
+            var marker = add_marker(markers, lon, lat);
+            
+            //this is how we can delete previously created markers.
+            //marker.destroy();
         }
 
 
         //Adds a marker layer to the map and calls addMarker.        
-        function add_marker(map, lon, lat) {
-           
-            //we create a new marker layer and add it to the map
-            var markers = new OpenLayers.Layer.Markers("Markers");
-            map.addLayer(markers);
-            
+        function add_marker(markers, lon, lat) {
+                                           
             //here we define all the properties of the icon for the marker
             var size = new OpenLayers.Size(21, 25);
             var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
             var icon = new OpenLayers.Icon("static/img/map/marker.png", size, offset);
 
-            markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon));                        
+            var marker = new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
+            markers.addMarker(marker);
+
+            return marker;                       
         }
 
 
