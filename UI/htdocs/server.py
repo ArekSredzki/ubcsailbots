@@ -11,6 +11,7 @@ urls = (
     '/debug', 'debug',
     '/instructions', 'instructions',
     '/health', 'health',
+    '/api', 'api',
     '/shutdown', 'shutdown', 
 )
 
@@ -70,6 +71,10 @@ class health:
         page.navigationBar = render.navigationBar(page)
         page.contentPane = render.health(page)
         return render.base(page)
+
+class api:
+    def GET(self):
+        pass
 
 class shutdown: 
     def GET(self): 
