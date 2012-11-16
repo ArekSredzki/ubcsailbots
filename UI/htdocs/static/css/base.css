@@ -94,4 +94,34 @@ html, body {
 
 #contentPane .widget {
     width:500px; 
+    padding:5px;
+}
+
+#contentPane .ddataDisplayTable {
+    text-align:left;
+}
+
+#contentPane .dataDisplayTable h1 {
+    text-align:left;
+    color:#a3a3a3;
+    font-size:1.4em;
+}
+
+#contentPane .dataDisplayTable dl {
+    margin-bottom:50px; 
+}
+
+#contentPane .dataDisplayTable dl dt {
+    background:#5f9be3;
+    color:#fff;
+    float:left; 
+    font-weight:bold; 
+    margin-right:10px; 
+    padding:3px;  
+    width:200px; 
+}
+
+#contentPane .dataDisplayTable dd {
+    margin:2px 0; 
+    padding:3px 0;
 }
