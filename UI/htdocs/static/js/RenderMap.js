@@ -44,7 +44,7 @@
             var markers = new OpenLayers.Layer.Markers("Markers");
             map.addLayer(markers);
                                  
-            //now we call the add_marker function for adding a new marker_layer with the marker, we set it up to lon-lat for testing.
+            //now we call the add_marker function for adding a new marker to the marker_layer, we set it up to be located at lon-lat for testing.
             var marker = add_marker(markers, lon, lat);
             
             //this is how we can delete previously created markers.
