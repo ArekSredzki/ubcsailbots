@@ -7,8 +7,10 @@ $(function() {
     var canvasHeight = canvas.height();    
     
     canvas.drawArc({
+    	layer: true,
+    	group: "HUD",
         fillStyle: "lightgray",
-        shadowColor: "#000",
+        shadowColor: "#5f9be3",
         shadowBlur: 10,
         x: canvasWidth/2, y: canvasHeight/2,
         radius: canvasWidth/4
