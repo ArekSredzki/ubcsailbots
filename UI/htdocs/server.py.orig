@@ -12,6 +12,7 @@ urls = (
     '/instructions', 'instructions',
     '/health', 'health',
     '/api', 'api',
+    '/debug/getlog','getlog',
     '/shutdown', 'shutdown', 
     '/debug/getlog','getlog',
 )
@@ -78,12 +79,13 @@ class health:
 class api:
     def GET(self):
         pass
+
 =======
+>>>>>>> master
 class getlog:
     def GET(self):
         
         return "Debug Message"
->>>>>>> master
 
 class shutdown: 
     def GET(self): 
