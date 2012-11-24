@@ -1,4 +1,4 @@
-console.info('Loaded compassWidget.js')
+console.info('compassWidget.js loaded')
 
 
 $(function() {

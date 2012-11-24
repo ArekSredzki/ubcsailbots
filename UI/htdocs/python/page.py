@@ -97,7 +97,7 @@ class PageControl:
         # Include widgets last to ensure that all the jQuery files are already loaded
         for widget in self.widgets[:]:
             self.jsIncludes += '<script src ="static/js/widgets/' + widget + '.js"></script>\n'
-            self.cssIncludes += '<link rel="styesheet" type="text/css" href="static/css/widgets/' + widget + '.css" />\n' 
+            self.cssIncludes += '<link rel="stylesheet" type="text/css" href="static/css/widgets/' + widget + '.css" />\n' 
         # Create headBlock 
         self.headBlock = '<title>' + self.title + '</title>\n' + '\n' + self.jsIncludes + '\n' + self.cssIncludes + '\n' + self.jsHeadFunctions + '\n' + self.cssHeadStyles
         

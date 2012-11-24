@@ -1,6 +1,7 @@
 #import web.py module
 import web
 from python.page import *
+from python.api import *
 
 # Tell web.py where to find all the templates
 render = web.template.render('templates/')
@@ -25,6 +26,7 @@ class overview:
 
         page.addWidget('mapWidget')
         page.addWidget('compassWidget')
+        page.addWidget('dataDisplayTableWidget')
         # Note how we are calling 'format' prior to passing the page
         page.format()
 
@@ -41,6 +43,7 @@ class debug:
 
         page.setTitle('UBC Sailbots - Debug')
         page.addJsInclude('debug.js')
+        page.addWidget('dataDisplayTableWidget')
         #page.addWidget('map')
         # Note how we are calling 'format' prior to passing the page
         page.format()
@@ -54,7 +57,7 @@ class instructions:
         page = PageControl()
 
         page.setTitle('UBC Sailbots - Instructions')
-        #page.addWidget('map')
+        page.addWidget('dataDisplayTableWidget')
         # Note how we are calling 'format' prior to passing the page
         page.format()
         
@@ -66,7 +69,7 @@ class health:
         page = PageControl()
 
         page.setTitle('UBC Sailbots - Boat Health')
-        #page.addWidget('map')
+        page.addWidget('dataDisplayTableWidget')
         # Note how we are calling 'format' prior to passing the page
         page.format()
         
@@ -76,11 +79,20 @@ class health:
 
 class api:
     def GET(self):
-        pass
+        i = web.input()
+        try:
+            if i.request == 'overviewData':
+                ajaxReturn = ApiControl()
+                return ajaxReturn.getOverviewDataAsJson()
+            else:
+                return 'error'
+        except:
+            return 'error'
+        
+        
 
 class getlog:
     def GET(self):
-        
         return "Debug Message"
 
 class shutdown: 
