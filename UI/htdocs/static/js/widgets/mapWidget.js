@@ -1,8 +1,5 @@
 
 
-
-$(function() {
-
     // Start position for the map (hardcoded here for simplicity)
     var lat = 49.27628;
     var lon = -123.17561;
@@ -10,6 +7,7 @@ $(function() {
 
     var map; //complex object of type OpenLayers.Map
 
+    function initMapWidget() {
     //Initialise the 'map' object
     map = new OpenLayers.Map("map", {
         controls: [
@@ -24,52 +22,69 @@ $(function() {
         displayProjection: new OpenLayers.Projection("EPSG:4326")
     });
 
-    /*uncomment below to put in map from web*/
-    //  			layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
-    //  			layerMapnik.setOpacity(0.4);
-    //  			map.addLayer(layerMapnik);						
-    //  			var switcherControl = new OpenLayers.Control.LayerSwitcher();
-    //  			map.addControl(switcherControl);
-    //  			switcherControl.maximizeControl();
-
     // This is the layer that uses the locally stored tiles
     var newLayer = new OpenLayers.Layer.OSM("Local Tiles", "static/tiles/${z}/${x}/${y}.png", { numZoomLevels: 19, alpha: true, isBaseLayer: true });
     map.addLayer(newLayer);
     // This is the end of the layer
 
 
-    if (!map.getCenter()) {
-        var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-        map.setCenter(lonLat, zoom);
-    }
-
     //we create a new marker layer and add it to the map
     var markers = new OpenLayers.Layer.Markers("Markers");
     map.addLayer(markers);
 
-    //now we call the add_marker function for adding a new marker to the marker_layer, we set it up to be located at lon-lat for testing.
-    var marker = add_marker(markers, lon, lat);
-
-    //this is how we can delete previously created markers.
-    //marker.destroy();
-
-
+    // we create a new vector layer and add it to the map
     var vectors = new OpenLayers.Layer.Vector("Vector Layer");
-
-    var point = new OpenLayers.Geometry.Point(lon, lat);
-    vectors.addFeatures([new OpenLayers.Feature.Vector(point)]);
-    var drag = new OpenLayers.Control.DragFeature(vectors, {
-        autoActivate: true,
-        onComplete: function () { alert('hello') }
-    });
-    map.addControl(drag);
-    drag.activate();
-
     map.addLayer(vectors);
 
-   
-    //Adds a marker layer to the map and calls addMarker.        
-    function add_marker(markers, lon, lat) {
+
+    //we call this functions now for testing purposes, later this would be removed
+    //set_center();
+    //var marker = add_marker(markers, lon, lat, map);
+    //add_draggable(vectors, lon, lat, map);          
+}
+
+
+
+
+    //It sets the center of the map to the coordinates specified by the Lon and Lat flot objects 
+    //parameters: 
+    //            map: the OpenLayes.Map object to which the OSM layer will be added. 
+    //            lon: a float object describing the longitude of the center of the map
+    //            Lat: a float object describing the latitude of the center of the map
+    //            zoom: a integer object describing the zoom level to which the map will be set after this function is called
+    function set_center() {
+        var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+        map.setCenter(lonLat, zoom);        
+    }
+
+
+    //It adds a draggable feature to the map specified in the parameters
+    //parameters: 
+    //            vectors: the OpenLayers.Layer.Vector object to which the dragable feature will be added
+    //            lon: a float object describing the longitude of the location of the draggable feature
+    //            Lat: a float object describing the latitude of the location of the draggable feature
+    //            map: the OpenLayes.Map object to which the draggable feature will be added.
+    function add_draggable(vectors, lon, lat, map) {
+        var location = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+        var point = new OpenLayers.Geometry.Point(location.lon, location.lat);
+        vectors.addFeatures([new OpenLayers.Feature.Vector(point)]);
+        var drag = new OpenLayers.Control.DragFeature(vectors, {
+            autoActivate: true,
+            onComplete: function () { alert('hello') } //this function is called when the drag feature is released
+        });
+        map.addControl(drag);
+        drag.activate();
+    }
+
+
+
+    //Adds a marker to the markers layer specified in the parameters in the location specified by the lon & lat parameters.
+    //Parameters: 
+    //           markers: The OpenLayers.Layer.Markers object to which the OpenLayers.Marker will be added.
+    //           lon: a float object describing the longitude of the marker to be added
+    //           Lat: a float object describing the latitude of the marker to be added
+    //           map: the OpenLayes.Map object
+    function add_marker(markers, lon, lat, map) {
 
         //here we define all the properties of the icon for the marker
         var size = new OpenLayers.Size(21, 25);
@@ -81,7 +96,7 @@ $(function() {
 
         return marker;
     }
-   
-});
+
+
 
 
