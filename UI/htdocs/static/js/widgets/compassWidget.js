@@ -11,7 +11,7 @@ $(function() {
     	group: "HUD",
         fillStyle: "lightgray",
         shadowColor: "#5f9be3",
-        shadowBlur: 10,
+        shadowBlur: 30,
         x: canvasWidth/2, y: canvasHeight/2,
         radius: canvasWidth/4
     });
