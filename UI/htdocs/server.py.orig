@@ -14,6 +14,7 @@ urls = (
     '/api', 'api',
     '/debug/getlog','getlog',
     '/shutdown', 'shutdown', 
+    '/debug/getlog','getlog',
 )
 
 # Declare our classes for the case of each URL mapping
@@ -74,10 +75,13 @@ class health:
         page.contentPane = render.health(page)
         return render.base(page)
 
+<<<<<<< HEAD
 class api:
     def GET(self):
         pass
 
+=======
+>>>>>>> master
 class getlog:
     def GET(self):
         
