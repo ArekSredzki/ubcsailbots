@@ -25,7 +25,9 @@ class overview:
         page.addJsInclude('OverviewData.js')
         page.setTitle('UBC Sailbots - Overview')
 
-        page.addWidget('mapWidget')
+        page.addJsInclude('Overview.js')
+
+        page.addWidget('mapWidget')        
         page.addWidget('compassWidget')
         page.addWidget('dataDisplayTableWidget')
         # Note how we are calling 'format' prior to passing the page
