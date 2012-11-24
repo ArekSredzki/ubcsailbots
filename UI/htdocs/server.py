@@ -80,14 +80,22 @@ class health:
 class api:
     def GET(self):
         i = web.input()
+        # CASE of overviewData Request
         try:
             if i.request == 'overviewData':
                 ajaxReturn = ApiControl()
                 return ajaxReturn.getOverviewDataAsJson()
-            else:
-                return 'error'
         except:
             return 'error'
+        
+        # CASE of instructionsData Request
+        try:
+            if i.request == 'instructionsData':
+                ajaxReturn = ApiControl()
+                return ajaxReturn.getInstructionsDataAsJson()
+        except:
+            return 'error'
+
         
         
 
