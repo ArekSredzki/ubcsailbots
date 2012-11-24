@@ -21,10 +21,8 @@ urls = (
 class overview:
     def GET(self):
         page = PageControl()
-
-        page.addJsInclude('OverviewData.js')
         page.setTitle('UBC Sailbots - Overview')
-
+        
         page.addJsInclude('Overview.js')
 
         page.addWidget('mapWidget')        

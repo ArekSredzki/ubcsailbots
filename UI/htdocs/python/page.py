@@ -34,7 +34,6 @@ class PageControl:
         
         self.addJsInclude('OpenLayers.js')
         self.addJsInclude('OpenStreetMap.js')
-        self.addJsInclude('RenderMap.js')
         
         self.addCssInclude('base.css')
         
