@@ -21,10 +21,11 @@ urls = (
 class overview:
     def GET(self):
         page = PageControl()
-
         page.setTitle('UBC Sailbots - Overview')
+        
+        page.addJsInclude('Overview.js')
 
-        page.addWidget('mapWidget')
+        page.addWidget('mapWidget')        
         page.addWidget('compassWidget')
         page.addWidget('dataDisplayTableWidget')
         # Note how we are calling 'format' prior to passing the page
