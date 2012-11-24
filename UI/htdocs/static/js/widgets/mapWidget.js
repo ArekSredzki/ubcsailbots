@@ -6,6 +6,8 @@
     var zoom = 12;
 
     var map; //complex object of type OpenLayers.Map
+    var vectors;
+    var markers;
 
     function initMapWidget() {
     //Initialise the 'map' object
@@ -29,16 +31,16 @@
 
 
     //we create a new marker layer and add it to the map
-    var markers = new OpenLayers.Layer.Markers("Markers");
+    markers = new OpenLayers.Layer.Markers("Markers");
     map.addLayer(markers);
 
     // we create a new vector layer and add it to the map
-    var vectors = new OpenLayers.Layer.Vector("Vector Layer");
+    vectors = new OpenLayers.Layer.Vector("Vector Layer");
     map.addLayer(vectors);
 
 
     //we call this functions now for testing purposes, later this would be removed
-    //set_center();
+    //setMapCenter();
     //var marker = add_marker(markers, lon, lat, map);
     //add_draggable(vectors, lon, lat, map);          
 }
@@ -52,7 +54,7 @@
     //            lon: a float object describing the longitude of the center of the map
     //            Lat: a float object describing the latitude of the center of the map
     //            zoom: a integer object describing the zoom level to which the map will be set after this function is called
-    function set_center() {
+    function setMapCenter() {
         var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
         map.setCenter(lonLat, zoom);        
     }
@@ -64,7 +66,7 @@
     //            lon: a float object describing the longitude of the location of the draggable feature
     //            Lat: a float object describing the latitude of the location of the draggable feature
     //            map: the OpenLayes.Map object to which the draggable feature will be added.
-    function add_draggable(vectors, lon, lat, map) {
+    function add_draggable() {
         var location = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
         var point = new OpenLayers.Geometry.Point(location.lon, location.lat);
         vectors.addFeatures([new OpenLayers.Feature.Vector(point)]);
@@ -84,7 +86,7 @@
     //           lon: a float object describing the longitude of the marker to be added
     //           Lat: a float object describing the latitude of the marker to be added
     //           map: the OpenLayes.Map object
-    function add_marker(markers, lon, lat, map) {
+    function add_marker() {
 
         //here we define all the properties of the icon for the marker
         var size = new OpenLayers.Size(21, 25);
