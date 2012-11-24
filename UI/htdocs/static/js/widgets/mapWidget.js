@@ -1,5 +1,3 @@
-
-
     // Start position for the map (hardcoded here for simplicity)
     var lat = 49.27628;
     var lon = -123.17561;
@@ -98,7 +96,3 @@
 
         return marker;
     }
-
-
-
-
