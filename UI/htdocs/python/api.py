@@ -12,7 +12,7 @@ class ApiControl:
         self.hardwareData = ""
         
     def getOverviewData(self):
-        overviewData =  {"connectionStatus": {"onlineOffline": "yes", "batteryLevel": "full", "gpsNumberOfSatellites": 12, "gpsAccuracy": 2, "hardWareHealth": "good"},
+        overviewData =  {"connectionStatus": {"onlineOffline": "yes", "batteryLevel": "full", "gpsSatelliteNumber": 12, "gpsAccuracy": 2, "hardwareHealth": "good"},
                         "telemetry": {"speedOverGround": 14, "windDirection": 10, "currentManeuver": "tracking"},
                         "currentProcess": {"task": "Keep Away", "timeRemaining": 1400, "timeToCompletion": 12},                           
                         }
