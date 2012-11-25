@@ -9,7 +9,7 @@ import json
 class ApiControl:
     def __init__(self):
         # Declare all public instance variables
-        self.hardwareData = "test"
+        self.hardwareData = ""
         
     def getOverviewData(self):
         overviewData =  {"connectionStatus": {"onlineOffline": "yes", "batteryLevel": "full", "gpsNumberOfSatellites": 12, "gpsAccuracy": 2, "hardWareHealth": "good"},
