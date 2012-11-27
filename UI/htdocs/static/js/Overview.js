@@ -15,7 +15,7 @@ function getlog(){
         console.log(overviewData);
         $("#connectionStatus-onlineOfflineCell").text(overviewData.connectionStatus.onlineOffline)
         $("#connectionStatus-batteryLevelCell").text(overviewData.connectionStatus.batteryLevel)
-        $("#connectionStatus-satNumberCell").text(overviewData.connectionStatus.satNumber)
+        $("#connectionStatus-satNumCell").text(overviewData.connectionStatus.gpsSatelliteNumber)
         $("#connectionStatus-gpsAccuracyCell").text(overviewData.connectionStatus.gpsAccuracy)
         $("#connectionStatus-hardwareHealthCell").text(overviewData.connectionStatus.hardwareHealth)
         $("#telemetry-speedOverGroundCell").text(overviewData.telemetry.speedOverGround)
