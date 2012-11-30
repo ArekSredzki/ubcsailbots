@@ -19,7 +19,7 @@ $(function() {
     drawBoat(canvas,0);
     
 	$("canvas").animateLayerGroup("boat", {
-	  rotate: "+=180"
+	  //rotate: "+=180"
 	});
 });
 
