@@ -1,3 +1,4 @@
+
 //create map widget
 $(function () {
   initMapWidget();
@@ -21,9 +22,12 @@ function getlog(){
         $("#telemetry-speedOverGroundCell").text(overviewData.telemetry.speedOverGround)
         $("#telemetry-windDirectionCell").text(overviewData.telemetry.windDirection)
         $("#telemetry-currentManeuverCell").text(overviewData.telemetry.currentManeuver)
+        $("#telemetry-latitudeCell").text(overviewData.telemetry.latitude)
+        $("#telemetry-longitudeCell").text(overviewData.telemetry.longitude)
         $("#currentProcess-currentTaskCell").text(overviewData.currentProcess.task)
         $("#currentProcess-timeRemainingCell").text(overviewData.currentProcess.timeRemaining)
         $("#currentProcess-timeToCompletionCell").text(overviewData.currentProcess.timeToCompletion)
+        
       ///update the map with some code here
     }
   );
