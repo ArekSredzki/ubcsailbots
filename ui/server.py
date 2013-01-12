@@ -97,7 +97,11 @@ class api:
                 return ajaxReturn.getInstructionsDataAsJson()
         except:
             return 'error'
-
+    def POST(self):
+        i = web.input()
+        
+        # to do: handle instructions
+        return 'data received' 
         
         
 
