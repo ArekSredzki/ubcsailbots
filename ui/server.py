@@ -23,7 +23,7 @@ class overview:
         page = PageControl()
         page.setTitle('UBC Sailbots - Overview')
         
-        page.addJsInclude('Overview.js')
+        page.addJsInclude('Overview.js');
 
         page.addWidget('mapWidget')        
         page.addWidget('compassWidget')
@@ -56,14 +56,15 @@ class debug:
 class instructions:
     def GET(self):
         page = PageControl()
+        page.addJsInclude('instructions.js');
 
-        page.setTitle('UBC Sailbots - Instructions')
+        page.setTitle('UBC Sailbots - instructions')
         page.addWidget('dataDisplayTableWidget')
         # Note how we are calling 'format' prior to passing the page
         page.format()
         
         page.navigationBar = render.navigationBar(page)
-        page.contentPane = render.instructions(page)
+        page.contentPane = render.Instructions(page)
         return render.base(page)
 class health:
     def GET(self):
