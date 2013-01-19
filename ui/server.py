@@ -56,13 +56,15 @@ class debug:
 class instructions:
     def GET(self):
         page = PageControl()
-        page.addJsInclude('instructions.js');
+        page.addJsInclude('instructions.js')
 
         page.setTitle('UBC Sailbots - instructions')
         page.addWidget('dataDisplayTableWidget')
         # Note how we are calling 'format' prior to passing the page
+        page.addWidget('mapWidget') 
+        page.mapWidget = render.mapWidget(page)
         page.format()
-        
+         
         page.navigationBar = render.navigationBar(page)
         page.contentPane = render.Instructions(page)
         return render.base(page)

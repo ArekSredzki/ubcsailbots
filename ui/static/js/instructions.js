@@ -17,6 +17,13 @@ waypoint[2] = type;
 instructions.waypoints = new Array();
 instructions.waypoints.push(waypoint);
 
+$(function () {
+  initMapWidget();
+  setMapCenter();
+  var marker = add_marker();
+  add_draggable();    
+})
+
 function senddata(){
 	var postdata = JSON.stringify(instructions);
 	var postArray = {json:postdata};
