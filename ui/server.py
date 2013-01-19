@@ -66,7 +66,7 @@ class instructions:
         page.format()
          
         page.navigationBar = render.navigationBar(page)
-        page.contentPane = render.Instructions(page)
+        page.contentPane = render.instructions(page)
         return render.base(page)
 class health:
     def GET(self):
