@@ -64,7 +64,7 @@ class instructions:
         page.format()
         
         page.navigationBar = render.navigationBar(page)
-        page.contentPane = render.Instructions(page)
+        page.contentPane = render.instructions(page)
         return render.base(page)
 class health:
     def GET(self):
@@ -97,7 +97,11 @@ class api:
                 return ajaxReturn.getInstructionsDataAsJson()
         except:
             return 'error'
-
+    def POST(self):
+        i = web.input()
+        
+        # to do: handle instructions
+        return 'data received' 
         
         
 

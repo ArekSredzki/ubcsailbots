@@ -17,14 +17,16 @@ waypoint[2] = type;
 instructions.waypoints = new Array();
 instructions.waypoints.push(waypoint);
 
-var postdata = JSON.stringify(instructions);
-var postArray = {json:postdata};
-
-
-var pathname = window.location.pathname;
-
-$.post('/api',postArray, function(data) {
-//do on success
-window.alert("Instructions sent");
-
-});
+function senddata(){
+	var postdata = JSON.stringify(instructions);
+	var postArray = {json:postdata};
+	
+	
+	var pathname = window.location.pathname;
+	
+	$.post('/api',postArray, function(data) {
+	//do on success
+	window.alert("Instructions sent");
+	
+	}); 
+}

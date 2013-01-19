@@ -1,6 +1,6 @@
     // Start position for the map (hardcoded here for simplicity)
-    var lat = 49.27628;
-    var lon = -123.17561;
+    var default_lat = 49.27628;
+    var default_lon = -123.17561;
     var zoom = 12;
 
     var map; //complex object of type OpenLayers.Map
@@ -52,7 +52,10 @@
     //            lon: a float object describing the longitude of the center of the map
     //            Lat: a float object describing the latitude of the center of the map
     //            zoom: a integer object describing the zoom level to which the map will be set after this function is called
-    function setMapCenter() {
+function setMapCenter(lon, lat) {
+    lat = lat || default_lat;
+    lon = lon || default_lon;
+
         var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
         map.setCenter(lonLat, zoom);        
     }
@@ -64,13 +67,20 @@
     //            lon: a float object describing the longitude of the location of the draggable feature
     //            Lat: a float object describing the latitude of the location of the draggable feature
     //            map: the OpenLayes.Map object to which the draggable feature will be added.
-    function add_draggable() {
+    function add_draggable(lon, lat) {
+        lat = lat || default_lat;
+        lon = lon || default_lon;
+
+        var message = "lon:" + lon + ", lat:" + lat;      
+                
         var location = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
         var point = new OpenLayers.Geometry.Point(location.lon, location.lat);
         vectors.addFeatures([new OpenLayers.Feature.Vector(point)]);
         var drag = new OpenLayers.Control.DragFeature(vectors, {
             autoActivate: true,
-            onComplete: function () { alert('hello') } //this function is called when the drag feature is released
+            onComplete: function () {                  //this function is called when the drag feature is released                 
+                alert(message)
+            }
         });
         map.addControl(drag);
         drag.activate();
@@ -84,7 +94,9 @@
     //           lon: a float object describing the longitude of the marker to be added
     //           Lat: a float object describing the latitude of the marker to be added
     //           map: the OpenLayes.Map object
-    function add_marker() {
+    function add_marker(lon, lat) {
+        lat = lat || default_lat;
+        lon = lon || default_lon;
 
         //here we define all the properties of the icon for the marker
         var size = new OpenLayers.Size(21, 25);
