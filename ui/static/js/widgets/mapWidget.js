@@ -1,13 +1,13 @@
+function MapWidget(){
     // Start position for the map (hardcoded here for simplicity)
-    var default_lat = 49.27628;
-    var default_lon = -123.17561;
-    var zoom = 12;
+    this.default_lat = 49.27628;
+    this.default_lon = -123.17561;
+    this.zoom = 12;
 
-    var map; //complex object of type OpenLayers.Map
-    var vectors;
-    var markers;
+    this.map; //complex object of type OpenLayers.Map
+    this.vectors;
+    this.markers;
 
-    function initMapWidget() {
     //Initialise the 'map' object
     map = new OpenLayers.Map("map", {
         controls: [
@@ -37,22 +37,13 @@
     map.addLayer(vectors);
 
 
-    //we call this functions now for testing purposes, later this would be removed
-    //setMapCenter();
-    //var marker = add_marker(markers, lon, lat, map);
-    //add_draggable(vectors, lon, lat, map);          
-}
-
-
-
-
     //It sets the center of the map to the coordinates specified by the Lon and Lat flot objects 
     //parameters: 
     //            map: the OpenLayes.Map object to which the OSM layer will be added. 
     //            lon: a float object describing the longitude of the center of the map
     //            Lat: a float object describing the latitude of the center of the map
     //            zoom: a integer object describing the zoom level to which the map will be set after this function is called
-function setMapCenter(lon, lat) {
+this.setMapCenter = function(lon,lat) {
     lat = lat || default_lat;
     lon = lon || default_lon;
 
@@ -67,7 +58,7 @@ function setMapCenter(lon, lat) {
     //            lon: a float object describing the longitude of the location of the draggable feature
     //            Lat: a float object describing the latitude of the location of the draggable feature
     //            map: the OpenLayes.Map object to which the draggable feature will be added.
-    function add_draggable(lon, lat) {
+    this.add_draggable() = function(lon,lat) {
         lat = lat || default_lat;
         lon = lon || default_lon;
 
@@ -94,7 +85,7 @@ function setMapCenter(lon, lat) {
     //           lon: a float object describing the longitude of the marker to be added
     //           Lat: a float object describing the latitude of the marker to be added
     //           map: the OpenLayes.Map object
-    function add_marker(lon, lat) {
+    this.add_marker() = function(lon,lat) {
         lat = lat || default_lat;
         lon = lon || default_lon;
 
@@ -108,3 +99,4 @@ function setMapCenter(lon, lat) {
 
         return marker;
     }
+}
