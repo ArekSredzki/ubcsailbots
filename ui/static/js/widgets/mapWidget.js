@@ -44,10 +44,10 @@ function MapWidget(){
     //            Lat: a float object describing the latitude of the center of the map
     //            zoom: a integer object describing the zoom level to which the map will be set after this function is called
 	this.setMapCenter = function(lon,lat) {
-	    lat = lat || default_lat;
-	    lon = lon || default_lon;
+	    lat = lat || this.default_lat;
+	    lon = lon || this.default_lon;
         var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-        map.setCenter(lonLat, zoom);        
+        map.setCenter(lonLat, this.zoom);        
     }
 
 
@@ -57,9 +57,9 @@ function MapWidget(){
     //            lon: a float object describing the longitude of the location of the draggable feature
     //            Lat: a float object describing the latitude of the location of the draggable feature
     //            map: the OpenLayes.Map object to which the draggable feature will be added.
-    this.add_draggable() = function(lon,lat) {
-        lat = lat || default_lat;
-        lon = lon || default_lon;
+    this.add_draggable = function(lon,lat) {
+        lat = lat || this.default_lat;
+        lon = lon || this.default_lon;
 
         var message = "lon:" + lon + ", lat:" + lat;      
                 
@@ -84,9 +84,9 @@ function MapWidget(){
     //           lon: a float object describing the longitude of the marker to be added
     //           Lat: a float object describing the latitude of the marker to be added
     //           map: the OpenLayes.Map object
-    this.add_marker() = function(lon,lat) {
-        lat = lat || default_lat;
-        lon = lon || default_lon;
+    this.add_marker = function(lon,lat) {
+        lat = lat || this.default_lat;
+        lon = lon || this.default_lon;
 
         //here we define all the properties of the icon for the marker
         var size = new OpenLayers.Size(21, 25);

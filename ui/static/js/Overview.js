@@ -3,9 +3,9 @@
 $(function () {
   var mapWidget = new MapWidget();
   mapWidget.setMapCenter();
-  var marker = add_marker();
+  mapWidget.add_marker();
   mapWidget.add_draggable();    
-  var marker2 = add_marker(-70.66955, 42.59941);
+  mapWidget.add_marker(-70.66955, 42.59941);
   mapWidget.add_draggable(-70.66955, 42.59941);   
 })
 
