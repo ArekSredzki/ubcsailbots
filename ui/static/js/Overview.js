@@ -1,7 +1,7 @@
 
 //create map widget
 $(function () {
-  var mapWidget = new MapWidget;
+  var mapWidget = new MapWidget();
   mapWidget.setMapCenter();
   var marker = add_marker();
   mapWidget.add_draggable();    
