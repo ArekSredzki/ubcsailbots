@@ -5,8 +5,13 @@ function MapWidget(){
     this.zoom = 12;
 
     this.map; //complex object of type OpenLayers.Map
-    this.vectors;
-    this.markers;
+    this.vectors; //Layer for the vectors of the map
+    this.markers; //Layer for the markers of the class
+    
+    this.draggablePointList; //A linkedList for storing the data of the draggable objects shown in the map.
+    this.draggableBoundaryList; //A linkedList for storing the data of the draggableBounday objects in the map.
+    this.markerPointList; //A linkedList for storing the data of the marker objects shown in the map.
+    this.markerBoundaryList; //A linkedList for storing the data of the markerBoundary objects in the map.
 
     //Initialise the 'map' object
     map = new OpenLayers.Map("map", {
