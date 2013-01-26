@@ -1,18 +1,20 @@
-
+var mapWidget;
 //create map widget
 $(function () {
-  var mapWidget = new MapWidget();
+  mapWidget = new MapWidget();
   mapWidget.setMapCenter();
   mapWidget.add_marker();
   mapWidget.add_draggable();    
   mapWidget.add_marker(-70.66955, 42.59941);
   mapWidget.add_draggable(-70.66955, 42.59941);   
+ 
 })
 
   setInterval('getlog()',1000);
 
 function getlog(){
     var pathname = window.location.pathname;
+    var longitude;
     $.get(pathname + "api?request=overviewData",function(data){
         var overviewData = jQuery.parseJSON(data)
         console.log(overviewData);
@@ -29,6 +31,8 @@ function getlog(){
         $("#currentProcess-currentTaskCell").text(overviewData.currentProcess.task)
         $("#currentProcess-timeRemainingCell").text(overviewData.currentProcess.timeRemaining)
         $("#currentProcess-timeToCompletionCell").text(overviewData.currentProcess.timeToCompletion)
+        
+        mapWidget.set_boat_location(-123.19,49.275435);
         
       ///update the map with some code here
     }
