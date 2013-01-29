@@ -18,10 +18,10 @@ instructions.waypoints = new Array();
 instructions.waypoints.push(waypoint);
 
 $(function () {
-  initMapWidget();
-  setMapCenter();
-  var marker = add_marker();
-  add_draggable();    
+  var mapWidget = new MapWidget();
+  mapWidget.setMapCenter();
+  mapWidget.add_marker();
+  mapWidget.add_draggable();    
 })
 
 function senddata(){
