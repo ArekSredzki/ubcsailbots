@@ -1,12 +1,12 @@
 
 //create map widget
 $(function () {
-  initMapWidget();
-  setMapCenter();
-  var marker = add_marker();
-  add_draggable();    
-  var marker2 = add_marker(-70.66955, 42.59941);
-  add_draggable(-70.66955, 42.59941);   
+  var mapWidget = new MapWidget();
+  mapWidget.setMapCenter();
+  mapWidget.add_marker();
+  mapWidget.add_draggable();    
+  mapWidget.add_marker(-70.66955, 42.59941);
+  mapWidget.add_draggable(-70.66955, 42.59941);   
 })
 
   setInterval('getlog()',1000);

@@ -21,7 +21,11 @@ $(function() {
     drawBoat(canvas,0,0);
     
 	$("canvas").animateLayerGroup("boat", {
+<<<<<<< HEAD
 	  //rotate: "+=90"
+=======
+	  rotate: "+=180"
+>>>>>>> master
 	});
 });
 
