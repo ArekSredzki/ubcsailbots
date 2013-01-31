@@ -2,7 +2,9 @@ console.info('compassWidget.js loaded')
 
 
 $(function() {
+	// Create a name for our canvas
     var canvas = $("#compassWidgetCanvas");
+    // Create variables for the width and height from the current canvas dimensions
     var canvasWidth = canvas.width();
     var canvasHeight = canvas.height();    
     
@@ -16,10 +18,11 @@ $(function() {
         radius: canvasWidth/4
     });
     
-    drawBoat(canvas,0);
+    drawBoat(canvas,0,0);
     
 	$("canvas").animateLayerGroup("boat", {
-	  rotate: "+=180"
+
+	  //rotate: "+=90"
 	});
 });
 
@@ -67,4 +70,6 @@ function drawBoat(canvas, boatAngle, sailAngle) {
 
 function drawSailRig(canvasWidth, canvasHeight, boomAngle) {
 }
+
+
 
