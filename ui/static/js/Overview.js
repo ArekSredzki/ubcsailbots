@@ -32,9 +32,7 @@ function getlog(){
         $("#currentProcess-timeRemainingCell").text(overviewData.currentProcess.timeRemaining)
         $("#currentProcess-timeToCompletionCell").text(overviewData.currentProcess.timeToCompletion)
         
-        mapWidget.set_boat_location(-123.19,49.275435);
-        
-      ///update the map with some code here
+     	mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
     }
   );
 }
