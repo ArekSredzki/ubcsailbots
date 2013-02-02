@@ -20,10 +20,13 @@ $def with (page)
 <div id="rightColumn">
     <div class="widget dataDisplayTableWidget">
         <h1>Challenge</h1>
-        <dl>
-            <dt>Currently Running</dt>
-            <dd id="pointToPoint">Point-to-Point</dd> 
-        </dl>
+        <select>
+		  <option value="none">None</option>
+		  <option value="navigation">Navigation</option>
+		  <option value="station_keepping">Station Keeping</option>
+		  <option value="long_distance">Long Distance</option>
+		  <option value="chase_race">Chase Race</option>
+		</select>
     </div>
     
     <div class="widget dataDisplayTableWidget">
