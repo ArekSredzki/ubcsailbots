@@ -50,8 +50,9 @@ class Simulator:
     def __init__(self):
         # Declare all public instance variables
         seed() 
+        self.latitude = 49.27480
+        self.longitude = -123.18960
         self.update()
-        
         
     def update(self):
         self.onlineOffline = self.genYesNo(99)
@@ -61,7 +62,8 @@ class Simulator:
         self.speedOverGround = self.genSpeedOverGround()
         self.windDirection = self.genWindDirection()
         self.timeRemaining = self.genTimeRemaining()
-        
+        self.latitude += 0.00001
+        self.longitude += 0.00001
     def init(self):
         self.onlineOffline = genYesNo(99)
         self.batteryLevel = genBatteryLevel()
@@ -167,13 +169,13 @@ class Simulator:
                 return self.speedOverGround + 1
             else:
                 return self.speedOverGround - 1
-                
+    
     
     
     def getOverviewData(self):
         overviewData =  {"connectionStatus": {"onlineOffline": self.onlineOffline, "batteryLevel": self.batteryLevel, "gpsSatelliteNumber": self.gpsSatelliteNumber, "gpsAccuracy": self.gpsAccuracy, "hardwareHealth": "good"},
-                        "telemetry": {"speedOverGround": self.speedOverGround, "windDirection": self.windDirection, "currentManeuver": "tracking", "latitude": 49.27, "longitude": -123.2},
-                        "currentProcess": {"task": "Keep Away", "timeRemaining": self.timeRemaining, "timeToCompletion": 12},                           
+                        "telemetry": {"speedOverGround": self.speedOverGround, "windDirection": self.windDirection, "currentManeuver": "tracking", "latitude": self.latitude, "longitude": self.longitude},
+                        "currentProcess": {"task": "Keep Away", "timeRemaining": self.timeRemaining, "timeToCompletion": 12},                                                  
                         }
         return overviewData
     
