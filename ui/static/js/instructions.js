@@ -48,3 +48,8 @@ function addBoundary(){
 	instructions.boundaries.push(newBoundary)
 	
 }
+
+function setChallenge(sel){
+	
+	instructions.challenge = sel.options[sel.selectedIndex].value; 
+}

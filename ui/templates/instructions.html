@@ -20,7 +20,7 @@ $def with (page)
 <div id="rightColumn">
     <div class="widget dataDisplayTableWidget">
         <h1>Challenge</h1>
-        <select>
+        <select id = "description" onchange = "setChallenge(this)">
 		  <option value="none">None</option>
 		  <option value="navigation">Navigation</option>
 		  <option value="station_keepping">Station Keeping</option>
