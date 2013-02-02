@@ -105,7 +105,7 @@ function MapWidget(){
 
         return marker;
     }
-    this.set_boat_location = function(lon,lat){
+    this.update_boat_location = function(lon,lat){
     	 lat = lat || this.default_lat;
          lon = lon || this.default_lon;
          
