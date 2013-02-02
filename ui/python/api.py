@@ -1,4 +1,6 @@
 import json
+import unittest
+from simulator import *
 
 
 """ Handles all data that is passed from the API 
@@ -7,15 +9,18 @@ import json
         between instances and will cause messy results that do not report any errors. 
 """
 class ApiControl:
+    interface = Simulator()
     def __init__(self):
         # Declare all public instance variables
         self.hardwareData = ""
+        # We need to update the interface with all current data. The interface class is static, but it may need to renew data
+        self.interface.update()
+        
+    def update(self):
+        self.interface.update()
         
     def getOverviewData(self):
-        overviewData =  {"connectionStatus": {"onlineOffline": "yes", "batteryLevel": "full", "gpsSatelliteNumber": 12, "gpsAccuracy": 2, "hardwareHealth": "good"},
-                        "telemetry": {"speedOverGround": 14, "windDirection": 10, "currentManeuver": "tracking", "latitude":49.27730, "longitude": -123.1860},
-                        "currentProcess": {"task": "Keep Away", "timeRemaining": 1400, "timeToCompletion": 12},                           
-                        }
+        overviewData = self.interface.getOverviewData()
         return overviewData
     
     def getOverviewDataAsJson(self):
@@ -35,6 +40,14 @@ class ApiControl:
     # forces data to be updated from the Control Unit
     def forceDataUpdate(self):
         pass
-
-        
     
+    
+    def setChallenge(self,name,arg):
+        # Arguments passed as jquery 
+        if name == "navigationChallenge":
+            navigationChallenge(arg)
+        elif name == "stationKeepingChallenge":
+            stationKeepingChallenge(arg)
+        elif name == "longDistanceChallenge":
+            longDistanceChallenge(arg)
+            

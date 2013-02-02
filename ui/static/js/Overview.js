@@ -35,6 +35,7 @@ function getlog(){
      	mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
     }
   );
+
 }
 
 

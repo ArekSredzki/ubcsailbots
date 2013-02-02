@@ -2,6 +2,7 @@
 import web
 from python.page import *
 from python.api import *
+import sys
 
 # Tell web.py where to find all the templates
 render = web.template.render('templates/')
@@ -90,15 +91,18 @@ class api:
                 ajaxReturn = ApiControl()
                 return ajaxReturn.getOverviewDataAsJson()
         except:
-            return 'error'
-        
+            #return 'error' is disabled for debug purposes. It is necessary to see the error messages.
+            print "Unexpected error:", sys.exc_info()[0]
+            raise
         # CASE of instructionsData Request
         try:
             if i.request == 'instructionsData':
                 ajaxReturn = ApiControl()
                 return ajaxReturn.getInstructionsDataAsJson()
         except:
-            return 'error'
+            #return 'error' is disabled for debug purposes. It is necessary to see the error messages
+            print "Unexpected error:", sys.exc_info()[0]
+            raise
     def POST(self):
         i = web.input()
         
