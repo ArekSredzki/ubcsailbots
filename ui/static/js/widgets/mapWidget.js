@@ -7,7 +7,7 @@ function MapWidget(){
     this.map; //complex object of type OpenLayers.Map
 
     this.vectors; //Layer for the vectors of the map
-    this.markers; //Layer for the markers of the class
+  
     this.boat; //Layer for the boat marker
     this.waypoints // Layer for the waypoints of the the class
     
@@ -93,31 +93,6 @@ function MapWidget(){
         drag.activate();
     }
 
-
-
-    //Adds a marker to the markers layer specified in the parameters in the location specified by the lon & lat parameters.
-    //Parameters: 
-    //           markers: The OpenLayers.Layer.Markers object to which the OpenLayers.Marker will be added.
-    //           lon: a float object describing the longitude of the marker to be added
-    //           Lat: a float object describing the latitude of the marker to be added
-    //           map: the OpenLayes.Map object
-    this.add_marker = function(lon,lat) {
-        lat = lat || this.default_lat;
-        lon = lon || this.default_lon;
-
-        //here we define all the properties of the icon for the marker
-   
-        var size = new OpenLayers.Size(21, 25);
-        var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
-        var icon = new OpenLayers.Icon("static/img/map/marker.png", size, offset);
-
-        var marker = new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
-        markers.addMarker(marker);
-
-        return marker;
-    }
-	
-	
     this.update_boat_location = function(lon,lat) {
         lat = lat || this.default_lat;
         lon = lon || this.default_lon;
@@ -135,14 +110,14 @@ function MapWidget(){
     
     this.update_waypoints = function(waypoints_list) {
                 
-        markers.clearMarkers();
-        
+        waypoints.clearMarkers();
+                
         var size = new OpenLayers.Size(21, 25);
        	var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
         var icon = new OpenLayers.Icon("static/img/map/marker.png", size, offset);
         
-        for(var i=0; i<waypoints_list.lenght; i++){
-          	var waypoint = new OpenLayers.Marker(new OpenLayers.LonLat(waypoints_list[i][0], waypoints_list[i][1]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
+        for(var i=0; i<waypoints_list.length; i++){
+          	var waypoint = new OpenLayers.Marker(new OpenLayers.LonLat(waypoints_list[i][1], waypoints_list[i][0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
         	waypoints.addMarker(waypoint);
         } 
                	      
