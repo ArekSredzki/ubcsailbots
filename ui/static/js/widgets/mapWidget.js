@@ -7,6 +7,7 @@ function MapWidget(){
     this.map; //complex object of type OpenLayers.Map
     this.vectors; //Layer for the vectors of the map
     this.markers; //Layer for the markers of the class
+    this.boat; //Layer for the boat marker
     
     this.draggablePointList; //A linkedList for storing the data of the draggable objects shown in the map.
     this.draggableBoundaryList; //A linkedList for storing the data of the draggableBounday objects in the map.
@@ -40,6 +41,10 @@ function MapWidget(){
     // we create a new vector layer and add it to the map
     vectors = new OpenLayers.Layer.Vector("Vector Layer");
     map.addLayer(vectors);
+    
+    //we create a new boat layer and add it to the map
+    boat = new OpenLayers.Layer.Markers("boat");
+    map.addLayer(boat);
 
 
     //It sets the center of the map to the coordinates specified by the Lon and Lat flot objects 
@@ -100,6 +105,22 @@ function MapWidget(){
 
         var marker = new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
         markers.addMarker(marker);
+
+        return marker;
+    }
+    
+    
+    
+    this.update_boat_location = function(lon,lat) {
+        lat = lat || this.default_lat;
+        lon = lon || this.default_lon;
+
+        var size = new OpenLayers.Size(21, 25);
+        var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
+        var icon = new OpenLayers.Icon("static/img/map/boat-icon.png", size, offset);
+
+        var marker = new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
+        boat.addMarker(marker);       
 
         return marker;
     }
