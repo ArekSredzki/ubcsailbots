@@ -2,6 +2,7 @@ function MapWidget(){
     // Start position for the map (hardcoded here for simplicity)
     this.default_lat = 49.27628;
     this.default_lon = -123.17561;
+    this.default_radius = 10000000;
     this.zoom = 12;
 
     this.map; //complex object of type OpenLayers.Map
@@ -124,6 +125,18 @@ function MapWidget(){
 
         var markerBoat = new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
         boat.addMarker(markerBoat);       
+    }
+    
+    this.add_boundary = function(lon,lat,radius){
+    	lat = lat || this.default_lat;
+    	lon = lon || this.default_lon;
+    	radius = radius || this.default_radius;
+    	var point = new OpenLayers.Geometry.Point(-123.17,49.2);
+    	console.log(lat)
+    	console.log(lon)
+    	var boundary = OpenLayers.Geometry.Polygon.createRegularPolygon(point,radius,30,10);
+    	var feature = new OpenLayers.Feature.Vector(boundary);  
+    	vectors.addFeatures([feature]);
     }
 
 }

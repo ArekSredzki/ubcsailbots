@@ -4,6 +4,7 @@ $(function () {
   mapWidget = new MapWidget();
   mapWidget.setMapCenter();
   mapWidget.add_marker();
+  mapWidget.add_boundary();
 })
 
   setInterval('getlog()',1000);
