@@ -7,15 +7,8 @@
 
 instructions = new Object();
 instructions.challenge = "NONE";
-waypoint = new Array();
-latitude = "+49.0000";
-waypoint[0] = latitude;
-longitude = "-123.0000";
-waypoint[1] = longitude;
-type = "GO_TO";
-waypoint[2] = type;
 instructions.waypoints = new Array();
-instructions.waypoints.push(waypoint);
+instructions.boundaries = new Array();
 
 $(function () {
   var mapWidget = new MapWidget();
@@ -36,4 +29,22 @@ function senddata(){
 	window.alert("Instructions sent");
 	
 	}); 
+}
+
+function addWaypoint(){
+	var newWaypoint = new Array()
+	newWaypoint [0] = 49.27628
+	newWaypoint [1] = -123.17561
+	newWaypoint [2] = "DEFAULT_TYPE"
+	instructions.waypoints.push(newWaypoint) 
+	
+}
+
+function addBoundary(){
+	var newBoundary = new Array()
+	newBoundary [0] = 49.27628
+	newBoundary [1] = -123.17561
+	newBoundary [2] = 10
+	instructions.boundaries.push(newBoundary)
+	
 }

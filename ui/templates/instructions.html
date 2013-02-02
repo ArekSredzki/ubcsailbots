@@ -4,9 +4,9 @@ $def with (page)
 
 <div id="leftColumn">
 	<FORM>
-	<INPUT type="button" value = "Create Waypoint" name = "button_wp">
+	<INPUT type="button" value = "Create Waypoint" name = "button_wp" onClick ="addWaypoint()">
 	
-	<INPUT type="button" value = "Create Boundary" name = "button_b">
+	<INPUT type="button" value = "Create Boundary" name = "button_b" onClick = "addBoundary()">
 	</FORM>
 	
 <div class="widget">
@@ -22,7 +22,7 @@ $def with (page)
         <h1>Challenge</h1>
         <dl>
             <dt>Currently Running</dt>
-            <dd id="pointToPoint">Point-to-Point</dd>
+            <dd id="pointToPoint">Point-to-Point</dd> 
         </dl>
     </div>
     
