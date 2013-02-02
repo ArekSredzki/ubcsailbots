@@ -9,12 +9,13 @@ function MapWidget(){
     this.vectors; //Layer for the vectors of the map
     this.markers; //Layer for the markers of the class
     this.boat; //Layer for the boat marker
+    this.waypoints // Layer for the waypoints of the the class
     
     
-    this.draggablePointList; //A linkedList for storing the data of the draggable objects shown in the map.
-    this.draggableBoundaryList; //A linkedList for storing the data of the draggableBounday objects in the map.
-    this.markerPointList; //A linkedList for storing the data of the marker objects shown in the map.
-    this.markerBoundaryList; //A linkedList for storing the data of the markerBoundary objects in the map.
+    //this.draggablePointList; //A linkedList for storing the data of the draggable objects shown in the map.
+    //this.draggableBoundaryList; //A linkedList for storing the data of the draggableBounday objects in the map.
+    //this.markerPointList; //A linkedList for storing the data of the marker objects shown in the map.
+    //this.markerBoundaryList; //A linkedList for storing the data of the markerBoundary objects in the map.
 
     //Initialise the 'map' object
     map = new OpenLayers.Map("map", {
@@ -47,6 +48,10 @@ function MapWidget(){
     //we create a new boat layer and add it to the map
     boat = new OpenLayers.Layer.Markers("Boat");
     map.addLayer(boat);
+    
+    //we create a new waypoints layer and add it to the map
+    waypoints = new OpenLayers.Layer.Markers("Waypoints");
+    map.addLayer(waypoints);
 
 
     //It sets the center of the map to the coordinates specified by the Lon and Lat flot objects 
@@ -111,7 +116,8 @@ function MapWidget(){
 
         return marker;
     }
-
+	
+	
     this.update_boat_location = function(lon,lat) {
         lat = lat || this.default_lat;
         lon = lon || this.default_lon;
@@ -125,5 +131,22 @@ function MapWidget(){
         var markerBoat = new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
         boat.addMarker(markerBoat);       
     }
+    
+    
+    this.update_waypoints = function(waypoints_list) {
+                
+        markers.clearMarkers();
+        
+        var size = new OpenLayers.Size(21, 25);
+       	var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
+        var icon = new OpenLayers.Icon("static/img/map/marker.png", size, offset);
+        
+        for(var i=0; i<waypoints_list.lenght; i++){
+          	var waypoint = new OpenLayers.Marker(new OpenLayers.LonLat(waypoints_list[i][0], waypoints_list[i][1]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
+        	waypoints.addMarker(waypoint);
+        } 
+               	      
+    }	
+    
 
 }
