@@ -172,8 +172,8 @@ class Simulator:
     
     def getOverviewData(self):
         overviewData =  {"connectionStatus": {"onlineOffline": self.onlineOffline, "batteryLevel": self.batteryLevel, "gpsSatelliteNumber": self.gpsSatelliteNumber, "gpsAccuracy": self.gpsAccuracy, "hardwareHealth": "good"},
-                        "telemetry": {"speedOverGround": self.speedOverGround, "windDirection": self.windDirection, "currentManeuver": "tracking", "latitude": 49.27, "longitude": -123.2},
-                        "currentProcess": {"task": "Keep Away", "timeRemaining": self.timeRemaining, "timeToCompletion": 12},                           
+                        "telemetry": {"speedOverGround": self.speedOverGround, "windDirection": self.windDirection, "currentManeuver": "tracking", "latitude": 49.27730, "longitude": -123.1860},
+                        "currentProcess": {"task": "Keep Away", "timeRemaining": self.timeRemaining, "timeToCompletion": 12},                                                  
                         }
         return overviewData
     

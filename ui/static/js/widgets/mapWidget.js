@@ -5,6 +5,7 @@ function MapWidget(){
     this.zoom = 12;
 
     this.map; //complex object of type OpenLayers.Map
+
     this.vectors; //Layer for the vectors of the map
     this.markers; //Layer for the markers of the class
     this.boat; //Layer for the boat marker
@@ -100,6 +101,7 @@ function MapWidget(){
         lon = lon || this.default_lon;
 
         //here we define all the properties of the icon for the marker
+   
         var size = new OpenLayers.Size(21, 25);
         var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
         var icon = new OpenLayers.Icon("static/img/map/marker.png", size, offset);
@@ -109,9 +111,7 @@ function MapWidget(){
 
         return marker;
     }
-    
-    
-    
+
     this.update_boat_location = function(lon,lat) {
         lat = lat || this.default_lat;
         lon = lon || this.default_lon;
@@ -124,7 +124,6 @@ function MapWidget(){
 
         var markerBoat = new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
         boat.addMarker(markerBoat);       
-
-        return markerBoat;
     }
+
 }
