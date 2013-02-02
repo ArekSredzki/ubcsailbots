@@ -117,7 +117,7 @@ function MapWidget(){
         var icon = new OpenLayers.Icon("static/img/map/marker.png", size, offset);
         
         for(var i=0; i<waypoints_list.length; i++){
-          	var waypoint = new OpenLayers.Marker(new OpenLayers.LonLat(waypoints_list[i][1], waypoints_list[i][0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
+          	var waypoint = new OpenLayers.Marker(new OpenLayers.LonLat(waypoints_list[i][1], waypoints_list[i][0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon.clone());
         	waypoints.addMarker(waypoint);
         } 
                	      
