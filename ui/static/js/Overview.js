@@ -7,7 +7,7 @@ $(function () {
   mapWidget.add_draggable();    
   mapWidget.add_marker(-70.66955, 42.59941);
   mapWidget.add_draggable(-70.66955, 42.59941);  
-  mapWidget.pdate_boat_location(-70.67955, 42.48941);
+  mapWidget.update_boat_location(-70.67955, 42.48941);
 })
 
   setInterval('getlog()',1000);
