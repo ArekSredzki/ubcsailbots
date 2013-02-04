@@ -3,7 +3,6 @@ var mapWidget;
 $(function () {
   mapWidget = new MapWidget();
   mapWidget.setMapCenter();
-  mapWidget.add_marker();
 })
 
   setInterval('getlog()',1000);
@@ -32,7 +31,7 @@ function getlog(){
 	        
 	     	mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
     }
-  );
+  });
 
 }
 
