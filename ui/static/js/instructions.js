@@ -9,9 +9,10 @@ instructions = new Object();
 instructions.challenge = "NONE";
 instructions.waypoints = new Array();
 instructions.boundaries = new Array();
+var mapWidget;
 
 $(function () {
-  var mapWidget = new MapWidget();
+  mapWidget = new MapWidget();
   mapWidget.setMapCenter();
   mapWidget.add_marker();
   mapWidget.add_draggable();    
@@ -37,7 +38,7 @@ function addWaypoint(){
 	newWaypoint [1] = -123.17561
 	newWaypoint [2] = "DEFAULT_TYPE"
 	instructions.waypoints.push(newWaypoint) 
-	
+	mapWidget.update_waypoints(instructions.waypoints);
 }
 
 function addBoundary(){
