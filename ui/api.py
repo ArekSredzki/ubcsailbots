@@ -1,7 +1,4 @@
 import json
-import unittest
-from simulator import *
-
 
 """ Handles all data that is passed from the API 
 *EDITING NOTE: Please make sure you understand how python handles classes before making any edits to this file. Mutable data types in 
@@ -9,8 +6,8 @@ from simulator import *
         between instances and will cause messy results that do not report any errors. 
 """
 class ApiControl:
-    interface = Simulator()
-    def __init__(self):
+    def __init__(self,interface):
+        self.interface = interface
         # Declare all public instance variables
         self.hardwareData = ""
         # We need to update the interface with all current data. The interface class is static, but it may need to renew data

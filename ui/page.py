@@ -44,7 +44,7 @@ class PageControl:
     
     metaTags = """
         <meta name="author" content="UBC Sailbots Team">
-        <link rel="shortcut icon" href="static/img/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="/ui/static/img/favicon.ico" type="image/x-icon">
         <meta http-equiv=Content-Type content="text/html; charset="utf-8">
         <meta name=keywords content="sailbots">
         <meta name="description" content="UBC Sailbots Control">
@@ -64,10 +64,10 @@ class PageControl:
     # Deleting a Javascript or CSS file include can be handled by directly accessing the relevant list, declaring a new instance 
     # OR (preferred method) simply good coding practice of not initially including unnecessary files
     def addJsInclude(self, fileName):
-        self.jsIncludes.append('<script src ="/static/js/' + fileName + '"></script>')
+        self.jsIncludes.append('<script src ="/ui/static/js/' + fileName + '"></script>')
     
     def addCssInclude(self, fileName):
-        self.cssIncludes.append('<link rel="stylesheet" type="text/css" href="/static/css/' + fileName + '" />')
+        self.cssIncludes.append('<link rel="stylesheet" type="text/css" href="/ui/static/css/' + fileName + '" />')
         
     # Declare methods for adding Javscript or CSS code blocks to the <head>. Note that there is no method to remove code blocks.
     # Deleting a Javascript or CSS code block can be handled by directly accessing the relevant list, declaring a new instance 
@@ -90,13 +90,13 @@ class PageControl:
     def format(self):
         self.jsIncludes = '\n'.join(self.jsIncludes) + '\n'
         self.jsHeadFunctions = '\n'.join(self.jsHeadFunctions) + '\n'
-        self.cssIncludes = '\n<link rel="stylesheet" type="text/css" href="/static/js/jquery/css/dark-hive/jquery-ui-1.9.1.custom.css" />\n' + '\n'.join(self.cssIncludes) + '\n'
+        self.cssIncludes = '\n<link rel="stylesheet" type="text/css" href="/ui/static/js/jquery/css/dark-hive/jquery-ui-1.9.1.custom.css" />\n' + '\n'.join(self.cssIncludes) + '\n'
         
         self.cssHeadStyles = '\n'.join(self.cssHeadStyles) + '\n'
         # Include widgets last to ensure that all the jQuery files are already loaded
         for widget in self.widgets[:]:
-            self.jsIncludes += '<script src ="static/js/widgets/' + widget + '.js"></script>\n'
-            self.cssIncludes += '<link rel="stylesheet" type="text/css" href="static/css/widgets/' + widget + '.css" />\n' 
+            self.jsIncludes += '<script src ="/ui/static/js/widgets/' + widget + '.js"></script>\n'
+            self.cssIncludes += '<link rel="stylesheet" type="text/css" href="/ui/static/css/widgets/' + widget + '.css" />\n' 
         # Create headBlock 
         self.headBlock = '<title>' + self.title + '</title>\n' + '\n' + self.jsIncludes + '\n' + self.cssIncludes + '\n' + self.jsHeadFunctions + '\n' + self.cssHeadStyles
         

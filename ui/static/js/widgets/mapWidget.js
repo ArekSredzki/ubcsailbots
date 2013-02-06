@@ -23,7 +23,7 @@ function MapWidget(){
         displayProjection: new OpenLayers.Projection("EPSG:4326")
     });
 
-    var tilesLayer = new OpenLayers.Layer.OSM("Local Tiles", "static/tiles/${z}/${x}/${y}.png", { numZoomLevels: 19, alpha: true, isBaseLayer: true });
+    var tilesLayer = new OpenLayers.Layer.OSM("Local Tiles", "/ui/static/tiles/${z}/${x}/${y}.png", { numZoomLevels: 19, alpha: true, isBaseLayer: true });
     map.addLayer(tilesLayer);
 
     // we create a new vector layer and add it to the map
