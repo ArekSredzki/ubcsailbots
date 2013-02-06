@@ -98,7 +98,7 @@ class PageControl:
             self.jsIncludes += '<script src ="/ui/static/js/widgets/' + widget + '.js"></script>\n'
             self.cssIncludes += '<link rel="stylesheet" type="text/css" href="/ui/static/css/widgets/' + widget + '.css" />\n' 
         # Create headBlock 
-        self.headBlock = '<title>' + self.title + '</title>\n' + '\n' + self.jsIncludes + '\n' + self.cssIncludes + '\n' + self.jsHeadFunctions + '\n' + self.cssHeadStyles
+        self.headBlock = '<title>' + self.title + '</title>\n' + self.metaTags + '\n' + self.jsIncludes + '\n' + self.cssIncludes + '\n' + self.jsHeadFunctions + '\n' + self.cssHeadStyles
         
 
         
