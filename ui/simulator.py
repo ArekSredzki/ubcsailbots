@@ -173,6 +173,7 @@ class Simulator:
     
     
     def getOverviewData(self):
+        self.update()
         overviewData =  {"connectionStatus": {"onlineOffline": self.onlineOffline, "batteryLevel": self.batteryLevel, "gpsSatelliteNumber": self.gpsSatelliteNumber, "gpsAccuracy": self.gpsAccuracy, "hardwareHealth": "good"},
                         "telemetry": {"speedOverGround": self.speedOverGround, "windDirection": self.windDirection, "currentManeuver": "tracking", "latitude": self.latitude, "longitude": self.longitude},
                         "currentProcess": {"task": "Keep Away", "timeRemaining": self.timeRemaining, "timeToCompletion": 12},                                                  
@@ -183,6 +184,7 @@ class Simulator:
         return json.dumps(self.getOverviewData())
     
     def getInstructionsData(self):
+        self.update()
         instructionData = {"challenge": {"currentlyRunning": "Point-to-Point"},
                            "waypoints": {"indicator": "123"},
                            "boundaries": {"indicator":[2,3,4]},
