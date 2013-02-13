@@ -10,9 +10,8 @@ $(function () {
   setInterval('getlog()',1000);
 
 function getlog(){
-    var pathname = window.location.pathname;
     var longitude;
-    $.get(pathname + "api?request=overviewData",function(data){
+    $.get("api?request=overviewData",function(data){
         var overviewData = jQuery.parseJSON(data)
         console.log(overviewData);
         $("#connectionStatus-onlineOfflineCell").text(overviewData.connectionStatus.onlineOffline)

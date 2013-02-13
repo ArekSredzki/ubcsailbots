@@ -3,7 +3,7 @@
  *
  *
  */
-
+var mapWidget;
 
 instructions = new Object();
 instructions.challenge = "NONE";
@@ -18,7 +18,7 @@ instructions.waypoints = new Array();
 instructions.waypoints.push(waypoint);
 
 $(function () {
-  var mapWidget = new MapWidget();
+  mapWidget = new MapWidget();
   mapWidget.setMapCenter();
   mapWidget.add_marker();
   mapWidget.add_draggable();    
@@ -37,3 +37,49 @@ function senddata(){
 	
 	}); 
 }
+
+setInterval('getlog()',1000);
+
+function getlog(){
+    var telemetryData = new Array();
+    
+    $.get("api?request=overviewData",function(data){
+        var overviewData = jQuery.parseJSON(data)
+        console.log(overviewData);
+        
+        telemetryData[0] = overviewData.telemetry.latitude;
+   		telemetryData[1] = overviewData.telemetry.longitude;
+		
+		mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
+	  }
+	);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
