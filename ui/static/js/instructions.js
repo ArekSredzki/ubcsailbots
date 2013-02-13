@@ -3,7 +3,8 @@
  *
  *
  */
-
+var mapWidget;
+var overviewData;
 
 instructions = new Object();
 instructions.challenge = "NONE";
@@ -14,9 +15,22 @@ var mapWidget;
 $(function () {
   mapWidget = new MapWidget();
   mapWidget.setMapCenter();
-  mapWidget.add_marker();
-  mapWidget.add_draggable();    
+  setInterval('getlog()',1000);
 })
+
+
+function getlog(){
+    
+    $.ajax({
+        url: "api?request=overviewData",
+        type: 'GET',
+        dataType: "json",
+        success: function (data) {
+        	overviewData=data;
+			mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
+	  }
+	});
+}
 
 function senddata(){
 	var postdata = JSON.stringify(instructions);
@@ -31,6 +45,7 @@ function senddata(){
 	
 	}); 
 }
+
 
 function addWaypoint(){
 	var newWaypoint = new Array()
