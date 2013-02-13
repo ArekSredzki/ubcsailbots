@@ -1,11 +1,11 @@
 #import web.py module
-import web
-from python.page import *
-from python.api import *
+from ui import web
+from ui.page import *
 import sys
-
+import os
 # Tell web.py where to find all the templates
-render = web.template.render('templates/')
+
+render = web.template.render('ui/templates/')
 
 # Map our URLs
 urls = (
@@ -15,7 +15,8 @@ urls = (
     '/health', 'health',
     '/api', 'api',
     '/debug/getlog','getlog',
-    '/shutdown', 'shutdown', 
+    '/shutdown', 'shutdown',
+    '/static', 'static', 
 )
 
 # Declare our classes for the case of each URL mapping
@@ -88,8 +89,7 @@ class api:
         # CASE of overviewData Request
         try:
             if i.request == 'overviewData':
-                ajaxReturn = ApiControl()
-                return ajaxReturn.getOverviewDataAsJson()
+                return apiControl.getOverviewDataAsJson()
         except:
             #return 'error' is disabled for debug purposes. It is necessary to see the error messages.
             print "Unexpected error:", sys.exc_info()[0]
@@ -97,8 +97,7 @@ class api:
         # CASE of instructionsData Request
         try:
             if i.request == 'instructionsData':
-                ajaxReturn = ApiControl()
-                return ajaxReturn.getInstructionsDataAsJson()
+                return apiControl.getInstructionsDataAsJson()
         except:
             #return 'error' is disabled for debug purposes. It is necessary to see the error messages
             print "Unexpected error:", sys.exc_info()[0]
@@ -123,8 +122,5 @@ class shutdown:
 class RequestHandler():
     def POST():
         data = web.data() # you can get data use this method
-        
-# Run Server Application    
-if __name__ == "__main__":
-    app = web.application(urls, globals())
-    app.run()
+
+app = web.application(urls, globals())

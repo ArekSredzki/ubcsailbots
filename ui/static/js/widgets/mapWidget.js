@@ -6,17 +6,10 @@ function MapWidget(){
     this.zoom = 14;
 
     this.map; //complex object of type OpenLayers.Map
-
-    this.vectors; //Layer for the vectors of the map
-    this.markers; //Layer for the markers of the class
-    this.boat; //Layer for the boat marker
-    
-    
-    this.draggablePointList; //A linkedList for storing the data of the draggable objects shown in the map.
-    this.draggableBoundaryList; //A linkedList for storing the data of the draggableBounday objects in the map.
-    this.markerPointList; //A linkedList for storing the data of the marker objects shown in the map.
-    this.markerBoundaryList; //A linkedList for storing the data of the markerBoundary objects in the map.
-
+    this.vectorLayer; //Layer for the vectorLayer of the map  
+    this.boatLayer; //Layer for the boat marker
+    this.waypointsLayer; // Layer for the waypoints of the the class
+  
     //Initialise the 'map' object
     map = new OpenLayers.Map("map", {
         controls: [
@@ -31,31 +24,22 @@ function MapWidget(){
         displayProjection: new OpenLayers.Projection("EPSG:4326")
     });
 
-    // This is the layer that uses the locally stored tiles
-    var newLayer = new OpenLayers.Layer.OSM("Local Tiles", "static/tiles/${z}/${x}/${y}.png", { numZoomLevels: 19, alpha: true, isBaseLayer: true });
-    map.addLayer(newLayer);
-    // This is the end of the layer
-
-
-    //we create a new marker layer and add it to the map
-    markers = new OpenLayers.Layer.Markers("Markers");
-    map.addLayer(markers);
+    var tilesLayer = new OpenLayers.Layer.OSM("Local Tiles", "/ui/static/tiles/${z}/${x}/${y}.png", { numZoomLevels: 19, alpha: true, isBaseLayer: true });
+    map.addLayer(tilesLayer);
 
     // we create a new vector layer and add it to the map
-    vectors = new OpenLayers.Layer.Vector("Vector Layer");
-    map.addLayer(vectors);
+    vectorLayer = new OpenLayers.Layer.Vector("Boundaries");
+    map.addLayer(vectorLayer);
     
     //we create a new boat layer and add it to the map
-    boat = new OpenLayers.Layer.Markers("Boat");
-    map.addLayer(boat);
+    boatLayer = new OpenLayers.Layer.Markers("Boat");
+    map.addLayer(boatLayer);
+    
+    //we create a new waypoints layer and add it to the map
+    waypointsLayer = new OpenLayers.Layer.Markers("Waypoints");
+    map.addLayer(waypointsLayer);
 
 
-    //It sets the center of the map to the coordinates specified by the Lon and Lat flot objects 
-    //parameters: 
-    //            map: the OpenLayes.Map object to which the OSM layer will be added. 
-    //            lon: a float object describing the longitude of the center of the map
-    //            Lat: a float object describing the latitude of the center of the map
-    //            zoom: a integer object describing the zoom level to which the map will be set after this function is called
 	this.setMapCenter = function(lon,lat) {
 	    lat = lat || this.default_lat;
 	    lon = lon || this.default_lon;
@@ -64,12 +48,7 @@ function MapWidget(){
     }
 
 
-    //It adds a draggable feature to the map specified in the parameters
-    //parameters: 
-    //            vectors: the OpenLayers.Layer.Vector object to which the dragable feature will be added
-    //            lon: a float object describing the longitude of the location of the draggable feature
-    //            Lat: a float object describing the latitude of the location of the draggable feature
-    //            map: the OpenLayes.Map object to which the draggable feature will be added.
+ 
     this.add_draggable = function(lon,lat) {
         lat = lat || this.default_lat;
         lon = lon || this.default_lon;
@@ -78,8 +57,8 @@ function MapWidget(){
                 
         var location = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
         var point = new OpenLayers.Geometry.Point(location.lon, location.lat);
-        vectors.addFeatures([new OpenLayers.Feature.Vector(point)]);
-        var drag = new OpenLayers.Control.DragFeature(vectors, {
+        vectorLayer.addFeatures([new OpenLayers.Feature.Vector(point)]);
+        var drag = new OpenLayers.Control.DragFeature(vectorLayer, {
             autoActivate: true,
             onComplete: function () {                  //this function is called when the drag feature is released                 
                 alert(message)
@@ -89,45 +68,37 @@ function MapWidget(){
         drag.activate();
     }
 
-
-
-    //Adds a marker to the markers layer specified in the parameters in the location specified by the lon & lat parameters.
-    //Parameters: 
-    //           markers: The OpenLayers.Layer.Markers object to which the OpenLayers.Marker will be added.
-    //           lon: a float object describing the longitude of the marker to be added
-    //           Lat: a float object describing the latitude of the marker to be added
-    //           map: the OpenLayes.Map object
-    this.add_marker = function(lon,lat) {
-        lat = lat || this.default_lat;
-        lon = lon || this.default_lon;
-
-        //here we define all the properties of the icon for the marker
-   
-        var size = new OpenLayers.Size(21, 25);
-        var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
-        var icon = new OpenLayers.Icon("static/img/map/marker.png", size, offset);
-
-        var marker = new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
-        markers.addMarker(marker);
-
-        return marker;
-    }
-
     this.update_boat_location = function(lon,lat) {
         lat = lat || this.default_lat;
         lon = lon || this.default_lon;
         
-        boat.clearMarkers();
+        boatLayer.clearMarkers();
         
         var size = new OpenLayers.Size(21, 25);
         var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
         var icon = new OpenLayers.Icon("static/img/map/boat-icon.png", size, offset);
 
         var markerBoat = new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
-        boat.addMarker(markerBoat);       
+        boatLayer.addMarker(markerBoat);       
     }
     
-    this.add_boundary = function(lon,lat,radius){
+ 
+    this.update_waypoints = function(waypoints_list) {
+                
+        waypointsLayer.clearMarkers();
+                
+        var size = new OpenLayers.Size(21, 25);
+       	var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
+        var icon = new OpenLayers.Icon("static/img/map/marker.png", size, offset);
+        
+        for(var i=0; i<waypoints_list.length; i++){
+          	var markerWaypoint = new OpenLayers.Marker(new OpenLayers.LonLat(waypoints_list[i][1], waypoints_list[i][0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon.clone());
+        	waypointsLayer.addMarker(markerWaypoint);
+        } 
+               	      
+    }	
+    
+   this.add_boundary = function(lon,lat,radius){
     	lat = lat || this.default_lat;
     	lon = lon || this.default_lon;
     	radius = radius || this.default_radius;
@@ -137,5 +108,5 @@ function MapWidget(){
     	var feature = new OpenLayers.Feature.Vector(boundary);  
     	vectors.addFeatures([feature]);
     }
-
+    
 }

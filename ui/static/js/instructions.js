@@ -4,25 +4,33 @@
  *
  */
 var mapWidget;
+var overviewData;
 
 instructions = new Object();
 instructions.challenge = "NONE";
-waypoint = new Array();
-latitude = "+49.0000";
-waypoint[0] = latitude;
-longitude = "-123.0000";
-waypoint[1] = longitude;
-type = "GO_TO";
-waypoint[2] = type;
 instructions.waypoints = new Array();
-instructions.waypoints.push(waypoint);
+instructions.boundaries = new Array();
+var mapWidget;
 
 $(function () {
   mapWidget = new MapWidget();
   mapWidget.setMapCenter();
-  mapWidget.add_marker();
-  mapWidget.add_draggable();    
+  setInterval('getlog()',1000);
 })
+
+
+function getlog(){
+    
+    $.ajax({
+        url: "api?request=overviewData",
+        type: 'GET',
+        dataType: "json",
+        success: function (data) {
+        	overviewData=data;
+			mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
+	  }
+	});
+}
 
 function senddata(){
 	var postdata = JSON.stringify(instructions);
@@ -38,48 +46,26 @@ function senddata(){
 	}); 
 }
 
-setInterval('getlog()',1000);
 
-function getlog(){
-    var telemetryData = new Array();
-    
-    $.get("api?request=overviewData",function(data){
-        var overviewData = jQuery.parseJSON(data)
-        console.log(overviewData);
-        
-        telemetryData[0] = overviewData.telemetry.latitude;
-   		telemetryData[1] = overviewData.telemetry.longitude;
-		
-		mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
-	  }
-	);
+function addWaypoint(){
+	var newWaypoint = new Array()
+	newWaypoint [0] = 49.27628
+	newWaypoint [1] = -123.17561
+	newWaypoint [2] = "DEFAULT_TYPE"
+	instructions.waypoints.push(newWaypoint) 
+	mapWidget.update_waypoints(instructions.waypoints);
 }
 
+function addBoundary(){
+	var newBoundary = new Array()
+	newBoundary [0] = 49.27628
+	newBoundary [1] = -123.17561
+	newBoundary [2] = 10
+	instructions.boundaries.push(newBoundary)
+	
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+function setChallenge(sel){
+	
+	instructions.challenge = sel.options[sel.selectedIndex].value; 
+}
