@@ -8,7 +8,7 @@ $(function() {
     var canvasWidth = canvas.width();
     var canvasHeight = canvas.height();    
     
-    canvas.drawArc({
+    /*canvas.drawArc({
     	layer: true,
     	group: "HUD",
         fillStyle: "lightgray",
@@ -23,7 +23,7 @@ $(function() {
 	$("canvas").animateLayerGroup("boat", {
 
 	  //rotate: "+=90"
-	});
+	});*/
 });
 
 function drawBoat(canvas, boatAngle, sailAngle) {
