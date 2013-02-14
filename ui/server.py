@@ -1,6 +1,6 @@
 #import web.py module
-from ui import web
-from ui.page import *
+import web
+from page import *
 import sys
 import os
 # Tell web.py where to find all the templates

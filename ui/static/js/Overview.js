@@ -8,9 +8,9 @@ $(function () {
   setInterval('getlog()',1000);
 
 function getlog(){
-	
+
 	    $.ajax({
-        url: window.location.pathname + "api?request=overviewData",
+        url: "api?request=overviewData",
         type: 'GET',
         dataType: "json",
         success: function (overviewData) {
