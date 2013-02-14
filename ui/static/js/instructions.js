@@ -49,8 +49,8 @@ function senddata(){
 
 function addWaypoint(){
 	var newWaypoint = new Array()
-	newWaypoint [0] = 49.27628
-	newWaypoint [1] = -123.17561
+	newWaypoint [0] = overviewData.telemetry.latitude
+	newWaypoint [1] = overviewData.telemetry.longitude
 	newWaypoint [2] = "DEFAULT_TYPE"
 	instructions.waypoints.push(newWaypoint) 
 	mapWidget.update_waypoints(instructions.waypoints);
@@ -58,8 +58,8 @@ function addWaypoint(){
 
 function addBoundary(){
 	var newBoundary = new Array()
-	newBoundary [0] = 49.27628
-	newBoundary [1] = -123.17561
+	newBoundary [0] = overviewData.telemetry.latitude
+	newBoundary [1] = overviewData.telemetry.longitude
 	newBoundary [2] = 10
 	instructions.boundaries.push(newBoundary)
 	
