@@ -1,10 +1,12 @@
 $def with (page)
 
-<div id="compassWidget" class="widget">
-    <center>
-        <canvas id="compassWidgetCanvas" width="500px" height="275px">
-        </canvas>
-    </center>
+<div id="compassWidget" class="widget" padding="0px" style="position:relative;">
+	<center>
+		<!-- KinetJS builds canvasses inside a single div. This is problematic in terms of layout for our two columns
+			A way to fix this is to move the div to the left by half of its width
+		-->
+			<div id="compassCanvas" style="position:relative;top:0px;left:-250px"></div>
+	</center>
 </div>
 
 <script>

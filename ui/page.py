@@ -29,7 +29,8 @@ class PageControl:
         # These files will be included in absolutely every web page as part of the UI
         self.addJsInclude('jquery/js/jquery-1.8.2.js')
         self.addJsInclude('jquery/js/jquery-ui-1.9.1.custom.js')
-        self.addJsInclude('jquery/js/jcanvas-6.0.js')
+        self.addJsInclude('kinetic-v4.3.3.min.js')
+        #self.addJsInclude('fabric-0.9.15.min.js')
         self.addJsInclude('base.js')
         
         self.addJsInclude('OpenLayers.js')
