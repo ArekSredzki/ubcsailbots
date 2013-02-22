@@ -1,57 +1,137 @@
 console.info('compassWidget.js loaded')
 
+var boatLength = 200;
+var boatWidth = 50;
+var sailLength = (boatLength/2)*1.05;
+
+var stage;
+var boatLayer;
+var sailLayer;
+var windWedge;
+var windLayer;
+var sailboat;
+var sailLine;
+var windDirection;
+
+
 
 $(function() {
 	
-	var stage = new Kinetic.Stage({
+	stage = new Kinetic.Stage({
         container: 'compassCanvas',
         width: 500,
-        height: 350
+        height: 400
       });
 
-      var layer = new Kinetic.Layer();
+	 var circleLayer = new Kinetic.Layer();
+
+      var circle = new Kinetic.Circle({
+        x: stage.getWidth() / 2,
+        y: stage.getHeight() / 2,
+        radius: (boatLength/2)*1.1,
+        fill: 'silver',
+        stroke: 'black',
+        strokeWidth: 1,
+        opacity: 0.5
+      	});
+
+      // add the shape to the layer
+      circleLayer.add(circle);
+
+
+
+      boatLayer = new Kinetic.Layer();
       
       var angularSpeed = Math.PI / 2;
       
       var imageObj = new Image();
       imageObj.onload = function() {
-        var sailboat = new Kinetic.Image({
+        sailboat = new Kinetic.Image({
           x: stage.getWidth()/2,
           y: stage.getHeight()/2,
           image: imageObj,
-          width: 50,
-          height: 200,
+          width: boatWidth,
+          height: boatLength,
           offset: [25, 100],
           rotation: 0
         });
 		
         // add the shape to the layer
-        layer.add(sailboat);
+        boatLayer.add(sailboat);
 
-        // add the layer to the stage
-        stage.add(layer);
+		stage.add(boatLayer);       
         
-        var anim = new Kinetic.Animation(function(frame) {
+        /*
+         * Don't need an animation
+         var anim = new Kinetic.Animation(function(frame) {
     			var angleDiff = frame.timeDiff * angularSpeed / 1000;
                 sailboat.rotateDeg(angleDiff*10);
-  		}, layer);
-  		anim.start();
+  		}, boatLayer);
+  		anim.start();*/
       };
       imageObj.src = 'ui/static/img/svg/sailboat.png';
+      
+      windLayer = new Kinetic.Layer();
+      
+      windWedge = new Kinetic.Wedge({
+        x: stage.getWidth() / 2,
+        y: stage.getHeight() / 2,
+        radius: 50,
+        angleDeg: 40,
+        fill: 'white',
+        stroke: 'black',
+        strokeWidth: 2,
+        offset: [-130,-40],
+        rotationDeg: -90-20
+      });
+
+      // add the shape to the layer
+      windLayer.add(windWedge);
+
+      sailLayer = new Kinetic.Layer();
+      
+      var sailLine = new Kinetic.Line({
+        points: [stage.getWidth()/2, stage.getHeight()/2, stage.getWidth()/2+sailLength, stage.getHeight()/2],
+        stroke: 'navy',
+        strokeWidth: 5,
+        lineCap: 'round',
+        lineJoin: 'round'
+      });
+      
+      sailLayer.add(sailLine);
+     
+      stage.add(circleLayer);
+      stage.add(boatLayer);
+      stage.add(sailLayer);
+      stage.add(windLayer);
+      
+      // We want the sail at the top
+      sailLayer.moveToTop();
+      layer.draw();
 });
 
-function drawBoat(stage, layer) {
-    var boatWidth = 40;
-    var boatLength= 175; 
-    var bowRadius = boatWidth/2;
-    var boatStrokeWidth = 3;
-    var sailLength = boatLength*0.7;
-    
-    
+
+function setSheet(sheetPercent) {
+	/* Right now we are going to assume that 100% sheet corresponds to 0 degree angle
+	 * 0% sheet corresponds to a 90 degree angle
+	 */
 }
 
-function drawSailRig(canvasWidth, canvasHeight, boomAngle) {
+function setBoatHeading(degreeHeading) {
+	sailboat.transitionTo({
+            rotation: Math.PI * degreeHeading / 180,
+            duration:1
+    });
 }
+
+function setWindDirection(degreeWindDirection) {
+	windDirection = degreeWindDirection;
+	windWedge.transitionTo({
+            rotation: Math.PI * (-90-20+degreeWindDirection) / 180,
+            duration:1
+    });
+}
+
 
 
 
