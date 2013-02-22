@@ -5,6 +5,7 @@ var boatWidth = 50;
 var sailLength = (boatLength/2)*1.05;
 
 var stage;
+var boatGroup;
 var boatLayer;
 var sailLayer;
 var windWedge;
@@ -23,7 +24,7 @@ $(function() {
         height: 400
       });
 
-	 var circleLayer = new Kinetic.Layer();
+	 circleLayer = new Kinetic.Layer();
 
       var circle = new Kinetic.Circle({
         x: stage.getWidth() / 2,
@@ -38,8 +39,6 @@ $(function() {
       // add the shape to the layer
       circleLayer.add(circle);
 
-
-
       boatLayer = new Kinetic.Layer();
       
       var angularSpeed = Math.PI / 2;
@@ -47,8 +46,6 @@ $(function() {
       var imageObj = new Image();
       imageObj.onload = function() {
         sailboat = new Kinetic.Image({
-          x: stage.getWidth()/2,
-          y: stage.getHeight()/2,
           image: imageObj,
           width: boatWidth,
           height: boatLength,
@@ -56,18 +53,28 @@ $(function() {
           rotation: 0
         });
 		
-        // add the shape to the layer
-        boatLayer.add(sailboat);
 
+        
+       	var sailLine = new Kinetic.Line({
+        	points:[0,-20,sailLength,-20],
+        	stroke: 'navy',
+        	strokeWidth: 5,
+        	lineCap: 'round',
+        	lineJoin: 'round'
+      	});
+      	
+      	
+      	boatGroup = new Kinetic.Group({
+      		x: stage.getWidth()/2,
+      		y: stage.getHeight()/2
+      	});
+      	
+      	boatGroup.add(sailboat);
+      	boatGroup.add(sailLine);
+      	
+      	boatLayer.add(boatGroup)
 		stage.add(boatLayer);       
         
-        /*
-         * Don't need an animation
-         var anim = new Kinetic.Animation(function(frame) {
-    			var angleDiff = frame.timeDiff * angularSpeed / 1000;
-                sailboat.rotateDeg(angleDiff*10);
-  		}, boatLayer);
-  		anim.start();*/
       };
       imageObj.src = 'ui/static/img/svg/sailboat.png';
       
@@ -88,21 +95,7 @@ $(function() {
       // add the shape to the layer
       windLayer.add(windWedge);
 
-      sailLayer = new Kinetic.Layer();
-      
-      var sailLine = new Kinetic.Line({
-        points: [stage.getWidth()/2, stage.getHeight()/2, stage.getWidth()/2+sailLength, stage.getHeight()/2],
-        stroke: 'navy',
-        strokeWidth: 5,
-        lineCap: 'round',
-        lineJoin: 'round'
-      });
-      
-      sailLayer.add(sailLine);
-     
       stage.add(circleLayer);
-      stage.add(boatLayer);
-      stage.add(sailLayer);
       stage.add(windLayer);
       
       // We want the sail at the top
@@ -118,7 +111,7 @@ function setSheet(sheetPercent) {
 }
 
 function setBoatHeading(degreeHeading) {
-	sailboat.transitionTo({
+	boatGroup.transitionTo({
             rotation: Math.PI * degreeHeading / 180,
             duration:1
     });
