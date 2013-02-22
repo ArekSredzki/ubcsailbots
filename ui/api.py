@@ -11,23 +11,16 @@ class ApiControl:
         # Declare all public instance variables
         self.hardwareData = ""
         # We need to update the interface with all current data. The interface class is static, but it may need to renew data
-        self.interface.update()
-        
-    def update(self):
-        self.interface.update()
-        
+
     def getOverviewData(self):
-        overviewData = self.interface.getOverviewData()
+        overviewData = self.interface.getData()
         return overviewData
     
     def getOverviewDataAsJson(self):
         return json.dumps(self.getOverviewData())
     
     def getInstructionsData(self):
-        instructionData = {"challenge": {"currentlyRunning": "Point-to-Point"},
-                           "waypoints": {"indicator": "123"},
-                           "boundaries": {"indicator":[2,3,4]},
-                           }
+        instructionData = self.interface.getInstructions()
         return instructionData
     
     def getInstructionsDataAsJson(self):
