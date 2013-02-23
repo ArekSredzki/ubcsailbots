@@ -57,6 +57,7 @@ function CompassWidget() {
 	      
 	      var imageObj = new Image();
 	      imageObj.onload = function() {
+	      	
 	        sailboat = new Kinetic.Image({
 	          image: imageObj,
 	          width: boatWidth,
