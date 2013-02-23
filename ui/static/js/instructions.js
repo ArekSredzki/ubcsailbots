@@ -67,9 +67,9 @@ function addBoundary(){
 	var newBoundary = new Array()
 	newBoundary [0] = overviewData.telemetry.latitude
 	newBoundary [1] = overviewData.telemetry.longitude
-	newBoundary [2] = 10
+	newBoundary [2] = 50 //radius
 	instructions.boundaries.push(newBoundary)
-	
+	mapWidget.update_boundaries(instructions.boundaries);
 }
 
 function setChallenge(sel){

@@ -6,9 +6,9 @@ function MapWidget(){
     this.zoom = 14;
 
     this.map; //complex object of type OpenLayers.Map
-    this.vectorLayer; //Layer for the vectorLayer of the map  
     this.boatLayer; //Layer for the boat marker
     this.waypointsLayer; // Layer for the waypoints of the the class
+    this.boundariesLayer; // Layer for the boundaries of the class 
   
     //Initialise the 'map' object
     map = new OpenLayers.Map("map", {
@@ -27,18 +27,17 @@ function MapWidget(){
     var tilesLayer = new OpenLayers.Layer.OSM("Local Tiles", "/ui/static/tiles/${z}/${x}/${y}.png", { numZoomLevels: 19, alpha: true, isBaseLayer: true });
     map.addLayer(tilesLayer);
 
-    // we create a new vector layer and add it to the map
-    vectorLayer = new OpenLayers.Layer.Vector("Boundaries");
-    map.addLayer(vectorLayer);
-    
     //we create a new boat layer and add it to the map
     boatLayer = new OpenLayers.Layer.Markers("Boat");
-
     map.addLayer(boatLayer);
     
     //we create a new waypoints layer and add it to the map
     waypointsLayer = new OpenLayers.Layer.Markers("Waypoints");
     map.addLayer(waypointsLayer);
+    
+    //we create a new boundarys layer and add it to the map
+    boundariesLayer = new OpenLayers.Layer.Vector("Boundaries");
+    map.addLayer(boundariesLayer);
 
 
 	this.setMapCenter = function(lon,lat) {
@@ -100,19 +99,23 @@ function MapWidget(){
         for(var i=0; i<waypoints_list.length; i++){
           	var markerWaypoint = new OpenLayers.Marker(new OpenLayers.LonLat(waypoints_list[i][1], waypoints_list[i][0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon.clone());
         	waypointsLayer.addMarker(markerWaypoint);
-        } 
-               	      
-    }	
-    
-   this.add_boundary = function(lon,lat,radius){
-    	lat = lat || this.default_lat;
-    	lon = lon || this.default_lon;
-    	radius = radius || this.default_radius;
-    	var location = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-        var point = new OpenLayers.Geometry.Point(location.lon, location.lat);
-    	var boundary = OpenLayers.Geometry.Polygon.createRegularPolygon(point,radius,30,10);
-    	var feature = new OpenLayers.Feature.Vector(boundary);  
-    	vectors.addFeatures([feature]);
+        }                	      
     }
+          
+   	this.update_boundaries = function(boundaries_list){
+    	
+    	boundariesLayer.removeAllFeatures();
+    	
+    	for(var i=0; i<boundaries_list.length; i++){
+    		var location = new OpenLayers.LonLat(boundaries_list[i][1], boundaries_list[i][0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+          	var point = new OpenLayers.Geometry.Point(location.lon, location.lat);
+         	var boundary = OpenLayers.Geometry.Polygon.createRegularPolygon(point,boundaries_list[i][2],30,10);
+          	var feature = new OpenLayers.Feature.Vector(boundary);
+          	boundariesLayer.addFeatures([feature]);
+        }
+               
+    }
+    
+    
     
 }
