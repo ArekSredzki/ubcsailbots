@@ -1,3 +1,3 @@
-[submodule "ubcsailbots.control"]
-	path = ubcsailbots.control
+[submodule "control"]
+	path = control
 	url = git@git.assembla.com:ubcsailbots.control.git
