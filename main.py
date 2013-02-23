@@ -1,7 +1,7 @@
-import UI.server
+import ui.server
 import thread
-from UI.api import ApiControl
-from UI.simulator import Simulator
+from ui.api import ApiControl
+from ui.simulator import Simulator
 interface = Simulator()
 UI.server.apiControl = ApiControl(interface)
-thread.start_new_thread(UI.server.app.run())
+thread.start_new_thread(ui.server.app.run())
