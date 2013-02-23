@@ -172,7 +172,7 @@ class Simulator:
     
     
     
-    def getOverviewData(self):
+    def getData(self):
         self.update()
         overviewData =  {"connectionStatus": {"onlineOffline": self.onlineOffline, "batteryLevel": self.batteryLevel, "gpsSatelliteNumber": self.gpsSatelliteNumber, "gpsAccuracy": self.gpsAccuracy, "hardwareHealth": "good"},
                         "telemetry": {"speedOverGround": self.speedOverGround, "windDirection": self.windDirection, "currentManeuver": "tracking", "latitude": self.latitude, "longitude": self.longitude},
@@ -181,9 +181,9 @@ class Simulator:
         return overviewData
     
     def getOverviewDataAsJson(self):
-        return json.dumps(self.getOverviewData())
+        return json.dumps(self.getData())
     
-    def getInstructionsData(self):
+    def getInstructions(self):
         self.update()
         instructionData = {"challenge": {"currentlyRunning": "Point-to-Point"},
                            "waypoints": {"indicator": "123"},
@@ -192,7 +192,7 @@ class Simulator:
         return instructionData
     
     def getInstructionsDataAsJson(self):
-        return json.dumps(self.getInstructionsData())
+        return json.dumps(self.getInstructions())
         
     
     # forces data to be updated from the Control Unit
