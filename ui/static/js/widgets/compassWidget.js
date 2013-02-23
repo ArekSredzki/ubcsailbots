@@ -12,7 +12,9 @@ var windWedge;
 var windLayer;
 var sailboat;
 var sailMast;
-var windDirection;
+var windHeading = 0;
+var boatHeading = 0;
+var sheetPercentHeading = 100;
 
 
 
@@ -49,18 +51,19 @@ $(function() {
           image: imageObj,
           width: boatWidth,
           height: boatLength,
-          offset: [25, 100],
+          offset: [boatWidth/2, boatLength/2],
           rotation: 0
         });
 		
 
         
-       	var sailMast = new Kinetic.Line({
-        	points:[0,-20,sailLength,-20],
+       	sailMast = new Kinetic.Line({
+        	points:[0,0,0,sailLength],
         	stroke: 'navy',
         	strokeWidth: 5,
         	lineCap: 'round',
-        	lineJoin: 'round'
+        	lineJoin: 'round',
+        	offset: [0,0]
       	});
       	
       	
@@ -97,10 +100,6 @@ $(function() {
 
       stage.add(circleLayer);
       stage.add(windLayer);
-      
-      // We want the sail at the top
-      sailLayer.moveToTop();
-      layer.draw();
 });
 
 
@@ -108,21 +107,42 @@ function setSheet(sheetPercent) {
 	/* Right now we are going to assume that 100% sheet corresponds to 0 degree angle
 	 * 0% sheet corresponds to a 90 degree angle
 	 */
+	var sheetDegrees;
+	// Store the value we received in our global variable
+	sheetPercentHeading = sheetPercent;
+	if (sheetPercent > 100)
+		sheetPercent = 100;
+	else if (sheetPercent < 0)
+		sheetPercent = 0;
+	sheetDegrees = 90*(1-0.01*sheetPercent);
+	
+	if((windHeading - boatHeading) > 0 && (windHeading - boatHeading) > 180)
+		sheetDegrees = (-1)*sheetDegrees;
+		
+	sailMast.transitionTo({
+            rotation: Math.PI * sheetDegrees / 180,
+            duration:1
+    });
 }
 
 function setBoatHeading(degreeHeading) {
+	boatHeading = degreeHeading;
 	boatGroup.transitionTo({
             rotation: Math.PI * degreeHeading / 180,
             duration:1
     });
+    // Update sheet because the wind may have crossed the transom
+    setSheet(sheetPercentHeading);
 }
 
 function setWindDirection(degreeWindDirection) {
-	windDirection = degreeWindDirection;
+	windHeading = degreeWindDirection;
 	windWedge.transitionTo({
             rotation: Math.PI * (-90-20+degreeWindDirection) / 180,
             duration:1
     });
+    // Update sheet because the wind may have crossed the transom
+    setSheet(sheetPercentHeading);
 }
 
 
