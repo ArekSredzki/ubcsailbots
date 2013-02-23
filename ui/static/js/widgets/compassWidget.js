@@ -3,6 +3,8 @@ console.info('compassWidget.js loaded')
 var boatLength = 200;
 var boatWidth = 50;
 var sailLength = (boatLength/2)*1.05;
+var fontColor = '555555';
+var fontSize = 18;
 
 var stage;
 var boatGroup;
@@ -10,11 +12,19 @@ var boatLayer;
 var sailLayer;
 var windWedge;
 var windLayer;
+var textLayer;
 var sailboat;
 var sailMast;
 var windHeading = 0;
 var boatHeading = 0;
 var sheetPercentHeading = 100;
+
+var textGroup;
+var textWindSpeed;
+var textWindHeading;
+var textSheetPercent;
+var textBoatHeading;
+
 
 
 
@@ -59,7 +69,7 @@ $(function() {
         
        	sailMast = new Kinetic.Line({
         	points:[0,0,0,sailLength],
-        	stroke: 'navy',
+        	stroke: fontColor,
         	strokeWidth: 5,
         	lineCap: 'round',
         	lineJoin: 'round',
@@ -100,6 +110,51 @@ $(function() {
 
       stage.add(circleLayer);
       stage.add(windLayer);
+      
+      
+      // Now create text objects in a textGroup and textLayer
+      textLayer = new Kinetic.Layer();
+      
+      textGroup = new Kinetic.Group({
+      		x: 0,
+      		y: 0
+      	});
+      	
+      textBoatHeading = new Kinetic.Text({
+        x: 0,
+        y: (fontSize+2)*0,
+        text: 'Boat Heading: ' + boatHeading + ' degrees',
+        fontSize: fontSize,
+        fontFamily: 'Calibri',
+        fill: fontColor
+      });
+      textGroup.add(textBoatHeading);
+      	
+      textWindHeading = new Kinetic.Text({
+        x: 0,
+        y: (fontSize+2)*1,
+        text: 'Wind Heading: ' + windHeading + ' degrees',
+        fontSize: fontSize,
+        fontFamily: 'Calibri',
+        fill: fontColor
+      });
+      textGroup.add(textWindHeading);
+      	
+      textSheetPercent = new Kinetic.Text({
+        x: 0,
+        y: (fontSize+2)*2,
+        text: 'Sheet Percent: ' + sheetPercentHeading + '%',
+        fontSize: fontSize,
+        fontFamily: 'Calibri',
+        fill: fontColor
+      });
+      textGroup.add(textSheetPercent);
+      
+
+      
+      textLayer.add(textGroup);
+      
+      stage.add(textLayer);
 });
 
 
@@ -123,6 +178,10 @@ function setSheet(sheetPercent) {
             rotation: Math.PI * sheetDegrees / 180,
             duration:1
     });
+    
+    // Update sheet percent on text display
+    textSheetPercent.setText('Sheet Percent: ' + sheetPercentHeading + '%');
+    textLayer.draw();
 }
 
 function setBoatHeading(degreeHeading) {
@@ -133,6 +192,11 @@ function setBoatHeading(degreeHeading) {
     });
     // Update sheet because the wind may have crossed the transom
     setSheet(sheetPercentHeading);
+    
+    // Update boat heading on text display
+    textBoatHeading.setText('Boat Heading: ' + boatHeading + ' degrees');
+    textLayer.draw();
+
 }
 
 function setWindDirection(degreeWindDirection) {
@@ -143,6 +207,10 @@ function setWindDirection(degreeWindDirection) {
     });
     // Update sheet because the wind may have crossed the transom
     setSheet(sheetPercentHeading);
+    
+    // Update wind heading on text display
+    textWindHeading.setText('Wind Heading: ' + windHeading + ' degrees');
+    textLayer.draw();
 }
 
 
