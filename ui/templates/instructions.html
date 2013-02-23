@@ -3,13 +3,13 @@ $def with (page)
 <!-- START leftColumn -->
 
 <div id="leftColumn">
-	<FORM>
-	<INPUT type="button" value = "Create Waypoint" name = "button_wp" onClick ="addWaypoint()">
-	
-	<INPUT type="button" value = "Create Boundary" name = "button_b" onClick = "addBoundary()">
-	</FORM>
+
 	
 <div class="widget">
+	<center>
+		<button id="addWaypointButton" onclick="addWaypoint()">Create Waypoint</button>
+		<button id="addBoundaryButton" onclick="addBoundary()">Create Boundary</button>
+	</center>
         $:page.mapWidget
     </div>
 
@@ -20,42 +20,48 @@ $def with (page)
 <div id="rightColumn">
     <div class="widget dataDisplayTableWidget">
         <h1>Challenge</h1>
-        <select id = "description" onchange = "setChallenge(this)">
-		  <option value="none">None</option>
-		  <option value="navigation">Navigation</option>
-		  <option value="station_keepping">Station Keeping</option>
-		  <option value="long_distance">Long Distance</option>
-		  <option value="chase_race">Chase Race</option>
-		</select>
+	        <div class="ui-widget">
+	        <select id="description" onchange="setChallenge(this)">
+			  <option value="none">None</option>
+			  <option value="navigation">Navigation</option>
+			  <option value="station_keepping">Station Keeping</option>
+			  <option value="long_distance">Long Distance</option>
+			  <option value="chase_race">Chase Race</option>
+			</select>
+		</div>
     </div>
     
     <div class="widget dataDisplayTableWidget">
-        <h1>Waypoints</h1>
-        <dl>
-            <dt>Indicator</dt>
-            <dd>lat/long/waypointtype</dd>
-            
-            <dt>Indicator</dt>
-            <dd>lat/long/waypointtype</dd>
+    	<div class="smallColumn">
+	        <h1>Waypoints</h1>
+	        <dl>
+	            <dt>Indicator</dt>
+	            <dd>lat/long/waypointtype</dd>
+	            
+	            <dt>Indicator</dt>
+	            <dd>lat/long/waypointtype</dd>
+	
+	            <dt>Indicator</dt>
+	            <dd>lat/long/waypointtype</dd>
+	            
+	            <dt>Indicator</dt>
+	            <dd>lat/long/waypointtype</dd>
+	        </dl>
+       </div>
+    </div>
+    
+    <div class="widget dataDisplayTableWidget">
+    	<div class="smallColumn">
+	        <h1>Boundaries</h1>
+	        <dl>
+	            <dt>Indicator</dt>
+	            <dd>lat/long/radius/in-out</dd>
+	        </dl>
+       </div>
+    </div>
+   	<button id="sendDataButton" onclick="senddata()">Send Data</button>
 
-            <dt>Indicator</dt>
-            <dd>lat/long/waypointtype</dd>
-            
-            <dt>Indicator</dt>
-            <dd>lat/long/waypointtype</dd>
-        </dl>
-    </div>
-    
-    <div class="widget dataDisplayTableWidget">
-        <h1>Boundaries</h1>
-        <dl>
-            <dt>Indicator</dt>
-            <dd>lat/long/radius/in-out</dd>
-        </dl>
-    </div>
-    <FORM>
-    <INPUT type="button" value = "Send" name = "button1" onClick="senddata()">
-    </FORM>
+	
 </div>
 <!-- END rightColumn -->
 
