@@ -5,10 +5,8 @@ $def with (page)
 <div id="leftColumn">
 	<FORM>
 	<INPUT type="button" value = "Create Waypoint" name = "button_wp" onClick ="addWaypoint()">
-	
-	<INPUT type="button" value = "Create Boundary" name = "button_b" onClick = "addBoundary()">
+	<INPUT type="button" value = "Create Boundary" name = "button_bd">
 	</FORM>
-	
 <div class="widget">
         $:page.mapWidget
     </div>
@@ -21,40 +19,119 @@ $def with (page)
     <div class="widget dataDisplayTableWidget">
         <h1>Challenge</h1>
         <select id = "description" onchange = "setChallenge(this)">
-		  <option value="none">None</option>
-		  <option value="navigation">Navigation</option>
-		  <option value="station_keepping">Station Keeping</option>
-		  <option value="long_distance">Long Distance</option>
-		  <option value="chase_race">Chase Race</option>
+		  <option value="challenge.none">None</option>
+		  <option value="challenge.navigation">Navigation</option>
+		  <option value="challenge.stationkeepping">Station Keeping</option>
+		  <option value="challenge.longdistance">Long Distance</option>
+		  <option value="challenge.chaserace">Chase Race</option>
 		</select>
     </div>
     
     <div class="widget dataDisplayTableWidget">
         <h1>Waypoints</h1>
         <dl>
-            <dt>Indicator</dt>
-            <dd>lat/long/waypointtype</dd>
+            <dt>Wpt1</dt>
+            <form>
+            	lat:<input type="text" name="wpt1_lat" size="8">
+            	lon:<input type="text" name="wpt1_lon" size="8">
+            	type:<select id="waypointtype">
+            			<option value="pointToPoint">Point to Point</option>
+            			<option value="roundBuoy">Round Buoy</option>
+            			<option value="ld_start_finish">ld Start Finish</option>
+            			<option value="ld_first">ld First</option>
+            			<option value="ld_second">ld Second</option>
+            			<option value="nav_first">nav First</option>
+            			<option value="nav_finish">nav Second</option>
+            			<option value="sk_top_left">sk Top Left</option>
+            			<option value="sk_top_right">sk Top Right</option>
+            			<option value="sk_bottom_left">sk Bottom Left</option>
+            			<option value="sk_bottom_right">sk Bottom Right</option>
+            		</select>
+            	
+            </form>
             
-            <dt>Indicator</dt>
-            <dd>lat/long/waypointtype</dd>
+            <dt>Wpt2</dt>
+             <form>
+            	lat:<input type="text" name="wpt1_lat" size="8">
+            	lon:<input type="text" name="wpt1_lon" size="8">
+            	type:<select id="waypointtype2">
+            			<option value="pointToPoint">Point to Point</option>
+            			<option value="roundBuoy">Round Buoy</option>
+            			<option value="ld_start_finish">ld Start Finish</option>
+            			<option value="ld_first">ld First</option>
+            			<option value="ld_second">ld Second</option>
+            			<option value="nav_first">nav First</option>
+            			<option value="nav_finish">nav Second</option>
+            			<option value="sk_top_left">sk Top Left</option>
+            			<option value="sk_top_right">sk Top Right</option>
+            			<option value="sk_bottom_left">sk Bottom Left</option>
+            			<option value="sk_bottom_right">sk Bottom Right</option>
+            		</select>
+            	
+            </form>
 
-            <dt>Indicator</dt>
-            <dd>lat/long/waypointtype</dd>
+            <dt>Wpt3</dt>
+             <form>
+            	lat:<input type="text" name="wpt1_lat" size="8">
+            	lon:<input type="text" name="wpt1_lon" size="8">
+            	type:<select id="waypointtype3">
+            			<option value="pointToPoint">Point to Point</option>
+            			<option value="roundBuoy">Round Buoy</option>
+            			<option value="ld_start_finish">ld Start Finish</option>
+            			<option value="ld_first">ld First</option>
+            			<option value="ld_second">ld Second</option>
+            			<option value="nav_first">nav First</option>
+            			<option value="nav_finish">nav Second</option>
+            			<option value="sk_top_left">sk Top Left</option>
+            			<option value="sk_top_right">sk Top Right</option>
+            			<option value="sk_bottom_left">sk Bottom Left</option>
+            			<option value="sk_bottom_right">sk Bottom Right</option>
+            		</select>
+            	
+            </form>
             
-            <dt>Indicator</dt>
-            <dd>lat/long/waypointtype</dd>
+            <dt>Wpt4</dt>
+           <form>
+            	lat:<input type="text" name="wpt1_lat" size="8">
+            	lon:<input type="text" name="wpt1_lon" size="8">
+            	type:<select id="waypointtype4">
+            			<option value="pointToPoint">Point to Point</option>
+            			<option value="roundBuoy">Round Buoy</option>
+            			<option value="ld_start_finish">ld Start Finish</option>
+            			<option value="ld_first">ld First</option>
+            			<option value="ld_second">ld Second</option>
+            			<option value="nav_first">nav First</option>
+            			<option value="nav_finish">nav Second</option>
+            			<option value="sk_top_left">sk Top Left</option>
+            			<option value="sk_top_right">sk Top Right</option>
+            			<option value="sk_bottom_left">sk Bottom Left</option>
+            			<option value="sk_bottom_right">sk Bottom Right</option>
+            		</select>
+            	
+            </form>
         </dl>
     </div>
     
     <div class="widget dataDisplayTableWidget">
         <h1>Boundaries</h1>
         <dl>
-            <dt>Indicator</dt>
-            <dd>lat/long/radius/in-out</dd>
+            <dt>Bound1</dt>
+            <form>
+            	lat:<input type="text" name="bound_lat" size="8">
+            	lon:<input type="text" name="bound_long" size="8">
+            	radius: <input type="text" name="bound_rad" size="8">
+            </form>
+           
+            <dt>Bound2</dt>
+            <form>
+            	lat:<input type="text" name="bound1_lat" size="8">
+            	lon:<input type="text" name="bound1_long" size="8">
+            	radius: <input type="text" name="bound1_rad" size="8">
+            </form>
         </dl>
     </div>
     <FORM>
-    <INPUT type="button" value = "Send" name = "button1" onClick="senddata()">
+    <INPUT type="button" value ="Send" name ="button1" onClick="senddata()">
     </FORM>
 </div>
 <!-- END rightColumn -->
