@@ -33,6 +33,7 @@ function MapWidget(){
     
     //we create a new boat layer and add it to the map
     boatLayer = new OpenLayers.Layer.Markers("Boat");
+
     map.addLayer(boatLayer);
     
     //we create a new waypoints layer and add it to the map
@@ -46,6 +47,7 @@ function MapWidget(){
         var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
         map.setCenter(lonLat, this.zoom);        
     }
+
 
 
  
@@ -69,17 +71,21 @@ function MapWidget(){
     }
 
     this.update_boat_location = function(lon,lat) {
-        lat = lat || this.default_lat;
-        lon = lon || this.default_lon;
-        
-        boatLayer.clearMarkers();
-        
-        var size = new OpenLayers.Size(21, 25);
-        var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
-        var icon = new OpenLayers.Icon("ui/static/img/map/boat-icon.png", size, offset);
-
-        var markerBoat = new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
-        boatLayer.addMarker(markerBoat);       
+    	try {
+    		// When on the main page, the boatLayer isn't defined and therefore doesn't have functions such as addMarker()
+    		// To avoid tons of error message, I have added this try/catch block
+	        lat = lat || this.default_lat;
+	        lon = lon || this.default_lon;
+	        
+	      	boatLayer.clearMarkers();
+	
+	        var size = new OpenLayers.Size(21, 25);
+	        var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
+	        var icon = new OpenLayers.Icon("ui/static/img/map/boat-icon.png", size, offset);
+	
+	        var markerBoat = new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
+	        boatLayer.addMarker(markerBoat);  
+	     } catch (err) { }     
     }
     
  

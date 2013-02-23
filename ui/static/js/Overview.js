@@ -5,7 +5,7 @@ $(function () {
   mapWidget.setMapCenter();
 })
 
-  setInterval('getlog()',1000);
+setInterval('getlog()',1000);
 
 function getlog(){
 
