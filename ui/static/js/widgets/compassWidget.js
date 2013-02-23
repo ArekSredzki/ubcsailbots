@@ -11,7 +11,7 @@ var sailLayer;
 var windWedge;
 var windLayer;
 var sailboat;
-var sailLine;
+var sailMast;
 var windDirection;
 
 
@@ -55,7 +55,7 @@ $(function() {
 		
 
         
-       	var sailLine = new Kinetic.Line({
+       	var sailMast = new Kinetic.Line({
         	points:[0,-20,sailLength,-20],
         	stroke: 'navy',
         	strokeWidth: 5,
@@ -70,7 +70,7 @@ $(function() {
       	});
       	
       	boatGroup.add(sailboat);
-      	boatGroup.add(sailLine);
+      	boatGroup.add(sailMast);
       	
       	boatLayer.add(boatGroup)
 		stage.add(boatLayer);       
