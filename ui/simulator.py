@@ -52,6 +52,8 @@ class Simulator:
         seed() 
         self.latitude = 49.27480
         self.longitude = -123.18960
+        # sailSheet is updated when the wind changes direction
+        self.sailSheet = 50
         self.update()
         
     def update(self):
@@ -60,10 +62,12 @@ class Simulator:
         self.gpsSatelliteNumber = self.genGpsSatelliteNumber()
         self.gpsAccuracy = self.genGpsAccuracy()
         self.speedOverGround = self.genSpeedOverGround()
+        # updating the wind direction also updates the sail sheet
         self.windDirection = self.genWindDirection()
         self.timeRemaining = self.genTimeRemaining()
         self.latitude += 0.00001
         self.longitude += 0.00001
+        self.boatHeading = self.genBoatHeading()
     def init(self):
         self.onlineOffline = genYesNo(99)
         self.batteryLevel = genBatteryLevel()
@@ -81,6 +85,23 @@ class Simulator:
             return "yes";
         else:
             return "no";
+    
+    def genBoatHeading(self):
+        try:
+            self.boatHeading
+        except AttributeError:
+            # Not defined, generate an initial value
+            return randint(0,360)
+        else:
+            # Variable is defined
+            if self.probChange(80):
+                if randint(0,1) == 1:
+                    return self.boatHeading + randint(0,10)
+                else:
+                    return self.boatHeading - randint(0,10)
+            else:
+                return self.boatHeading
+    
     
     def genBatteryLevel(self):
         try:
@@ -108,6 +129,7 @@ class Simulator:
                 return self.batteryLevel
                 
     def genWindDirection(self):
+        # this function also has to update the sailSheet, which changes according to wind
         try:
             self.windDirection
         except AttributeError:
@@ -115,10 +137,12 @@ class Simulator:
             return randint(0,360)
         else:
             # Variable is defined
-            if self.probChange(40):
-                if randint(0,1) == 1:
+            if self.probChange(80):
+                if randint(0,1) == 1 or (self.sailSheet < 0 and self.sailSheet < 100):
+                    self.sailSheet = self.sailSheet + randint(0,10)
                     return self.windDirection + randint(0,10)
                 else:
+                    self.sailSheet = self.sailSheet - randint(0,10)
                     return self.windDirection - randint(0,10)
             else:
                 return self.windDirection
@@ -175,7 +199,7 @@ class Simulator:
     def getData(self):
         self.update()
         overviewData =  {"connectionStatus": {"onlineOffline": self.onlineOffline, "batteryLevel": self.batteryLevel, "gpsSatelliteNumber": self.gpsSatelliteNumber, "gpsAccuracy": self.gpsAccuracy, "hardwareHealth": "good"},
-                        "telemetry": {"speedOverGround": self.speedOverGround, "windDirection": self.windDirection, "currentManeuver": "tracking", "latitude": self.latitude, "longitude": self.longitude},
+                        "telemetry": {"speedOverGround": self.speedOverGround, "windDirection": self.windDirection, "currentManeuver": "tracking", "latitude": self.latitude, "longitude": self.longitude, "sailSheet": self.sailSheet, "boatHeading": self.boatHeading},
                         "currentProcess": {"task": "Keep Away", "timeRemaining": self.timeRemaining, "timeToCompletion": 12},                                                  
                         }
         return overviewData
