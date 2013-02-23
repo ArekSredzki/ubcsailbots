@@ -101,21 +101,7 @@ function MapWidget(){
         	waypointsLayer.addMarker(markerWaypoint);
         }                	      
     }
-    	
-    /*
-   	this.add_boundary = function(lon,lat,radius){
-    	lat = lat || this.default_lat;
-    	lon = lon || this.default_lon;
-    	radius = radius || this.default_radius;
-    	var location = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-        var point = new OpenLayers.Geometry.Point(location.lon, location.lat);
-    	var boundary = OpenLayers.Geometry.Polygon.createRegularPolygon(point,radius,30,10);
-    	var feature = new OpenLayers.Feature.Vector(boundary);  
-    	boundariesLayer.addFeatures([feature]);    	
-    }
-    */
-   
-   
+          
    	this.update_boundaries = function(boundaries_list){
     	
     	boundariesLayer.removeAllFeatures();
