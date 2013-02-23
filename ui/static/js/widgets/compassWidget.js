@@ -26,8 +26,6 @@ var textSheetPercent;
 var textBoatHeading;
 
 
-
-
 $(function() {
 	
 	stage = new Kinetic.Stage({
