@@ -1,8 +1,12 @@
 var mapWidget;
+var compassWidget;
 //create map widget
 $(function () {
   mapWidget = new MapWidget();
   mapWidget.setMapCenter();
+  
+  compassWidget = new CompassWidget();
+  compassWidget.init();
 })
 
 setInterval('getlog()',1000);
@@ -29,7 +33,13 @@ function getlog(){
 	        $("#currentProcess-timeRemainingCell").text(overviewData.currentProcess.timeRemaining)
 	        $("#currentProcess-timeToCompletionCell").text(overviewData.currentProcess.timeToCompletion)
 	        
+	        // Update map widget
 	     	mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
+	     	
+	     	// Update compass widget
+	     	compassWidget.setSheet(overviewData.telemetry.sailSheet)
+	     	compassWidget.setBoatHeading(overviewData.telemetry.boatHeading)
+	     	compassWidget.setWindDirection(overviewData.telemetry.windDirection)
     }
   });
 

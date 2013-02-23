@@ -3,11 +3,11 @@ $def with (page)
 <!-- START leftColumn -->
 
 <div id="leftColumn">
-	<FORM>
-	<INPUT type="button" value = "Create Waypoint" name = "button_wp" onClick ="addWaypoint()">
-	<INPUT type="button" value = "Create Boundary" name = "button_bd">
-	</FORM>
 <div class="widget">
+	<center>
+		<button id="addWaypointButton" onclick="addWaypoint()">Create Waypoint</button>
+		<button id="addBoundaryButton" onclick="addBoundary()">Create Boundary</button>
+	</center>
         $:page.mapWidget
     </div>
 
@@ -18,121 +18,128 @@ $def with (page)
 <div id="rightColumn">
     <div class="widget dataDisplayTableWidget">
         <h1>Challenge</h1>
-        <select id = "description" onchange = "setChallenge(this)">
-		  <option value="challenge.none">None</option>
-		  <option value="challenge.navigation">Navigation</option>
-		  <option value="challenge.stationkeepping">Station Keeping</option>
-		  <option value="challenge.longdistance">Long Distance</option>
-		  <option value="challenge.chaserace">Chase Race</option>
-		</select>
+		    <div class="ui-widget">
+		        <select id="description" onchange="setChallenge(this)">
+				  <option value="none">None</option>
+				  <option value="navigation">Navigation</option>
+				  <option value="station_keepping">Station Keeping</option>
+				  <option value="long_distance">Long Distance</option>
+				  <option value="chase_race">Chase Race</option>
+				</select>
+			</div>
+    </div>
+    
+    
+    <div class="widget dataDisplayTableWidget">
+	    <div class="smallColumn">
+	        <h1>Waypoints</h1>
+	        <dl>
+	            <wptName>Wpt 1</wptName>
+	            <form name= "wpt1">
+	            	lat:<input type="text" id="lat1" size="8">
+	            	lon:<input type="text" id="lon1" size="8">
+	            	type:<select id="waypointtype1">
+	            			<option value="pointToPoint">Point to Point</option>
+	            			<option value="roundBuoy">Round Buoy</option>
+	            			<option value="ld_start_finish">ld Start Finish</option>
+	            			<option value="ld_first">ld First</option>
+	            			<option value="ld_second">ld Second</option>
+	            			<option value="nav_first">nav First</option>
+	            			<option value="nav_finish">nav Second</option>
+	            			<option value="sk_top_left">sk Top Left</option>
+	            			<option value="sk_top_right">sk Top Right</option>
+	            			<option value="sk_bottom_left">sk Bottom Left</option>
+	            			<option value="sk_bottom_right">sk Bottom Right</option>
+	            		</select>
+	            	
+	            </form>
+	            
+	            <wptName>Wpt 2</wptName>
+	             <form name= "wpt2">
+	            	lat:<input type="text" id="lat2" size="8">
+	            	lon:<input type="text" id="lon2" size="8">
+	            	type:<select id="waypointtype2">
+	            			<option value="pointToPoint">Point to Point</option>
+	            			<option value="roundBuoy">Round Buoy</option>
+	            			<option value="ld_start_finish">ld Start Finish</option>
+	            			<option value="ld_first">ld First</option>
+	            			<option value="ld_second">ld Second</option>
+	            			<option value="nav_first">nav First</option>
+	            			<option value="nav_finish">nav Second</option>
+	            			<option value="sk_top_left">sk Top Left</option>
+	            			<option value="sk_top_right">sk Top Right</option>
+	            			<option value="sk_bottom_left">sk Bottom Left</option>
+	            			<option value="sk_bottom_right">sk Bottom Right</option>
+	            		</select>
+	            	
+	            </form>
+	
+	            <wptName>Wpt 3</wptName>
+	             <form name= "wpt3">
+	            	lat:<input type="text" id="lat3" size="8">
+	            	lon:<input type="text" id="lon3" size="8">
+	            	type:<select id="waypointtype3">
+	            			<option value="pointToPoint">Point to Point</option>
+	            			<option value="roundBuoy">Round Buoy</option>
+	            			<option value="ld_start_finish">ld Start Finish</option>
+	            			<option value="ld_first">ld First</option>
+	            			<option value="ld_second">ld Second</option>
+	            			<option value="nav_first">nav First</option>
+	            			<option value="nav_finish">nav Second</option>
+	            			<option value="sk_top_left">sk Top Left</option>
+	            			<option value="sk_top_right">sk Top Right</option>
+	            			<option value="sk_bottom_left">sk Bottom Left</option>
+	            			<option value="sk_bottom_right">sk Bottom Right</option>
+	            		</select>
+	            	
+	            </form>
+	            
+	            <wptName>Wpt 4</wptName>
+	           <form name= "wpt4">
+	            	lat:<input type="text" id="lat4" size="8">
+	            	lon:<input type="text" id="lon4" size="8">
+	            	type:<select id="waypointtype4">
+	            			<option value="pointToPoint">Point to Point</option>
+	            			<option value="roundBuoy">Round Buoy</option>
+	            			<option value="ld_start_finish">ld Start Finish</option>
+	            			<option value="ld_first">ld First</option>
+	            			<option value="ld_second">ld Second</option>
+	            			<option value="nav_first">nav First</option>
+	            			<option value="nav_finish">nav Second</option>
+	            			<option value="sk_top_left">sk Top Left</option>
+	            			<option value="sk_top_right">sk Top Right</option>
+	            			<option value="sk_bottom_left">sk Bottom Left</option>
+	            			<option value="sk_bottom_right">sk Bottom Right</option>
+	            		</select>
+	            	
+	            </form>
+	        </dl>
+	      </div>
     </div>
     
     <div class="widget dataDisplayTableWidget">
-        <h1>Waypoints</h1>
-        <dl>
-            <wptName>Wpt 1</wptName>
-            <form name= "wpt1">
-            	lat:<input type="text" id="lat1" size="8">
-            	lon:<input type="text" id="lon1" size="8">
-            	type:<select id="waypointtype1">
-            			<option value="pointToPoint">Point to Point</option>
-            			<option value="roundBuoy">Round Buoy</option>
-            			<option value="ld_start_finish">ld Start Finish</option>
-            			<option value="ld_first">ld First</option>
-            			<option value="ld_second">ld Second</option>
-            			<option value="nav_first">nav First</option>
-            			<option value="nav_finish">nav Second</option>
-            			<option value="sk_top_left">sk Top Left</option>
-            			<option value="sk_top_right">sk Top Right</option>
-            			<option value="sk_bottom_left">sk Bottom Left</option>
-            			<option value="sk_bottom_right">sk Bottom Right</option>
-            		</select>
-            	
-            </form>
-            
-            <wptName>Wpt 2</wptName>
-             <form name= "wpt2">
-            	lat:<input type="text" id="lat2" size="8">
-            	lon:<input type="text" id="lon2" size="8">
-            	type:<select id="waypointtype2">
-            			<option value="pointToPoint">Point to Point</option>
-            			<option value="roundBuoy">Round Buoy</option>
-            			<option value="ld_start_finish">ld Start Finish</option>
-            			<option value="ld_first">ld First</option>
-            			<option value="ld_second">ld Second</option>
-            			<option value="nav_first">nav First</option>
-            			<option value="nav_finish">nav Second</option>
-            			<option value="sk_top_left">sk Top Left</option>
-            			<option value="sk_top_right">sk Top Right</option>
-            			<option value="sk_bottom_left">sk Bottom Left</option>
-            			<option value="sk_bottom_right">sk Bottom Right</option>
-            		</select>
-            	
-            </form>
-
-            <wptName>Wpt 3</wptName>
-             <form name= "wpt3">
-            	lat:<input type="text" id="lat3" size="8">
-            	lon:<input type="text" id="lon3" size="8">
-            	type:<select id="waypointtype3">
-            			<option value="pointToPoint">Point to Point</option>
-            			<option value="roundBuoy">Round Buoy</option>
-            			<option value="ld_start_finish">ld Start Finish</option>
-            			<option value="ld_first">ld First</option>
-            			<option value="ld_second">ld Second</option>
-            			<option value="nav_first">nav First</option>
-            			<option value="nav_finish">nav Second</option>
-            			<option value="sk_top_left">sk Top Left</option>
-            			<option value="sk_top_right">sk Top Right</option>
-            			<option value="sk_bottom_left">sk Bottom Left</option>
-            			<option value="sk_bottom_right">sk Bottom Right</option>
-            		</select>
-            	
-            </form>
-            
-            <wptName>Wpt 4</wptName>
-           <form name= "wpt4">
-            	lat:<input type="text" id="lat4" size="8">
-            	lon:<input type="text" id="lon4" size="8">
-            	type:<select id="waypointtype4">
-            			<option value="pointToPoint">Point to Point</option>
-            			<option value="roundBuoy">Round Buoy</option>
-            			<option value="ld_start_finish">ld Start Finish</option>
-            			<option value="ld_first">ld First</option>
-            			<option value="ld_second">ld Second</option>
-            			<option value="nav_first">nav First</option>
-            			<option value="nav_finish">nav Second</option>
-            			<option value="sk_top_left">sk Top Left</option>
-            			<option value="sk_top_right">sk Top Right</option>
-            			<option value="sk_bottom_left">sk Bottom Left</option>
-            			<option value="sk_bottom_right">sk Bottom Right</option>
-            		</select>
-            	
-            </form>
-        </dl>
-    </div>
-    
-    <div class="widget dataDisplayTableWidget">
+    	<div class="smallColumn">
         <h1>Boundaries</h1>
         <dl>
             <dt>Bound1</dt>
             <form>
-            	lat:<input type="text" name="bound_lat" size="8">
-            	lon:<input type="text" name="bound_long" size="8">
-            	radius: <input type="text" name="bound_rad" size="8">
+            	lat:<input type="text" id="blat1" size="8">
+            	lon:<input type="text" id="blon1" size="8">
+            	radius: <input type="text" id="brad1" size="8">
             </form>
            
             <dt>Bound2</dt>
             <form>
-            	lat:<input type="text" name="bound1_lat" size="8">
-            	lon:<input type="text" name="bound1_long" size="8">
-            	radius: <input type="text" name="bound1_rad" size="8">
+            	lat:<input type="text" id="blat2" size="8">
+            	lon:<input type="text" id="blon2" size="8">
+            	radius: <input type="text" id="brad2" size="8">
             </form>
         </dl>
     </div>
-    <FORM>
-    <INPUT type="button" value ="Send" name ="button1" onClick="senddata()">
-    </FORM>
-</div>
+    
+    <button id="sendDataButton" onclick="senddata()">Send Data</button>
+
+    
+
 <!-- END rightColumn -->
 
