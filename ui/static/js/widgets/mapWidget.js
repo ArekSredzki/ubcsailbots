@@ -24,7 +24,7 @@ function MapWidget(){
         displayProjection: new OpenLayers.Projection("EPSG:4326")
     });
 
-    var tilesLayer = new OpenLayers.Layer.OSM("Local Tiles", "/ui/static/tiles/${z}/${x}/${y}.png", { numZoomLevels: 19, alpha: true, isBaseLayer: true });
+    var tilesLayer = new OpenLayers.Layer.OSM("Local Tiles", "/static/tiles/${z}/${x}/${y}.png", { numZoomLevels: 19, alpha: true, isBaseLayer: true });
     map.addLayer(tilesLayer);
 
     //we create a new boat layer and add it to the map
@@ -80,7 +80,7 @@ function MapWidget(){
 	
 	        var size = new OpenLayers.Size(21, 25);
 	        var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
-	        var icon = new OpenLayers.Icon("ui/static/img/map/boat-icon.png", size, offset);
+	        var icon = new OpenLayers.Icon("static/img/map/boat-icon.png", size, offset);
 	
 	        var markerBoat = new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
 	        boatLayer.addMarker(markerBoat);  
@@ -94,7 +94,7 @@ function MapWidget(){
                 
         var size = new OpenLayers.Size(21, 25);
        	var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
-        var icon = new OpenLayers.Icon("ui/static/img/map/marker.png", size, offset);
+        var icon = new OpenLayers.Icon("static/img/map/marker.png", size, offset);
         
         for(var i=0; i<waypoints_list.length; i++){
           	var markerWaypoint = new OpenLayers.Marker(new OpenLayers.LonLat(waypoints_list[i][1], waypoints_list[i][0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon.clone());
