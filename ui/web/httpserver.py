@@ -260,7 +260,7 @@ class StaticApp(SimpleHTTPRequestHandler):
 
 class StaticMiddleware:
     """WSGI middleware for serving static files."""
-    def __init__(self, app, prefix='/ui/static/'):
+    def __init__(self, app, prefix='/static/'):
         self.app = app
         self.prefix = prefix
         

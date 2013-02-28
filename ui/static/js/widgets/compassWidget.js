@@ -90,7 +90,7 @@ function CompassWidget() {
 			stage.add(boatLayer);       
 	        
 	      };
-	      imageObj.src = 'ui/static/img/svg/sailboat.png';
+	      imageObj.src = 'static/img/svg/sailboat.png';
 	      
 	      windLayer = new Kinetic.Layer();
 	      

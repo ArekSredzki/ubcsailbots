@@ -5,7 +5,7 @@ import sys
 import os
 # Tell web.py where to find all the templates
 
-render = web.template.render('ui/templates/')
+render = web.template.render('templates/')
 
 # Map our URLs
 urls = (
