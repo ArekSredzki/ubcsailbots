@@ -12,7 +12,7 @@ runControlCode=False
 if runControlCode:
   from control.GuiHandler import GuiHandler
   interface = GuiHandler()
-  Thread(target=control.__main__.main(), args=()).start()
+  Thread(target=control.__main__.main, args=()).start()
 else:
   from simulator import Simulator
   interface = Simulator()
