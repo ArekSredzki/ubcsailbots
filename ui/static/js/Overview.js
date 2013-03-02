@@ -1,5 +1,6 @@
 var mapWidget;
 var compassWidget;
+var instructionsDataLocal;
 //create map widget
 $(function () {
   mapWidget = new MapWidget();
@@ -7,6 +8,7 @@ $(function () {
   
   compassWidget = new CompassWidget();
   compassWidget.init();
+  getInstructions();
 })
 
 setTimeout('getlog()',1000);
@@ -18,7 +20,7 @@ function getlog(){
         type: 'GET',
         dataType: "json",
         success: function (overviewData) {
-        console.log(overviewData);
+        	console.log(overviewData);
 	        $("#connectionStatus-onlineOfflineCell").text(overviewData.connectionStatus.onlineOffline)
 	        $("#connectionStatus-batteryLevelCell").text(overviewData.connectionStatus.batteryLevel)
 	        $("#connectionStatus-satNumCell").text(overviewData.connectionStatus.gpsSatelliteNumber)
@@ -48,5 +50,21 @@ function getlog(){
   });
 
 }
+
+function getInstructions(){
+	$.ajax({
+        url: "api?request=instructionsData",
+        type: 'GET',
+        dataType: "json",
+        success: function (instructionsData) {
+     		instructionsDataLocal = instructionsData;
+       		console.log(instructionsDataLocal);
+  			mapWidget.update_waypoints(instructionsData.waypoints);
+  			mapWidget.update_boundaries(instructionsData.boundaries);
+	
+		}
+	});
+}
+
 
 
