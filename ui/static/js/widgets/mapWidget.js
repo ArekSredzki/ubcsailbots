@@ -41,9 +41,21 @@ function MapWidget(){
     
     
     // we add draggable control to the map
-	var control = new OpenLayers.Control.DragFeature(boundariesLayer);
-	map.addControl(control);
-	control.activate();
+	var drag = new OpenLayers.Control.DragFeature(boundariesLayer, {onComplete: endDrag});
+	map.addControl(drag);
+	drag.activate();
+	
+	
+	//we add feature selection control to the map
+	var select = new OpenLayers.Control.SelectFeature(boundariesLayer, {	
+																			hover: true});
+	map.addControl(select);
+	select.activate();
+	
+	//a function for handling the update information after the drag of a feature is done
+	function endDrag(feature, pixel) {
+    	updateFeatureLocation(feature, pixel)
+	}
 
 
 
@@ -53,7 +65,6 @@ function MapWidget(){
         var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
         map.setCenter(lonLat, this.zoom);        
     }
-
 
 
  
@@ -76,6 +87,8 @@ function MapWidget(){
         drag.activate();
     }
 
+
+
     this.update_boat_location = function(lon,lat) {
     	try {
     		// When on the main page, the boatLayer isn't defined and therefore doesn't have functions such as addMarker()
@@ -95,7 +108,7 @@ function MapWidget(){
     }
     
  
-    this.update_waypoints = function(waypoints_list) {
+    this.update_waypoints = function(waypoints_list) {        
                 
         waypointsLayer.clearMarkers();
                 
@@ -111,6 +124,7 @@ function MapWidget(){
           
    	this.update_boundaries = function(boundaries_list){
     	
+    	
     	boundariesLayer.removeAllFeatures();
     	
     	for(var i=0; i<boundaries_list.length; i++){
@@ -120,6 +134,7 @@ function MapWidget(){
           	var feature = new OpenLayers.Feature.Vector(boundary);
           	boundariesLayer.addFeatures([feature]);
         }
+        
                
     }
     
