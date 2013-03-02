@@ -12,6 +12,11 @@ function getDebugLog(){
         	// Make sure that we automatically scroll to the bottom 
         	$("#debugLogConsole").scrollTop($("#debugLogConsole")[0].scrollHeight);
         	console.log(data);
+        	setTimeout('getDebugLog()',1000);
+
+  		},
+  		fail : function(){
+  		  setTimeout('getDebugLog()',1000);
   		}
 	});
 }
@@ -30,27 +35,15 @@ function getPositionLog(){
         	// Make sure that we automatically scroll to the bottom 
         	$("#positionLogConsole").scrollTop($("#positionLogConsole")[0].scrollHeight);
         	console.log(positionString);
-        	/*
-	        $("#connectionStatus-onlineOfflineCell").text(overviewData.connectionStatus.onlineOffline)
-	        $("#connectionStatus-batteryLevelCell").text(overviewData.connectionStatus.batteryLevel)
-	        $("#connectionStatus-satNumCell").text(overviewData.connectionStatus.gpsSatelliteNumber)
-	        $("#connectionStatus-gpsAccuracyCell").text(overviewData.connectionStatus.gpsAccuracy)
-	        $("#connectionStatus-hardwareHealthCell").text(overviewData.connectionStatus.hardwareHealth)
-	        $("#telemetry-speedOverGroundCell").text(overviewData.telemetry.speedOverGround)
-	        $("#telemetry-windDirectionCell").text(overviewData.telemetry.windDirection)
-	        $("#telemetry-currentManeuverCell").text(overviewData.telemetry.currentManeuver)
-	        $("#telemetry-latitudeCell").text(overviewData.telemetry.latitude)
-	        $("#telemetry-longitudeCell").text(overviewData.telemetry.longitude)
-	        $("#currentProcess-currentTaskCell").text(overviewData.currentProcess.task)
-	        $("#currentProcess-timeRemainingCell").text(overviewData.currentProcess.timeRemaining)
-	        $("#currentProcess-timeToCompletionCell").text(overviewData.currentProcess.timeToCompletion)
-	        
-	     	mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
-	     	*/
-    }
+          setTimeout('getPositionLog()',1000);
+
+        },
+        fail : function(){
+          setTimeout('getPositionLog()',1000);
+        }
   });
 }
 
 // Call log updates every second
-setInterval('getDebugLog()',1000);
-setInterval('getPositionLog()',1000);
+setTimeout('getDebugLog()',1000);
+setTimeout('getPositionLog()',1000);

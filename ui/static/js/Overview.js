@@ -9,7 +9,7 @@ $(function () {
   compassWidget.init();
 })
 
-setInterval('getlog()',1000);
+setTimeout('getlog()',1000);
 
 function getlog(){
 
@@ -40,7 +40,11 @@ function getlog(){
 	     	compassWidget.setSheet(overviewData.telemetry.sailSheet)
 	     	compassWidget.setBoatHeading(overviewData.telemetry.boatHeading)
 	     	compassWidget.setWindDirection(overviewData.telemetry.windDirection)
-    }
+	     	setTimeout('getlog()',1000);
+      },
+      fail: function(){
+        setTimeout('getlog()',1000);
+      }
   });
 
 }
