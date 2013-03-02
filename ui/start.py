@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.realpath
 print(sys.path)
 import control.__main__
 
-runControlCode=False
+runControlCode=True
 
 if runControlCode:
   from control.GuiHandler import GuiHandler
