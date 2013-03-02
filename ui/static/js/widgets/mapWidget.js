@@ -38,6 +38,13 @@ function MapWidget(){
     //we create a new boundarys layer and add it to the map
     boundariesLayer = new OpenLayers.Layer.Vector("Boundaries");
     map.addLayer(boundariesLayer);
+    
+    
+    // we add draggable control to the map
+	var control = new OpenLayers.Control.DragFeature(boundariesLayer);
+	map.addControl(control);
+	control.activate();
+
 
 
 	this.setMapCenter = function(lon,lat) {
