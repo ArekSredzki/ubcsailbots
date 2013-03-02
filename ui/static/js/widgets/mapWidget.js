@@ -67,28 +67,6 @@ function MapWidget(){
     }
 
 
- 
-    this.add_draggable = function(lon,lat) {
-        lat = lat || this.default_lat;
-        lon = lon || this.default_lon;
-
-        var message = "lon:" + lon + ", lat:" + lat;      
-                
-        var location = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-        var point = new OpenLayers.Geometry.Point(location.lon, location.lat);
-        vectorLayer.addFeatures([new OpenLayers.Feature.Vector(point)]);
-        var drag = new OpenLayers.Control.DragFeature(vectorLayer, {
-            autoActivate: true,
-            onComplete: function () {                  //this function is called when the drag feature is released                 
-                alert(message)
-            }
-        });
-        map.addControl(drag);
-        drag.activate();
-    }
-
-
-
     this.update_boat_location = function(lon,lat) {
     	try {
     		// When on the main page, the boatLayer isn't defined and therefore doesn't have functions such as addMarker()
