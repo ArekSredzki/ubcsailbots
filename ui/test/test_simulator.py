@@ -13,7 +13,8 @@ class testSimulator(unittest.TestCase):
       oldData = self.interface.getData()
       newData = self.interface.getData()
       self.assertNotEqual(oldData,newData, "data hasn't changed after update")
-
+    def testGetDebug(self):
+      self.assert_(self.interface.getDebugMessages(), "no debug data")
         
 if __name__ == '__main__':
     unittest.main()
