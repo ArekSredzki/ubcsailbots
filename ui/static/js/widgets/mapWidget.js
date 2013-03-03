@@ -8,7 +8,8 @@ function MapWidget(){
     this.map; //complex object of type OpenLayers.Map
     this.boatLayer; //Layer for the boat marker
     this.waypointsLayer; // Layer for the waypoints of the the class
-    this.boundariesLayer; // Layer for the boundaries of the class 
+    this.boundariesLayer; // Layer for the boundaries of the class
+    
   
     //Initialise the 'map' object
     map = new OpenLayers.Map("map", {
@@ -54,7 +55,7 @@ function MapWidget(){
 	
 	//a function for handling the update information after the drag of a feature is done
 	function endDrag(feature, pixel) {
-    	updateFeatureLocation(feature, pixel)
+    	
 	}
 
 
@@ -102,7 +103,6 @@ function MapWidget(){
           
    	this.update_boundaries = function(boundaries_list){
     	
-    	
     	boundariesLayer.removeAllFeatures();
     	
     	for(var i=0; i<boundaries_list.length; i++){
@@ -116,6 +116,20 @@ function MapWidget(){
                
     }
     
+    this.getBoundaries = function(){
+    	
+    	var boundaries = new Array();
+    	
+    	for(var i=0; i<boundariesLayer.features.length; i++){
+    		var newBoundary = new Array();
+    		newBoundary [0] = boundariesLayer.features[i].geometry.getCentroid().transform(map.getProjectionObject(),new OpenLayers.Projection("EPSG:4326")).y;
+			newBoundary [1] = boundariesLayer.features[i].geometry.getCentroid().transform(map.getProjectionObject(),new OpenLayers.Projection("EPSG:4326")).x;
+			newBoundary [2] = 50 //radius
+			boundaries.push(newBoundary)
+		}
+    
+    	return boundaries;
+    }
     
     
 }

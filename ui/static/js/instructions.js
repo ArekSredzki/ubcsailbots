@@ -69,6 +69,8 @@ function addWaypoint(){
 }
 
 function addBoundary(){
+	instructions.boundaries = mapWidget.getBoundaries();
+	//mapWidget.getBoundaries();
 	var newBoundary = new Array()
 	newBoundary [0] = overviewData.telemetry.latitude
 	newBoundary [1] = overviewData.telemetry.longitude
