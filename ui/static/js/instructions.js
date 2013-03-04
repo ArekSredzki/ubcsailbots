@@ -13,7 +13,7 @@ instructions.boundaries = new Array();
 var mapWidget;
 
 $(function () {
-  mapWidget = new MapWidget();
+  mapWidget = new MapWidget(new MapListener());
   mapWidget.setMapCenter();
   setTimeout('getlog()',1000);
   
@@ -69,8 +69,6 @@ function addWaypoint(){
 }
 
 function addBoundary(){
-	instructions.boundaries = mapWidget.getBoundaries();
-	//mapWidget.getBoundaries();
 	var newBoundary = new Array()
 	newBoundary [0] = overviewData.telemetry.latitude
 	newBoundary [1] = overviewData.telemetry.longitude
@@ -113,6 +111,20 @@ function updateBoundaryDataDisplayTable(){
 
 
 
+function MapListener(){
+  
+ this.updateBoundaries = function(boundariesList){
+  for (var i=0; i<boundariesList.length; i++){
+    instructions.boundaries[i][0] = boundariesList[i][0];
+    instructions.boundaries[i][1] = boundariesList[i][1];
+  }
+  updateBoundaryDataDisplayTable();
+ }
+ 
+ this.updateWaypoints = function(waypointsList){
+   
+ } 
+}
 
 
 
