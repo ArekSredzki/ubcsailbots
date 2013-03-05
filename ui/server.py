@@ -3,6 +3,7 @@ import web
 from page import *
 import sys
 import os
+import json
 # Tell web.py where to find all the templates
 
 render = web.template.render('templates/')
@@ -103,10 +104,17 @@ class api:
             print "Unexpected error:", sys.exc_info()[0]
             raise
     def POST(self):
-        i = web.input()
-        
-        # to do: handle instructions
-        return 'data received' 
+        d = web.data()
+        # Case of sending new waypoint/boundary instructions
+        try:
+            d = json.loads(d)
+            if d["request"] == 'sendMappingInstructions':
+                return apiControl.sendMappingInstructions(request)
+        except:
+            print web.data();
+            print d;
+            print sys.exc_info()[0]
+            print 'Could not handle sending mapping instructions to the api from server.py'
         
         
 

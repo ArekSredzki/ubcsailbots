@@ -19,18 +19,19 @@ function getlog(){
         dataType: "json",
         success: function (overviewData) {
         console.log(overviewData);
-	        $("#telemetry-speedOverGroundCell").text(overviewData.telemetry.SOG)
-	        $("#telemetry-windDirectionCell").text(overviewData.telemetry.AWA)
-	        $("#telemetry-latitudeCell").text(overviewData.telemetry.latitude)
-	        $("#telemetry-longitudeCell").text(overviewData.telemetry.longitude)
+	        $("#telemetry-speedOverGroundCell").text(overviewData.telemetry.SOG);
+	        $("#telemetry-windDirectionCell").text(overviewData.telemetry.AWA);
+	        $("#telemetry-latitudeCell").text(overviewData.telemetry.latitude);
+	        $("#telemetry-longitudeCell").text(overviewData.telemetry.longitude);
+	        $("#telemetry-rudderCell").text(overviewData.telemetry.rudder);
 	        
 	        // Update map widget
 	     	mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
 	     	
 	     	// Update compass widget
-	     	compassWidget.setSheet(overviewData.telemetry.SheetPercent)
-	     	compassWidget.setBoatHeading(overviewData.telemetry.Heading)
-	     	compassWidget.setWindDirection(overviewData.telemetry.AWA)
+	     	compassWidget.setSheet(overviewData.telemetry.SheetPercent);
+	     	compassWidget.setBoatHeading(overviewData.telemetry.Heading);
+	     	compassWidget.setWindDirection(overviewData.telemetry.AWA);
     }
   });
 

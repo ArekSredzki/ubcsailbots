@@ -40,15 +40,16 @@ function getlog(){
 }
 
 function senddata(){
+	instructions.request = 'sendMappingInstructions';
 	var postdata = JSON.stringify(instructions);
-	var postArray = {json:postdata};
-	
+	//var postArray = {json:postdata};
+	console.log(instructions);
 	
 	var pathname = window.location.pathname;
 	
-	$.post('/api',postArray, function(data) {
-	//do on success
-	window.alert("Instructions sent");
+	$.post('/api',postdata, function(data) {
+		//do on success
+		window.alert("Instructions sent and received: " + data);
 	
 	}); 
 }
