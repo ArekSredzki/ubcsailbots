@@ -15,6 +15,7 @@ var mapWidget;
 $(function () {
   mapWidget = new MapWidget(new MapListener());
   mapWidget.setMapCenter();
+  mapWidget.setDraggableMode(true);
   setTimeout('getlog()',1000);
   
   // install jquery ui elements

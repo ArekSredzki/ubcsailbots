@@ -10,6 +10,7 @@ function MapWidget(listener){
     this.waypointsLayer; // Layer for the waypoints of the the class
     this.boundariesLayer; // Layer for the boundaries of the class
     this.listener = listener || null;
+    this.drag;
   
     //Initialise the 'map' object
     map = new OpenLayers.Map("map", {
@@ -42,9 +43,9 @@ function MapWidget(listener){
     
     
     // we add draggable control to the map
-	var drag = new OpenLayers.Control.DragFeature(boundariesLayer, {onComplete: endDrag});
+	drag = new OpenLayers.Control.DragFeature(boundariesLayer, {onComplete: endDrag});
 	map.addControl(drag);
-	drag.activate();
+	drag.deactivate();
 	
 	
 	//we add feature selection control to the map
@@ -112,9 +113,17 @@ function MapWidget(listener){
          	var boundary = OpenLayers.Geometry.Polygon.createRegularPolygon(point,boundaries_list[i][2],30,10);
           	var feature = new OpenLayers.Feature.Vector(boundary);
           	boundariesLayer.addFeatures([feature]);
-        }
-        
-               
+        }               
+    }
+    
+    this.setDraggableMode = function(draggable){
+    	
+    	draggable = draggable || false;
+    	
+    	if(draggable)
+    		drag.activate();
+    	else
+    		drag.deactivate();  	
     }
     
     getBoundaries = function(){	
@@ -127,6 +136,8 @@ function MapWidget(listener){
   		}
     	return boundaries;
     }
+    
+    
     
     
 }
