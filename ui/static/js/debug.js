@@ -1,3 +1,32 @@
+function logMessage(message, logName, containerId)
+{
+	var now = new Date();
+	var month=new Array();
+	month[0]="January";
+	month[1]="February";
+	month[2]="March";
+	month[3]="April";
+	month[4]="May";
+	month[5]="June";
+	month[6]="July";
+	month[7]="August";
+	month[8]="September";
+	month[9]="October";
+	month[10]="November";
+	month[11]="December";
+	
+   	var currentTime = now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();
+   	var currentFullDate = now.getFullYear() + ':' + month[now.getMonth()] + ':' + now.getDate() + ':' + now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();
+
+
+
+	$(containerId).append(currentTime + ', ' + message + '<br />');
+	$(containerId).scrollTop($(containerId)[0].scrollHeight);
+	
+	console.log(currentFullDate + ', ' + message);
+}
+
+
 
 // The Debug Log is composed of human-readable log messages
 function getDebugLog(){
@@ -8,10 +37,9 @@ function getDebugLog(){
   		type: 'GET',
   		dataType: "text",
   		success: function (data) {
-        	$("#debugLogConsole").append(data+'<br/>');
+  			logMessage(data, 'Debug Messages', '#debugLogConsole');
+        	//$("#debugLogConsole").append(data+'<br/>');
         	// Make sure that we automatically scroll to the bottom 
-        	$("#debugLogConsole").scrollTop($("#debugLogConsole")[0].scrollHeight);
-        	console.log(data);
   		}
 	});
 }
@@ -26,10 +54,7 @@ function getPositionLog(){
         dataType: "json",
         success: function (overviewData) {
         	var positionString = overviewData.telemetry.longitude + ', ' + overviewData.telemetry.latitude;
-        	$("#positionLogConsole").append(positionString +'<br/>');
-        	// Make sure that we automatically scroll to the bottom 
-        	$("#positionLogConsole").scrollTop($("#positionLogConsole")[0].scrollHeight);
-        	console.log(positionString);
+        	logMessage(positionString, 'Position Log', '#positionLogConsole');
         	/*
 	        $("#connectionStatus-onlineOfflineCell").text(overviewData.connectionStatus.onlineOffline)
 	        $("#connectionStatus-batteryLevelCell").text(overviewData.connectionStatus.batteryLevel)
@@ -47,10 +72,10 @@ function getPositionLog(){
 	        
 	     	mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
 	     	*/
-    }
+    	}
   });
 }
 
 // Call log updates every second
-setInterval('getDebugLog()',1000);
-setInterval('getPositionLog()',1000);
+setTimeout('getDebugLog()',1000);
+setTimeout('getPositionLog()',1000);

@@ -15,7 +15,7 @@ var mapWidget;
 $(function () {
   mapWidget = new MapWidget();
   mapWidget.setMapCenter();
-  setInterval('getlog()',1000);
+  setTimeout('getlog()',1000);
   
   // install jquery ui elements
   $('#sendDataButton').button();
@@ -34,21 +34,26 @@ function getlog(){
         dataType: "json",
         success: function (data) {
         	overviewData=data;
-			mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
-	  }
+    			mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
+    	    setTimeout('getlog()',1000);
+	     },
+	     fail : function(){
+	       setTimeout('getlog()',1000);
+	     }
 	});
 }
 
 function senddata(){
+	instructions.request = 'sendMappingInstructions';
 	var postdata = JSON.stringify(instructions);
-	var postArray = {json:postdata};
-	
+	//var postArray = {json:postdata};
+	console.log(instructions);
 	
 	var pathname = window.location.pathname;
 	
-	$.post('/api',postArray, function(data) {
-	//do on success
-	window.alert("Instructions sent");
+	$.post('/api',postdata, function(data) {
+		//do on success
+		window.alert("Instructions sent and received: " + data);
 	
 	}); 
 }

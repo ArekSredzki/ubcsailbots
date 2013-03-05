@@ -31,6 +31,9 @@ class ApiControl:
     def forceDataUpdate(self):
         pass
     
+    def sendMappingInstructions(self,args):
+        return 'basic setup successful!'
+    
     
     def setChallenge(self,name,arg):
         # Arguments passed as jquery 
