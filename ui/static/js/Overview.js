@@ -9,7 +9,7 @@ $(function () {
   compassWidget.init();
 })
 
-setInterval('getlog()',1000);
+setTimeout('getlog()',1000);
 
 function getlog(){
 
@@ -32,7 +32,7 @@ function getlog(){
 	     	compassWidget.setSheet(overviewData.telemetry.SheetPercent);
 	     	compassWidget.setBoatHeading(overviewData.telemetry.Heading);
 	     	compassWidget.setWindDirection(overviewData.telemetry.AWA);
-    }
+
   });
 
 }

@@ -40,8 +40,6 @@ function getDebugLog(){
   			logMessage(data, 'Debug Messages', '#debugLogConsole');
         	//$("#debugLogConsole").append(data+'<br/>');
         	// Make sure that we automatically scroll to the bottom 
-        	//$("#debugLogConsole").scrollTop($("#debugLogConsole")[0].scrollHeight);
-        	//console.log(data);
   		}
 	});
 }
@@ -74,10 +72,10 @@ function getPositionLog(){
 	        
 	     	mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
 	     	*/
-    }
+    	}
   });
 }
 
 // Call log updates every second
-setInterval('getDebugLog()',1000);
-setInterval('getPositionLog()',1000);
+setTimeout('getDebugLog()',1000);
+setTimeout('getPositionLog()',1000);
