@@ -32,7 +32,11 @@ function getlog(){
 	     	compassWidget.setSheet(overviewData.telemetry.SheetPercent);
 	     	compassWidget.setBoatHeading(overviewData.telemetry.Heading);
 	     	compassWidget.setWindDirection(overviewData.telemetry.AWA);
-	      w}
+	     	setTimeout('getlog()',1000);
+	      },
+	      fail: function(){
+	        setTimeout('getlog()',1000);
+	      }
 
   });
 
