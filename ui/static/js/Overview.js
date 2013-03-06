@@ -23,7 +23,10 @@ function getlog(){
 	        $("#telemetry-windDirectionCell").text(overviewData.telemetry.AWA);
 	        $("#telemetry-latitudeCell").text(overviewData.telemetry.latitude);
 	        $("#telemetry-longitudeCell").text(overviewData.telemetry.longitude);
-	        $("#telemetry-rudderCell").text(overviewData.telemetry.rudder);
+	        $("#connectionStatus-satNumCell").text(overviewData.connectionStatus.gpsSat);
+	        $("#connectionStatus-satNumCell").text(overviewData.connectionStatus.gpsSat);
+	        $("#connectionStatus-gpsAccuracyCell").text(overviewData.connectionStatus.HDOP);
+       
 	        
 	        // Update map widget
 	     	mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
