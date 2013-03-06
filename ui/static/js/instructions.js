@@ -45,14 +45,13 @@ function getlog(){
 
 function senddata(){
 	var postdata = JSON.stringify(instructions);
-	var postArray = {json:postdata};
-	
+	console.log(instructions);
 	
 	var pathname = window.location.pathname;
 	
-	$.post('/api',postArray, function(data) {
-	//do on success
-	window.alert("Instructions sent");
+	$.post('/api',postdata, function(data) {
+		//do on success
+		window.alert("Instructions sent and received: " + data);
 	
 	}); 
 }
@@ -62,7 +61,7 @@ function addWaypoint(){
 	var newWaypoint = new Array()
 	newWaypoint [0] = overviewData.telemetry.latitude
 	newWaypoint [1] = overviewData.telemetry.longitude
-	newWaypoint [2] = "DEFAULT_TYPE"
+	newWaypoint [2] = "pointToPoint"
 	instructions.waypoints.push(newWaypoint) 
 	mapWidget.update_waypoints(instructions.waypoints);
 	updateWaypointDataDisplayTable()

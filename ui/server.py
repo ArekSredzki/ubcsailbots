@@ -103,11 +103,10 @@ class api:
             print "Unexpected error:", sys.exc_info()[0]
             raise
     def POST(self):
-        i = web.input()
-        
-        # to do: handle instructions
-        return 'data received' 
-        
+        jsonData = web.data()
+        print jsonData
+        return apiControl.setInstructions(jsonData)
+            
         
 
 class getlog:
