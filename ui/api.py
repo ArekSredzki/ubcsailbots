@@ -20,7 +20,10 @@ class ApiControl:
         return json.dumps(self.getOverviewData())
     
     def getInstructionsDataAsJson(self):
-        return self.instructions
+        try:
+            return self.jsonInstructionsData
+        except:
+          return "nodata"
         
     
     # forces data to be updated from the Control Unit

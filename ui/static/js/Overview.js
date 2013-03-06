@@ -50,6 +50,7 @@ function getInstructions(){
         type: 'GET',
         dataType: "json",
         success: function (instructionsData) {
+          console.log(instructionsData)
        		instructionsDataLocal = instructionsData;
           console.log(instructionsDataLocal);
     			mapWidget.update_waypoints(instructionsData.waypoints);
