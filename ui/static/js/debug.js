@@ -40,7 +40,11 @@ function getDebugLog(){
   			logMessage(data, 'Debug Messages', '#debugLogConsole');
         	//$("#debugLogConsole").append(data+'<br/>');
         	// Make sure that we automatically scroll to the bottom 
-  		}
+         setTimeout('getDebugLog()',1000);
+      },
+      fail: function(){
+          setTimeout('getDebugLog()',1000);
+      }
 	});
 }
 
@@ -55,24 +59,11 @@ function getPositionLog(){
         success: function (overviewData) {
         	var positionString = overviewData.telemetry.longitude + ', ' + overviewData.telemetry.latitude;
         	logMessage(positionString, 'Position Log', '#positionLogConsole');
-        	/*
-	        $("#connectionStatus-onlineOfflineCell").text(overviewData.connectionStatus.onlineOffline)
-	        $("#connectionStatus-batteryLevelCell").text(overviewData.connectionStatus.batteryLevel)
-	        $("#connectionStatus-satNumCell").text(overviewData.connectionStatus.gpsSatelliteNumber)
-	        $("#connectionStatus-gpsAccuracyCell").text(overviewData.connectionStatus.gpsAccuracy)
-	        $("#connectionStatus-hardwareHealthCell").text(overviewData.connectionStatus.hardwareHealth)
-	        $("#telemetry-speedOverGroundCell").text(overviewData.telemetry.speedOverGround)
-	        $("#telemetry-windDirectionCell").text(overviewData.telemetry.windDirection)
-	        $("#telemetry-currentManeuverCell").text(overviewData.telemetry.currentManeuver)
-	        $("#telemetry-latitudeCell").text(overviewData.telemetry.latitude)
-	        $("#telemetry-longitudeCell").text(overviewData.telemetry.longitude)
-	        $("#currentProcess-currentTaskCell").text(overviewData.currentProcess.task)
-	        $("#currentProcess-timeRemainingCell").text(overviewData.currentProcess.timeRemaining)
-	        $("#currentProcess-timeToCompletionCell").text(overviewData.currentProcess.timeToCompletion)
-	        
-	     	mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
-	     	*/
-    	}
+          setTimeout('getPositionLog()',1000);
+    	  },
+    	  fail: function(){
+    	    setTimeout('getPositionLog()',1000);
+    	  }
   });
 }
 
