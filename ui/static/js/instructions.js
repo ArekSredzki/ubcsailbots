@@ -36,6 +36,7 @@ function getlog(){
         	overviewData=data;
     			mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
     	    setTimeout('getlog()',1000);
+    	    console.log(overviewData)
 	     },
 	     fail : function(){
 	       setTimeout('getlog()',1000);
@@ -65,6 +66,7 @@ function addWaypoint(){
 	instructions.waypoints.push(newWaypoint) 
 	mapWidget.update_waypoints(instructions.waypoints);
 	updateWaypointDataDisplayTable()
+	console.log(instructions.waypoints)
 }
 
 function addBoundary(){
@@ -75,12 +77,12 @@ function addBoundary(){
 	instructions.boundaries.push(newBoundary)
 	mapWidget.update_boundaries(instructions.boundaries);
 	updateBoundaryDataDisplayTable()
-	
+	console.log(instructions.boundaries)
 }
 
 function setChallenge(sel){
-	
-	instructions.challenge = sel.options[sel.selectedIndex].value; 
+	instructions.challenge = sel.options[sel.selectedIndex].value;
+	console.log(instructions.challenge) 
 }
 function updateWaypointDataDisplayTable(){
 	var latTextBoxes = new Array("lat1", "lat2", "lat3", "lat4")
@@ -89,13 +91,10 @@ function updateWaypointDataDisplayTable(){
 	for(var i=0; i < 4 ; i++){
 		$('#'+latTextBoxes[i]).val("")
 		$('#'+lonTextBoxes[i]).val("")
-		console.log(latTextBoxes[i])
-		console.log(lonTextBoxes[i])
 	}
 	for(var i=0; i<instructions.waypoints.length; i++){
 		$('#'+latTextBoxes[i]).val(instructions.waypoints[i][0])
 		$('#'+lonTextBoxes[i]).val(instructions.waypoints[i][1])
-		console.log(i);
 	}
 	
 	
@@ -123,8 +122,6 @@ function updateBoundaryDataDisplayTable(){
 function deleteWaypoint(index){
 	instructions.waypoints.splice(index,1);
 	mapWidget.update_waypoints(instructions.waypoints);
-	console.log(instructions.waypoints);
-	console.log(instructions.waypoints.length);
 	updateWaypointDataDisplayTable();
 }
 
@@ -132,7 +129,6 @@ function deleteBoundary(index){
 	instructions.boundaries.splice(index,1);
 	mapWidget.update_boundaries(instructions.boundaries);
 	updateBoundaryDataDisplayTable();
-	
 }
 
 
