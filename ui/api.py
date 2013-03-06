@@ -1,5 +1,5 @@
 import json
-
+import control.datatype.datatypes as control
 """ Handles all data that is passed from the API 
 *EDITING NOTE: Please make sure you understand how python handles classes before making any edits to this file. Mutable data types in 
         python have to be declared as instance variables and NOT as public variables in global scope. Global scope variables are shared
@@ -19,28 +19,32 @@ class ApiControl:
     def getOverviewDataAsJson(self):
         return json.dumps(self.getOverviewData())
     
-    def getInstructionsData(self):
-        instructionData = self.interface.getInstructions()
-        return instructionData
-    
     def getInstructionsDataAsJson(self):
-        return json.dumps(self.getInstructionsData())
+        return self.instructions
         
     
     # forces data to be updated from the Control Unit
     def forceDataUpdate(self):
         pass
     
-    def sendMappingInstructions(self,args):
+    def getDebug(self):
+      pass
+    
+    def setInstructions(self,jsonData):
+        self.jsonInstructionsData = jsonData
+        instructions = json.loads(jsonData)        
+        controlInstructions = self.initControlInstructionsObject(instructions)
+        self.interface.setInstructions(controlInstructions)
         return 'basic setup successful!'
-    
-    
-    def setChallenge(self,name,arg):
-        # Arguments passed as jquery 
-        if name == "navigationChallenge":
-            navigationChallenge(arg)
-        elif name == "stationKeepingChallenge":
-            stationKeepingChallenge(arg)
-        elif name == "longDistanceChallenge":
-            longDistanceChallenge(arg)
-            
+      
+    def initControlInstructionsObject(self,instructions):
+      waypointsList=[]
+      boundariesList=[]
+      for wpt in instructions['waypoints']:
+        coordinate = control.GPSCoordinate(wpt[0],wpt[1])
+        waypointsList.append(control.Waypoint(coordinate,wpt[2]))
+      for bnd in instructions['boundaries']:
+        coordinate = control.GPSCoordinate(bnd[0],bnd[1])
+        boundariesList.append(control.Boundary(coordinate,bnd[2]))
+      controlInstructions = control.Instructions(instructions['challenge'],waypointsList,boundariesList)
+      return controlInstructions

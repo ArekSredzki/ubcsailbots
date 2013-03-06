@@ -44,9 +44,7 @@ function getlog(){
 }
 
 function senddata(){
-	instructions.request = 'sendMappingInstructions';
 	var postdata = JSON.stringify(instructions);
-	//var postArray = {json:postdata};
 	console.log(instructions);
 	
 	var pathname = window.location.pathname;
@@ -63,7 +61,7 @@ function addWaypoint(){
 	var newWaypoint = new Array()
 	newWaypoint [0] = overviewData.telemetry.latitude
 	newWaypoint [1] = overviewData.telemetry.longitude
-	newWaypoint [2] = "DEFAULT_TYPE"
+	newWaypoint [2] = "pointToPoint"
 	instructions.waypoints.push(newWaypoint) 
 	mapWidget.update_waypoints(instructions.waypoints);
 	updateWaypointDataDisplayTable()
