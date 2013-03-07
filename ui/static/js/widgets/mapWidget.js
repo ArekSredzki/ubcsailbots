@@ -129,11 +129,13 @@ function MapWidget(listener){
     getBoundaries = function(){	
     	var boundaries = new Array();
     	for(var i=0; i<boundariesLayer.features.length; i++){
-    		var newBoundary = new Array();
-    		newBoundary [0] = boundariesLayer.features[i].geometry.getCentroid().transform(map.getProjectionObject(),new OpenLayers.Projection("EPSG:4326")).y;
-  			newBoundary [1] = boundariesLayer.features[i].geometry.getCentroid().transform(map.getProjectionObject(),new OpenLayers.Projection("EPSG:4326")).x;
-  			boundaries.push(newBoundary)
+    		var newBoundary = new Array();  			
+  			newBoundary [0] = boundariesLayer.features[i].geometry.clone().getBounds().getCenterLonLat().transform(map.getProjectionObject(),new OpenLayers.Projection("EPSG:4326")).lat;
+  			newBoundary [1] = boundariesLayer.features[i].geometry.clone().getBounds().getCenterLonLat().transform(map.getProjectionObject(),new OpenLayers.Projection("EPSG:4326")).lon;
+  			boundaries.push(newBoundary)  			
   		}
+  		
+  		
     	return boundaries;
     }
     
