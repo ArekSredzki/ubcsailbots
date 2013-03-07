@@ -77,10 +77,12 @@ html, body {
     margin:0px auto;
     left:0px;
     top:80px;
-    text-align:center;
+    text-align:left;
     color:#0072c6;
     padding:0px;
-    width:1200px;
+    width:90%;
+    max-width:1600px;
+    min-width:1000px;
 }
 
 #contentPane #leftColumn, #contentPane #rightColumn {
@@ -88,15 +90,19 @@ html, body {
 }
 
 #contentPane #leftColumn {
+    min-width:500px;
+    max-width:800px;
     float:left;
 }
 
 #contentPane #rightColumn {
+    min-width:500px;
+    max-width:800px;
     float:right;
 }
 
 #contentPane .widget {
-    width:500px; 
+    max-width:90%; 
     padding:5px;
 }
 
