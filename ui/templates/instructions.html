@@ -21,10 +21,10 @@ $def with (page)
 		    <div class="ui-widget">
 		        <select id="description" onchange="setChallenge(this)">
 				  <option value="none">None</option>
-				  <option value="navigation">Navigation</option>
-				  <option value="station_keepping">Station Keeping</option>
-				  <option value="long_distance">Long Distance</option>
-				  <option value="chase_race">Chase Race</option>
+				  <option value="challenge.navigation">Navigation</option>
+				  <option value="challenge.stationkeeping">Station Keeping</option>
+				  <option value="challenge.longdistance">Long Distance</option>
+				  <option value="challenge.chaserace">Chase Race</option>
 				</select>
 			</div>
     </div>
@@ -46,6 +46,7 @@ $def with (page)
 	            			<option value="nav_finish">nav Second</option>
 	            			<option value="station_keeping">Station Keeping</option>
 	            		</select>
+	            	<button id="b1" onclick="deleteWaypoint(0)">X</button>
 	            	
 	            </dd>
 	            
@@ -60,7 +61,8 @@ $def with (page)
 	            			<option value="nav_first">nav First</option>
 	            			<option value="nav_finish">nav Second</option>
 	            			<option value="station_keeping">Station Keeping</option>
-	            		</select>  	
+	            		</select>  
+	            		<button id="b2" onclick="deleteWaypoint(1)">X</button>	
 	            </dd>
 	
 	            <dt>Wpt 3</dt>
@@ -75,6 +77,7 @@ $def with (page)
 	            			<option value="nav_finish">nav Second</option>
 	            			<option value="station_keeping">Station Keeping</option>
 	            		</select>  	
+	            		<button id="b3" onclick="deleteWaypoint(2)">X</button>
 	            </dd>
 	            
 	            <dt>Wpt 4</dt>
@@ -89,6 +92,7 @@ $def with (page)
 	            			<option value="nav_finish">nav Second</option>
 	            			<option value="station_keeping">Station Keeping</option>
 	            		</select>
+	            		<button id="b4" onclick="deleteWaypoint(3)">X</button>
 	            </dd>
 	        </dl>
 	      </div>
@@ -99,11 +103,11 @@ $def with (page)
         <h1>Boundaries</h1>
         <dl>
             <dt>Bound1</dt>
-            <dd>lat:<input type="text" id="blat1" size="12">lon:<input type="text" id="blon1" size="12">radius: <input type="text" id="brad1" size="12">
+            <dd>lat:<input type="text" id="blat1" size="12">lon:<input type="text" id="blon1" size="12">radius: <input type="text" id="brad1" size="12"><button id="bb1" onclick="deleteBoundary(0)">X</button>
             </dd>
            
             <dt>Bound2</dt>
-            <dd>lat:<input type="text" id="blat2" size="12">lon:<input type="text" id="blon2" size="12">radius: <input type="text" id="brad2" size="12">
+            <dd>lat:<input type="text" id="blat2" size="12">lon:<input type="text" id="blon2" size="12">radius: <input type="text" id="brad2" size="12"><button id="bb2" onclick="deleteBoundary(1)">X</button>
             </dd>
         </dl>
     </div>

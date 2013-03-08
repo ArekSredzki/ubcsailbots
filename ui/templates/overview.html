@@ -15,7 +15,8 @@ $def with (page)
 
 <!-- START rightColumn -->
 <div id="rightColumn">
-    <div class="widget dataDisplayTableWidget">
+    
+      <div class="widget dataDisplayTableWidget">
         <h1>Connection Status</h1>
         <dl>
             <dt>Online/Offline</dt>
@@ -35,6 +36,8 @@ $def with (page)
         </dl>
     </div>
     
+    <br  style="clear:both" />
+    
     <div class="widget dataDisplayTableWidget">
         <h1>Telemetry</h1>
         <dl>
@@ -44,16 +47,18 @@ $def with (page)
             <dt>Wind Direction</dt>
             <dd id="telemetry-windDirectionCell"></dd>
             
-            <dt>Current Maneuver</dt>
-            <dd id="telemetry-currentManeuverCell"></dd>
-            
             <dt>Latitude</dt>
             <dd id="telemetry-latitudeCell"></dd>
             
             <dt>Longitude</dt>
             <dd id="telemetry-longitudeCell"></dd>
+            
+            <dt>Rudder</dt>
+            <dd id="telemetry-rudderCell"></dd>
         </dl>
     </div>
+    
+    <br  style="clear:both" />
     
     <div class="widget dataDisplayTableWidget">
         <h1>Current Process</h1>
@@ -61,13 +66,11 @@ $def with (page)
             <dt>Task</dt>
             <dd id="currentProcess-currentTaskCell"></dd>
             
-            <dt>Time Remaining</dt>
-            <dd id="currentProcess-timeRemainingCell"></dd>
-            
             <dt>Time to Completion</dt>
             <dd id="currentProcess-timeToCompletionCell"></dd>
         </dl>
     </div>
+
 </div>
 <!-- END rightColumn -->
 

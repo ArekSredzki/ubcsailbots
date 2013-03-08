@@ -37,6 +37,7 @@ function getlog(){
         	overviewData=data;
     			mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
     	    setTimeout('getlog()',1000);
+    	    console.log(overviewData)
 	     },
 	     fail : function(){
 	       setTimeout('getlog()',1000);
@@ -46,14 +47,13 @@ function getlog(){
 
 function senddata(){
 	var postdata = JSON.stringify(instructions);
-	var postArray = {json:postdata};
-	
+	console.log(instructions);
 	
 	var pathname = window.location.pathname;
 	
-	$.post('/api',postArray, function(data) {
-	//do on success
-	window.alert("Instructions sent");
+	$.post('/api',postdata, function(data) {
+		//do on success
+		window.alert("Instructions sent and received: " + data);
 	
 	}); 
 }
@@ -63,10 +63,11 @@ function addWaypoint(){
 	var newWaypoint = new Array()
 	newWaypoint [0] = overviewData.telemetry.latitude
 	newWaypoint [1] = overviewData.telemetry.longitude
-	newWaypoint [2] = "DEFAULT_TYPE"
+	newWaypoint [2] = "pointToPoint"
 	instructions.waypoints.push(newWaypoint) 
 	mapWidget.update_waypoints(instructions.waypoints);
 	updateWaypointDataDisplayTable()
+	console.log(instructions.waypoints)
 }
 
 function addBoundary(){
@@ -77,17 +78,21 @@ function addBoundary(){
 	instructions.boundaries.push(newBoundary)
 	mapWidget.update_boundaries(instructions.boundaries);
 	updateBoundaryDataDisplayTable()
-	
+	console.log(instructions.boundaries)
 }
 
 function setChallenge(sel){
-	
-	instructions.challenge = sel.options[sel.selectedIndex].value; 
+	instructions.challenge = sel.options[sel.selectedIndex].value;
+	console.log(instructions.challenge) 
 }
 function updateWaypointDataDisplayTable(){
 	var latTextBoxes = new Array("lat1", "lat2", "lat3", "lat4")
 	var lonTextBoxes = new Array("lon1", "lon2", "lon3", "lon4")
 	
+	for(var i=0; i < 4 ; i++){
+		$('#'+latTextBoxes[i]).val("")
+		$('#'+lonTextBoxes[i]).val("")
+	}
 	for(var i=0; i<instructions.waypoints.length; i++){
 		$('#'+latTextBoxes[i]).val(instructions.waypoints[i][0])
 		$('#'+lonTextBoxes[i]).val(instructions.waypoints[i][1])
@@ -99,6 +104,11 @@ function updateBoundaryDataDisplayTable(){
 	var latTextBoxes = new Array("blat1", "blat2")
 	var lonTextBoxes = new Array("blon1", "blon2")
 	var radTextBoxes = new Array("brad1", "brad2")
+	for(var i=0; i< 2; i++){
+		$('#'+latTextBoxes[i]).val("")
+		$('#'+lonTextBoxes[i]).val("")
+		$('#'+radTextBoxes[i]).val("")
+	}
 	
 	for(var i=0; i<instructions.boundaries.length; i++){
 		$('#'+latTextBoxes[i]).val(instructions.boundaries[i][0])
@@ -108,6 +118,18 @@ function updateBoundaryDataDisplayTable(){
 	
 	
 	
+}
+
+function deleteWaypoint(index){
+	instructions.waypoints.splice(index,1);
+	mapWidget.update_waypoints(instructions.waypoints);
+	updateWaypointDataDisplayTable();
+}
+
+function deleteBoundary(index){
+	instructions.boundaries.splice(index,1);
+	mapWidget.update_boundaries(instructions.boundaries);
+	updateBoundaryDataDisplayTable();
 }
 
 
