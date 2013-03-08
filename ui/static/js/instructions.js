@@ -23,7 +23,7 @@ var mapWidget;
 $(function () {
   mapWidget = new MapWidget();
   mapWidget.setMapCenter();
-  setInterval('getlog()',1000);
+  setTimeout('getlog()',1000);
   
   // install jquery ui elements
   $('#sendDataButton').button();
@@ -42,21 +42,25 @@ function getlog(){
         dataType: "json",
         success: function (data) {
         	overviewData=data;
-			mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
-	  }
+    			mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
+    	    setTimeout('getlog()',1000);
+    	    console.log(overviewData)
+	     },
+	     fail : function(){
+	       setTimeout('getlog()',1000);
+	     }
 	});
 }
 
 function senddata(){
 	var postdata = JSON.stringify(instructions);
-	var postArray = {json:postdata};
-	
+	console.log(instructions);
 	
 	var pathname = window.location.pathname;
 	
-	$.post('/api',postArray, function(data) {
-	//do on success
-	window.alert("Instructions sent");
+	$.post('/api',postdata, function(data) {
+		//do on success
+		window.alert("Instructions sent and received: " + data);
 	
 	}); 
 }
@@ -66,38 +70,49 @@ function addWaypoint(){
 	var newWaypoint = new Array()
 	newWaypoint [0] = overviewData.telemetry.latitude
 	newWaypoint [1] = overviewData.telemetry.longitude
-	newWaypoint [2] = "DEFAULT_TYPE"
+	newWaypoint [2] = "pointToPoint"
 	instructions.waypoints.push(newWaypoint) 
 	mapWidget.update_waypoints(instructions.waypoints);
 	updateWaypointDataDisplayTable()
+	console.log(instructions.waypoints)
 }
 
 function addBoundary(){
 	var newBoundary = new Array()
 	newBoundary [0] = overviewData.telemetry.latitude
 	newBoundary [1] = overviewData.telemetry.longitude
-	newBoundary [2] = 50 //radius
+	newBoundary [2] = 200 //radius
 	instructions.boundaries.push(newBoundary)
 	mapWidget.update_boundaries(instructions.boundaries);
 	updateBoundaryDataDisplayTable()
-	
+	console.log(instructions.boundaries)
 }
 
 function setChallenge(sel){
-	
-	instructions.challenge = sel.options[sel.selectedIndex].value; 
+	instructions.challenge = sel.options[sel.selectedIndex].value;
+	console.log(instructions.challenge) 
 }
 function updateWaypointDataDisplayTable(){
-	
+	for(var i=0; i < 4 ; i++){
+		$('#'+latWaypointTextBoxes[i]).val("")
+		$('#'+lonWaypointTextBoxes[i]).val("")
+		$('#'+typeOfWaypointSelect[i]).val("none")
+	}
 	for(var i=0; i<instructions.waypoints.length; i++){
 		$('#'+latWaypointTextBoxes[i]).val(instructions.waypoints[i][0])
 		$('#'+lonWaypointTextBoxes[i]).val(instructions.waypoints[i][1])
+		$('#'+typeOfWaypointSelect[i]).val(instructions.waypoints[i][2])
 	}
 	
 	
 }
 function updateBoundaryDataDisplayTable(){
-		
+	for(var i=0; i< 2; i++){
+		$('#'+latBoundaryTextBoxes[i]).val("")
+		$('#'+lonBoundaryTextBoxes[i]).val("")
+		$('#'+radBoundaryTextBoxes[i]).val("")
+	}
+	
 	for(var i=0; i<instructions.boundaries.length; i++){
 		$('#'+latBoundaryTextBoxes[i]).val(instructions.boundaries[i][0])
 		$('#'+lonBoundaryTextBoxes[i]).val(instructions.boundaries[i][1])
@@ -118,6 +133,27 @@ function updateBoundaries(index){
 	instructions.boundaries[index][2]=parseFloat($('#'+radBoundaryTextBoxes[index]).val(),10)
 	mapWidget.update_boundaries(instructions.boundaries);
 }
+
+function deleteWaypoint(index){
+	instructions.waypoints.splice(index,1);
+	mapWidget.update_waypoints(instructions.waypoints);
+	updateWaypointDataDisplayTable();
+}
+
+function deleteBoundary(index){
+	instructions.boundaries.splice(index,1);
+	mapWidget.update_boundaries(instructions.boundaries);
+	updateBoundaryDataDisplayTable();
+}
+
+
+
+
+
+
+
+
+
 
 
 

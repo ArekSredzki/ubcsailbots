@@ -5,7 +5,7 @@ import sys
 import os
 # Tell web.py where to find all the templates
 
-render = web.template.render('ui/templates/')
+render = web.template.render('templates/')
 
 # Map our URLs
 urls = (
@@ -103,11 +103,10 @@ class api:
             print "Unexpected error:", sys.exc_info()[0]
             raise
     def POST(self):
-        i = web.input()
-        
-        # to do: handle instructions
-        return 'data received' 
-        
+        jsonData = web.data()
+        print jsonData
+        return apiControl.setInstructions(jsonData)
+            
         
 
 class getlog:

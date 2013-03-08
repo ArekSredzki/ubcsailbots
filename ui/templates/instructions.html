@@ -21,10 +21,10 @@ $def with (page)
 		    <div class="ui-widget">
 		        <select id="description" onchange="setChallenge(this)">
 				  <option value="none">None</option>
-				  <option value="navigation">Navigation</option>
-				  <option value="station_keepping">Station Keeping</option>
-				  <option value="long_distance">Long Distance</option>
-				  <option value="chase_race">Chase Race</option>
+				  <option value="challenge.navigation">Navigation</option>
+				  <option value="challenge.stationkeeping">Station Keeping</option>
+				  <option value="challenge.longdistance">Long Distance</option>
+				  <option value="challenge.chaserace">Chase Race</option>
 				</select>
 			</div>
     </div>
@@ -34,11 +34,12 @@ $def with (page)
 	    <div class="smallColumn">
 	        <h1>Waypoints</h1>
 	        <dl>
-	            <wptName>Wpt 1</wptName>
-	            <form name= "wpt1">
-	            	lat:<input type="text" id="lat1" size="8" onchange="updateWaypoints(0)">
-	            	lon:<input type="text" id="lon1" size="8" onchange="updateWaypoints(0)" >
-	            	type:<select id="waypointtype1" onchange="updateWaypoints(0)" >
+	            <dt>Wpt 1</dt>
+	            <dd name= "wpt1">
+	              lat:<input type="text" id="lat1" size="8" onkeyup="updateWaypoints(0)">
+	              lon:<input type="text" id="lon1" size="8" onkeyup="updateWaypoints(0)">
+	              type:<select id="waypointtype1" onchange="updateWaypoints(0)">
+                    <option value="none"></option>	                
 	            			<option value="pointToPoint">Point to Point</option>
 	            			<option value="roundBuoy">Round Buoy</option>
 	            			<option value="ld_start_finish">ld Start Finish</option>
@@ -46,19 +47,17 @@ $def with (page)
 	            			<option value="ld_second">ld Second</option>
 	            			<option value="nav_first">nav First</option>
 	            			<option value="nav_finish">nav Second</option>
-	            			<option value="sk_top_left">sk Top Left</option>
-	            			<option value="sk_top_right">sk Top Right</option>
-	            			<option value="sk_bottom_left">sk Bottom Left</option>
-	            			<option value="sk_bottom_right">sk Bottom Right</option>
+	            			<option value="station_keeping">Station Keeping</option>
 	            		</select>
-	            	
-	            </form>
+	            	<button id="b1" onclick="deleteWaypoint(0)">X</button>
+	            </dd>
 	            
-	            <wptName>Wpt 2</wptName>
-	             <form name= "wpt2" >
-	            	lat:<input type="text" id="lat2" size="8" onchange="updateWaypoints(1)">
-	            	lon:<input type="text" id="lon2" size="8" onchange="updateWaypoints(1)">
+	            <dt>Wpt 2</dt>
+	             <dd name= "wpt2" >
+	            	lat:<input type="text" id="lat2" size="8" onkeyup="updateWaypoints(1)">
+	            	lon:<input type="text" id="lon2" size="8" onkeyup="updateWaypoints(1)">
 	            	type:<select id="waypointtype2" onchange="updateWaypoints(1)">
+                    <option value="none"></option>	            	  
 	            			<option value="pointToPoint">Point to Point</option>
 	            			<option value="roundBuoy">Round Buoy</option>
 	            			<option value="ld_start_finish">ld Start Finish</option>
@@ -66,19 +65,17 @@ $def with (page)
 	            			<option value="ld_second">ld Second</option>
 	            			<option value="nav_first">nav First</option>
 	            			<option value="nav_finish">nav Second</option>
-	            			<option value="sk_top_left">sk Top Left</option>
-	            			<option value="sk_top_right">sk Top Right</option>
-	            			<option value="sk_bottom_left">sk Bottom Left</option>
-	            			<option value="sk_bottom_right">sk Bottom Right</option>
-	            		</select>
-	            	
-	            </form>
+	            			<option value="station_keeping">Station Keeping</option>
+	            		</select>  
+	            		<button id="b2" onclick="deleteWaypoint(1)">X</button>	
+	            </dd>
 	
-	            <wptName>Wpt 3</wptName>
-	             <form name= "wpt3" >
-	            	lat:<input type="text" id="lat3" size="8" onchange="updateWaypoints(2)">
-	            	lon:<input type="text" id="lon3" size="8" onchange="updateWaypoints(2)">
+	            <dt>Wpt 3</dt>
+	             <dd name= "wpt3" >
+	            	lat:<input type="text" id="lat3" size="8" onkeyup="updateWaypoints(2)">
+	            	lon:<input type="text" id="lon3" size="8" onkeyup="updateWaypoints(2)">
 	            	type:<select id="waypointtype3" onchange="updateWaypoints(2)">
+                    <option value="none"></option>	            	  
 	            			<option value="pointToPoint">Point to Point</option>
 	            			<option value="roundBuoy">Round Buoy</option>
 	            			<option value="ld_start_finish">ld Start Finish</option>
@@ -86,19 +83,17 @@ $def with (page)
 	            			<option value="ld_second">ld Second</option>
 	            			<option value="nav_first">nav First</option>
 	            			<option value="nav_finish">nav Second</option>
-	            			<option value="sk_top_left">sk Top Left</option>
-	            			<option value="sk_top_right">sk Top Right</option>
-	            			<option value="sk_bottom_left">sk Bottom Left</option>
-	            			<option value="sk_bottom_right">sk Bottom Right</option>
-	            		</select>
-	            	
-	            </form>
+	            			<option value="station_keeping">Station Keeping</option>
+	            		</select>  	
+	            		<button id="b3" onclick="deleteWaypoint(2)">X</button>
+	            </dd>
 	            
-	            <wptName>Wpt 4</wptName>
-	           <form name= "wpt4">
-	            	lat:<input type="text" id="lat4" size="8" onchange="updateWaypoints(3)">
-	            	lon:<input type="text" id="lon4" size="8" onchange="updateWaypoints(3)">
+	            <dt>Wpt 4</dt>
+	           <dd name= "wpt4">
+	            	lat:<input type="text" id="lat4" size="8" onkeyup="updateWaypoints(3)">
+	            	lon:<input type="text" id="lon4" size="8" onkeyup="updateWaypoints(3)">
 	            	type:<select id="waypointtype4" onchange="updateWaypoints(3)">
+	            	    <option value="none"></option>
 	            			<option value="pointToPoint">Point to Point</option>
 	            			<option value="roundBuoy">Round Buoy</option>
 	            			<option value="ld_start_finish">ld Start Finish</option>
@@ -106,13 +101,10 @@ $def with (page)
 	            			<option value="ld_second">ld Second</option>
 	            			<option value="nav_first">nav First</option>
 	            			<option value="nav_finish">nav Second</option>
-	            			<option value="sk_top_left">sk Top Left</option>
-	            			<option value="sk_top_right">sk Top Right</option>
-	            			<option value="sk_bottom_left">sk Bottom Left</option>
-	            			<option value="sk_bottom_right">sk Bottom Right</option>
+	            			<option value="station_keeping">Station Keeping</option>
 	            		</select>
-	            	
-	            </form>
+	            		<button id="b4" onclick="deleteWaypoint(3)">X</button>
+	            </dd>
 	        </dl>
 	      </div>
     </div>
@@ -122,18 +114,21 @@ $def with (page)
         <h1>Boundaries</h1>
         <dl>
             <dt>Bound1</dt>
-            <form >
-            	lat:<input type="text" id="blat1" size="8" onchange="updateBoundaries(0)">
-            	lon:<input type="text" id="blon1" size="8" onchange="updateBoundaries(0)">
-            	radius: <input type="text" id="brad1" size="8" onchange="updateBoundaries(0)">
-            </form>
+            <dd >
+            	lat:<input type="text" id="blat1" size="8" onkeyup="updateBoundaries(0)">
+            	lon:<input type="text" id="blon1" size="8" onkeyup="updateBoundaries(0)">
+            	radius: <input type="text" id="brad1" size="8" onkeyup="updateBoundaries(0)">
+            	<button id="bb1" onclick="deleteBoundary(0)">X</button>
+            </dd>
            
             <dt>Bound2</dt>
-            <form>
-            	lat:<input type="text" id="blat2" size="8" onchange="updateBoundaries(1)">
-            	lon:<input type="text" id="blon2" size="8" onchange="updateBoundaries(1)">
-            	radius: <input type="text" id="brad2" size="8" onchange="updateBoundaries(1)">
-            </form>
+            <dd>
+            	lat:<input type="text" id="blat2" size="8" onkeyup="updateBoundaries(1)">
+            	lon:<input type="text" id="blon2" size="8" onkeyup="updateBoundaries(1)">
+            	radius: <input type="text" id="brad2" size="8" onkeyup="updateBoundaries(1)">
+              <button id="bb2" onclick="deleteBoundary(1)">X</button>            	
+            </dd>
+
         </dl>
     </div>
     
