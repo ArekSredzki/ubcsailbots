@@ -18,17 +18,11 @@ $def with (page)
     
       <div class="widget dataDisplayTableWidget">
         <h1>Connection Status</h1>
-        <dl>
-            <dt>Online/Offline</dt>
-            <dd id="connectionStatus-onlineOfflineCell"></dd>
-            
-            <dt>Battery Level</dt>
-            <dd id="connectionStatus-batteryLevelCell"></dd>
-            
+        <dl>            
             <dt>GPS # of Satellites</dt>
             <dd id="connectionStatus-satNumCell"></dd>
             
-            <dt>GPS Accuracy</dt>
+            <dt>GPS HDOP</dt>
             <dd id="connectionStatus-gpsAccuracyCell"></dd>
             
             <dt>Hardware Health</dt>
@@ -53,8 +47,11 @@ $def with (page)
             <dt>Longitude</dt>
             <dd id="telemetry-longitudeCell"></dd>
             
-            <dt>Rudder</dt>
-            <dd id="telemetry-rudderCell"></dd>
+            <dt>Course</dt>
+            <dd id="telemetry-courseHeading"></dd>
+            
+            <dt>Steer Method</dt>
+            <dd id="telemetry-steerMethod"></dd>            
         </dl>
     </div>
     

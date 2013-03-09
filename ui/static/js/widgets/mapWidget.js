@@ -16,6 +16,7 @@ function MapWidget(listener){
     map = new OpenLayers.Map("map", {
         controls: [
                     new OpenLayers.Control.Navigation(),
+                    new OpenLayers.Control.Zoom(),
                     new OpenLayers.Control.ScaleLine({ geodesic: true }),
                     new OpenLayers.Control.MousePosition(), ],
         maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34),
