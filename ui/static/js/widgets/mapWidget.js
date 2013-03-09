@@ -43,13 +43,17 @@ function MapWidget(listener){
     
     
     // we add draggable control to the map
-	drag = new OpenLayers.Control.DragFeature(boundariesLayer, {onComplete: endDrag});
-	map.addControl(drag);
-	drag.deactivate();
+	drag_boundaries = new OpenLayers.Control.DragFeature(boundariesLayer, {onComplete: endDrag});
+	map.addControl(drag_boundaries);
+	drag_boundaries.deactivate();
+	
+	drag_waypoints = new OpenLayers.Control.DragFeature(waypointsLayer, {onComplete: endDrag});  //<<==
+	map.addControl(drag_waypoints);
+	drag_waypoints.deactivate();
 	
 	
 	//we add feature selection control to the map
-	var select = new OpenLayers.Control.SelectFeature(boundariesLayer, {hover: true});
+	var select = new OpenLayers.Control.SelectFeature([boundariesLayer, waypointsLayer], {hover: true});
 	map.addControl(select);
 	select.activate();
 	
@@ -93,6 +97,7 @@ function MapWidget(listener){
       	waypointsLayer.removeAllFeatures();
       	
       	//we create a style for the waypoints
+      
       	var style_mark = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
       	style_mark.graphicWidth = 20;
         style_mark.graphicHeight = 20;
@@ -105,7 +110,18 @@ function MapWidget(listener){
           	var point = new OpenLayers.Geometry.Point(location.lon, location.lat);
           	var feature = new OpenLayers.Feature.Vector(point,null,style_mark);
           	waypointsLayer.addFeatures([feature]);
-        }                        	      
+        } 
+        
+       
+       /*
+       for(var i=0; i<waypoints_list.length; i++){
+    		var location = new OpenLayers.LonLat(waypoints_list[i][1], waypoints_list[i][0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+          	var point = new OpenLayers.Geometry.Point(location.lon, location.lat);
+          	var boundary = OpenLayers.Geometry.Polygon.createRegularPolygon(point,10,30,10);
+          	var feature = new OpenLayers.Feature.Vector(boundary);
+          	waypointsLayer.addFeatures([feature]);
+        }
+        */                      	      
     }
           
    	this.update_boundaries = function(boundaries_list){
@@ -125,10 +141,14 @@ function MapWidget(listener){
     	
     	draggable = draggable || false;
     	
-    	if(draggable)
-    		drag.activate();
-    	else
-    		drag.deactivate();  	
+    	if(draggable){
+    		drag_boundaries.activate();
+    		drag_waypoints.activate();
+    	}
+    	else{
+    		drag_boundaries.deactivate();
+    		drag_waypoints.deactivate();
+    	} 	
     }
     
     getBoundaries = function(){	
