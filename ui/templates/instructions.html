@@ -35,8 +35,11 @@ $def with (page)
 	        <h1>Waypoints</h1>
 	        <dl>
 	            <dt>Wpt 1</dt>
-	            <dd id= "wpt1">lat:<input type="text" id="lat1" size="12">lon:<input type="text" id="lon1" size="12">type:
-	            	<select id="waypointtype1">
+	            <dd name= "wpt1">
+	              lat:<input type="text" id="lat1" size="8" onkeyup="updateWaypoints(0)">
+	              lon:<input type="text" id="lon1" size="8" onkeyup="updateWaypoints(0)">
+	              type:<select id="waypointtype1" onchange="updateWaypoints(0)">
+                    <option value="none"></option>	                
 	            			<option value="pointToPoint">Point to Point</option>
 	            			<option value="roundBuoy">Round Buoy</option>
 	            			<option value="ld_start_finish">ld Start Finish</option>
@@ -47,12 +50,14 @@ $def with (page)
 	            			<option value="station_keeping">Station Keeping</option>
 	            		</select>
 	            	<button id="b1" onclick="deleteWaypoint(0)">X</button>
-	            	
 	            </dd>
 	            
 	            <dt>Wpt 2</dt>
-	             <dd id= "wpt2">lat:<input type="text" id="lat2" size="12">lon:<input type="text" id="lon2" size="12">type:
-	             	<select id="waypointtype2">
+	             <dd name= "wpt2" >
+	            	lat:<input type="text" id="lat2" size="8" onkeyup="updateWaypoints(1)">
+	            	lon:<input type="text" id="lon2" size="8" onkeyup="updateWaypoints(1)">
+	            	type:<select id="waypointtype2" onchange="updateWaypoints(1)">
+                    <option value="none"></option>	            	  
 	            			<option value="pointToPoint">Point to Point</option>
 	            			<option value="roundBuoy">Round Buoy</option>
 	            			<option value="ld_start_finish">ld Start Finish</option>
@@ -66,8 +71,11 @@ $def with (page)
 	            </dd>
 	
 	            <dt>Wpt 3</dt>
-	             <dd id= "wpt3">lat:<input type="text" id="lat3" size="12">lon:<input type="text" id="lon3" size="12">type:
-	             	<select id="waypointtype3">
+	             <dd name= "wpt3" >
+	            	lat:<input type="text" id="lat3" size="8" onkeyup="updateWaypoints(2)">
+	            	lon:<input type="text" id="lon3" size="8" onkeyup="updateWaypoints(2)">
+	            	type:<select id="waypointtype3" onchange="updateWaypoints(2)">
+                    <option value="none"></option>	            	  
 	            			<option value="pointToPoint">Point to Point</option>
 	            			<option value="roundBuoy">Round Buoy</option>
 	            			<option value="ld_start_finish">ld Start Finish</option>
@@ -81,8 +89,11 @@ $def with (page)
 	            </dd>
 	            
 	            <dt>Wpt 4</dt>
-	           <dd id= "wpt4">lat:<input type="text" id="lat4" size="12">lon:<input type="text" id="lon4" size="12">type:
-	           	<select id="waypointtype4">
+	           <dd name= "wpt4">
+	            	lat:<input type="text" id="lat4" size="8" onkeyup="updateWaypoints(3)">
+	            	lon:<input type="text" id="lon4" size="8" onkeyup="updateWaypoints(3)">
+	            	type:<select id="waypointtype4" onchange="updateWaypoints(3)">
+	            	    <option value="none"></option>
 	            			<option value="pointToPoint">Point to Point</option>
 	            			<option value="roundBuoy">Round Buoy</option>
 	            			<option value="ld_start_finish">ld Start Finish</option>
@@ -103,12 +114,21 @@ $def with (page)
         <h1>Boundaries</h1>
         <dl>
             <dt>Bound1</dt>
-            <dd>lat:<input type="text" id="blat1" size="12">lon:<input type="text" id="blon1" size="12">radius: <input type="text" id="brad1" size="12"><button id="bb1" onclick="deleteBoundary(0)">X</button>
+            <dd >
+            	lat:<input type="text" id="blat1" size="8" onkeyup="updateBoundaries(0)">
+            	lon:<input type="text" id="blon1" size="8" onkeyup="updateBoundaries(0)">
+            	radius: <input type="text" id="brad1" size="8" onkeyup="updateBoundaries(0)">
+            	<button id="bb1" onclick="deleteBoundary(0)">X</button>
             </dd>
            
             <dt>Bound2</dt>
-            <dd>lat:<input type="text" id="blat2" size="12">lon:<input type="text" id="blon2" size="12">radius: <input type="text" id="brad2" size="12"><button id="bb2" onclick="deleteBoundary(1)">X</button>
+            <dd>
+            	lat:<input type="text" id="blat2" size="8" onkeyup="updateBoundaries(1)">
+            	lon:<input type="text" id="blon2" size="8" onkeyup="updateBoundaries(1)">
+            	radius: <input type="text" id="brad2" size="8" onkeyup="updateBoundaries(1)">
+              <button id="bb2" onclick="deleteBoundary(1)">X</button>            	
             </dd>
+
         </dl>
     </div>
     

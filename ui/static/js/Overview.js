@@ -21,10 +21,12 @@ function getlog(){
         dataType: "json",
         success: function (overviewData) {
         console.log(overviewData);
-	        $("#telemetry-speedOverGroundCell").text(overviewData.telemetry.SOG);
-	        $("#telemetry-windDirectionCell").text(overviewData.telemetry.AWA);
-	        $("#telemetry-latitudeCell").text(overviewData.telemetry.latitude);
-	        $("#telemetry-longitudeCell").text(overviewData.telemetry.longitude);
+	        $("#telemetry-speedOverGroundCell").text(overviewData.telemetry.SOG.toFixed(parseInt(2))+" m/s");
+	        $("#telemetry-windDirectionCell").text(overviewData.telemetry.AWA.toFixed(parseInt(0))+ " degrees");
+	        $("#telemetry-latitudeCell").text(overviewData.telemetry.latitude.toFixed(parseInt(5)));
+	        $("#telemetry-longitudeCell").text(overviewData.telemetry.longitude.toFixed(parseInt(5)));
+	        $("#connectionStatus-satNumCell").text(overviewData.connectionStatus.gpsSat);
+	        $("#connectionStatus-gpsAccuracyCell").text(overviewData.connectionStatus.HDOP);
 	        $("#telemetry-rudderCell").text(overviewData.telemetry.rudder);
 	        
 	        // Update map widget
