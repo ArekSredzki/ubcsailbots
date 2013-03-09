@@ -118,6 +118,7 @@ function MapListener(){
   for (var i=0; i<boundariesList.length; i++){
     instructions.boundaries[i][0] = boundariesList[i][0];
     instructions.boundaries[i][1] = boundariesList[i][1];
+    instructions.boundaries[i][2] = boundariesList[i][2];
   }
   updateBoundaryDataDisplayTable();
  }

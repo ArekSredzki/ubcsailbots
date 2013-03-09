@@ -132,10 +132,9 @@ function MapWidget(listener){
     		var newBoundary = new Array();  			
   			newBoundary [0] = boundariesLayer.features[i].geometry.clone().getBounds().getCenterLonLat().transform(map.getProjectionObject(),new OpenLayers.Projection("EPSG:4326")).lat;
   			newBoundary [1] = boundariesLayer.features[i].geometry.clone().getBounds().getCenterLonLat().transform(map.getProjectionObject(),new OpenLayers.Projection("EPSG:4326")).lon;
+  			newBoundary [2] = boundariesLayer.features[i].geometry.clone().getBounds().getHeight()/2;
   			boundaries.push(newBoundary)  			
-  		}
-  		
-  		
+  		}  		
     	return boundaries;
     }
     
