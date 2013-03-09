@@ -31,9 +31,9 @@ function getlog(){
 	     	mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
 	     	
 	     	// Update compass widget
-	     	//compassWidget.setSheet(overviewData.telemetry.SheetPercent);
-	     	//compassWidget.setBoatHeading(overviewData.telemetry.Heading);
-	     	//compassWidget.setWindDirection(overviewData.telemetry.AWA);
+	     	compassWidget.setSheet(overviewData.telemetry.SheetPercent);
+	     	compassWidget.setBoatHeading(overviewData.telemetry.Heading);
+	     	compassWidget.setWindDirection(overviewData.telemetry.AWA);
 	     	setTimeout('getlog()',1000);
 	      },
 	      fail: function(){
