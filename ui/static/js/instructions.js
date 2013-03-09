@@ -103,9 +103,9 @@ function updateWaypointDataDisplayTable()
 	// Create waypoint template in a string
 	var waypointRowString = 
 	'<tr id="waypointRow$NUM" class="waypointRow"><td style="background:#5f9be3;color:#fff;">Wpt $NUM</td><td>lat:</td>' +
-					'<td><input type="text" id="lat$NUM" size="8" onblur="updateWaypoints($NUM)"></td>' +
+					'<td><input type="text" id="lat$NUM" size="8" onkeyup="updateWaypoints($NUM)"></td>' +
 	        		'<td>lon:</td>' +
-	        		'<td><input type="text" id="lon$NUM" size="8" onblur="updateWaypoints($NUM)"></td>' +
+	        		'<td><input type="text" id="lon$NUM" size="8" onkeyup="updateWaypoints($NUM)"></td>' +
 	        		'<td>type:</td>' +
 	        		'<td><select id="waypointtype$NUM" onchange="updateWaypoints($NUM)"><option value="none"></option><option value="pointToPoint">Point to Point</option><option value="roundBuoy">Round Buoy</option><option value="ld_start_finish">ld Start Finish</option><option value="ld_first">ld First</option><option value="ld_second">ld Second</option><option value="nav_first">nav First</option><option value="nav_finish">nav Second</option><option value="station_keeping">Station Keeping</option></select></td>' +
 	        		'<td><button id="deleteWaypointButton$NUM" onclick="deleteWaypoint($NUM)">X</button></td>' +
@@ -138,11 +138,11 @@ function updateBoundaryDataDisplayTable(){
 	// Create waypoint template in a string
 	var boundaryRowString = 
 	'<tr id="boundaryRow$NUM" class="boundaryRow"><td style="background:#5f9be3;color:#fff;">Boundary $NUM</td><td>lat:</td>' +
-					'<td><input type="text" id="blat$NUM" size="8" onblur="updateBoundaries($NUM)"></td>' +
+					'<td><input type="text" id="blat$NUM" size="8" onkeyup="updateBoundaries($NUM)"></td>' +
 	        		'<td>lon:</td>' +
-	        		'<td><input type="text" id="blon$NUM" size="8" onblur="updateBoundaries($NUM)"></td>' +
+	        		'<td><input type="text" id="blon$NUM" size="8" onkeyup="updateBoundaries($NUM)"></td>' +
 	        		'<td>radius:</td>' +
-	        		'<td> <input type="text" id="brad$NUM" size="8" onblur="updateBoundaries($NUM)"></td>' +
+	        		'<td> <input type="text" id="brad$NUM" size="8" onkeyup="updateBoundaries($NUM)"></td>' +
 	        		'<td><button id="deleteBoundaryButton$NUM" onclick="deleteBoundary($NUM)">X</button></td>' +
 	 '</tr>';
 	 console.log(boundaryRowString);
@@ -172,7 +172,6 @@ function updateWaypoints(number){
 	instructions.waypoints[index][1]=parseFloat($('#'+lonWaypointTextBoxes[index]).val(),10)
 	instructions.waypoints[index][2]=$('#'+typeOfWaypointSelect[index]).val()
 	mapWidget.update_waypoints(instructions.waypoints)	
-	updateWaypointDataDisplayTable();
 		
 }
 function updateBoundaries(number){
@@ -181,7 +180,6 @@ function updateBoundaries(number){
 	instructions.boundaries[index][1]=parseFloat($('#'+lonBoundaryTextBoxes[index]).val(),10)
 	instructions.boundaries[index][2]=parseFloat($('#'+radBoundaryTextBoxes[index]).val(),10)
 	mapWidget.update_boundaries(instructions.boundaries);
-	updateBoundaryDataDisplayTable();
 }
 
 function deleteWaypoint(number){
