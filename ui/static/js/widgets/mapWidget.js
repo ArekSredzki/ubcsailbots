@@ -34,7 +34,7 @@ function MapWidget(listener){
     map.addLayer(boatLayer);
     
     //we create a new waypoints layer and add it to the map
-    waypointsLayer = new OpenLayers.Layer.Markers("Waypoints");
+    waypointsLayer = new OpenLayers.Layer.Vector("Waypoints");
     map.addLayer(waypointsLayer);
     
     //we create a new boundarys layer and add it to the map
@@ -49,8 +49,7 @@ function MapWidget(listener){
 	
 	
 	//we add feature selection control to the map
-	var select = new OpenLayers.Control.SelectFeature(boundariesLayer, {	
-																			hover: true});
+	var select = new OpenLayers.Control.SelectFeature(boundariesLayer, {hover: true});
 	map.addControl(select);
 	select.activate();
 	
@@ -89,18 +88,24 @@ function MapWidget(listener){
     }
     
  
-    this.update_waypoints = function(waypoints_list) {        
-                
-        waypointsLayer.clearMarkers();
-                
-        var size = new OpenLayers.Size(21, 25);
-       	var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
-        var icon = new OpenLayers.Icon("static/img/map/marker.png", size, offset);
-        
-        for(var i=0; i<waypoints_list.length; i++){
-          	var markerWaypoint = new OpenLayers.Marker(new OpenLayers.LonLat(waypoints_list[i][1], waypoints_list[i][0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon.clone());
-        	waypointsLayer.addMarker(markerWaypoint);
-        }                	      
+    this.update_waypoints = function(waypoints_list) {       
+      
+      	waypointsLayer.removeAllFeatures();
+      	
+      	//we create a style for the waypoints
+      	var style_mark = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+      	style_mark.graphicWidth = 20;
+        style_mark.graphicHeight = 20;
+       	style_mark.graphicXOffset = -(style_mark.graphicWidth/2);
+       	style_mark.graphicYOffset = -style_mark.graphicHeight;
+        style_mark.externalGraphic = "static/img/map/marker.png";
+    	
+    	for(var i=0; i<waypoints_list.length; i++){
+    		var location = new OpenLayers.LonLat(waypoints_list[i][1], waypoints_list[i][0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+          	var point = new OpenLayers.Geometry.Point(location.lon, location.lat);
+          	var feature = new OpenLayers.Feature.Vector(point,null,style_mark);
+          	waypointsLayer.addFeatures([feature]);
+        }                        	      
     }
           
    	this.update_boundaries = function(boundaries_list){
@@ -133,7 +138,7 @@ function MapWidget(listener){
   			newBoundary [0] = boundariesLayer.features[i].geometry.clone().getBounds().getCenterLonLat().transform(map.getProjectionObject(),new OpenLayers.Projection("EPSG:4326")).lat;
   			newBoundary [1] = boundariesLayer.features[i].geometry.clone().getBounds().getCenterLonLat().transform(map.getProjectionObject(),new OpenLayers.Projection("EPSG:4326")).lon;
   			newBoundary [2] = Math.round(boundariesLayer.features[i].geometry.clone().getBounds().getHeight()/2);
-  			boundaries.push(newBoundary)  			
+  			boundaries.push(newBoundary);  			
   		}  		
     	return boundaries;
     }
