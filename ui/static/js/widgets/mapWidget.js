@@ -109,6 +109,7 @@ function MapWidget(listener){
        	style_mark.graphicXOffset = -(style_mark.graphicWidth/2);
        	style_mark.graphicYOffset = -style_mark.graphicHeight;
         style_mark.externalGraphic = "static/img/map/marker.png";
+        style_mark.fillOpacity=1;
     	
     	for(var i=0; i<waypoints_list.length; i++){
     		var location = new OpenLayers.LonLat(waypoints_list[i][1], waypoints_list[i][0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
