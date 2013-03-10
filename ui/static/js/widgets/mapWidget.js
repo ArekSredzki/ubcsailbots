@@ -10,7 +10,6 @@ function MapWidget(listener){
     this.waypointsLayer; // Layer for the waypoints of the the class
     this.boundariesLayer; // Layer for the boundaries of the class
     this.listener = listener || null;
-    this.drag;
   
     //Initialise the 'map' object
     map = new OpenLayers.Map("map", {
@@ -44,11 +43,11 @@ function MapWidget(listener){
     
     
     // we add draggable control to the map
-	drag_boundaries = new OpenLayers.Control.DragFeature(boundariesLayer, {onComplete: endDrag});
+	drag_boundaries = new OpenLayers.Control.DragFeature(boundariesLayer, {onComplete: endDrag_boundaries});
 	map.addControl(drag_boundaries);
 	drag_boundaries.deactivate();
 	
-	drag_waypoints = new OpenLayers.Control.DragFeature(waypointsLayer, {onComplete: endDrag});  //<<==
+	drag_waypoints = new OpenLayers.Control.DragFeature(waypointsLayer, {onComplete: endDrag_waypoints});
 	map.addControl(drag_waypoints);
 	drag_waypoints.deactivate();
 	
@@ -59,9 +58,14 @@ function MapWidget(listener){
 	select.activate();
 	
 	//a function for handling the update information after the drag of a feature is done
-	function endDrag(feature, pixel) {
+	function endDrag_boundaries(feature, pixel) {
 	    var boundariesList = getBoundaries();
     	listener.updateBoundaries(boundariesList);
+	}
+	
+	function endDrag_waypoints(feature, pixel) {
+	    var waypointsList = getWaypoints();
+	    listener.updateWaypoints(waypointsList);
 	}
 
 
@@ -111,18 +115,7 @@ function MapWidget(listener){
           	var point = new OpenLayers.Geometry.Point(location.lon, location.lat);
           	var feature = new OpenLayers.Feature.Vector(point,null,style_mark);
           	waypointsLayer.addFeatures([feature]);
-        } 
-        
-       
-       /*
-       for(var i=0; i<waypoints_list.length; i++){
-    		var location = new OpenLayers.LonLat(waypoints_list[i][1], waypoints_list[i][0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-          	var point = new OpenLayers.Geometry.Point(location.lon, location.lat);
-          	var boundary = OpenLayers.Geometry.Polygon.createRegularPolygon(point,10,30,10);
-          	var feature = new OpenLayers.Feature.Vector(boundary);
-          	waypointsLayer.addFeatures([feature]);
-        }
-        */                      	      
+        }              	      
     }
           
    	this.update_boundaries = function(boundaries_list){
@@ -162,6 +155,17 @@ function MapWidget(listener){
   			boundaries.push(newBoundary);  			
   		}  		
     	return boundaries;
+    }
+    
+     getWaypoints = function(){	
+    	var waypoints = new Array();
+    	for(var i=0; i<waypointsLayer.features.length; i++){
+    		var newWaypoint = new Array();    		  			
+  			newWaypoint [0] = ((((waypointsLayer.features[i].geometry.clone()).getBounds()).getCenterLonLat().clone()).transform(map.getProjectionObject(),new OpenLayers.Projection("EPSG:4326"))).lat;
+  			newWaypoint [1] = ((((waypointsLayer.features[i].geometry.clone()).getBounds()).getCenterLonLat().clone()).transform(map.getProjectionObject(),new OpenLayers.Projection("EPSG:4326"))).lon;
+  			waypoints.push(newWaypoint);  			
+  		}  		
+    	return waypoints;
     }
     
     

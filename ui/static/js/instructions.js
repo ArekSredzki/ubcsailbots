@@ -161,7 +161,11 @@ function MapListener(){
  }
  
  this.updateWaypoints = function(waypointsList){
-   
+ 	for (var i=0; i<waypointsList.length; i++){
+    	instructions.waypoints[i][0] = waypointsList[i][0];
+    	instructions.waypoints[i][1] = waypointsList[i][1];
+  	}
+  	updateWaypointDataDisplayTable();   
  } 
 }
 
