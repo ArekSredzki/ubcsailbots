@@ -21,9 +21,10 @@ instructions.boundaries = new Array();
 var mapWidget;
 
 $(function () {
-  	mapWidget = new MapWidget();
-  	mapWidget.setMapCenter();
-  	setTimeout('getlog()',1000);
+  mapWidget = new MapWidget(new MapListener());
+  mapWidget.setMapCenter();
+  mapWidget.setDraggableMode(true);
+  setTimeout('getlog()',1000);
   
   	// install jquery ui elements
   	$('#sendDataButton').button();
@@ -201,6 +202,25 @@ function deleteBoundary(number){
 
 
 
+function MapListener(){
+  
+ this.updateBoundaries = function(boundariesList){
+  for (var i=0; i<boundariesList.length; i++){
+    instructions.boundaries[i][0] = boundariesList[i][0];
+    instructions.boundaries[i][1] = boundariesList[i][1];
+    instructions.boundaries[i][2] = boundariesList[i][2];
+  }
+  updateBoundaryDataDisplayTable();
+ }
+ 
+ this.updateWaypoints = function(waypointsList){
+ 	for (var i=0; i<waypointsList.length; i++){
+    	instructions.waypoints[i][0] = waypointsList[i][0];
+    	instructions.waypoints[i][1] = waypointsList[i][1];
+  	}
+  	updateWaypointDataDisplayTable();   
+ } 
+}
 
 
 
