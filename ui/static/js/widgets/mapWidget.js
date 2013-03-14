@@ -55,7 +55,7 @@ function MapWidget(listener){
 	//we add feature selection control to the map
 	var select = new OpenLayers.Control.SelectFeature([boundariesLayer, waypointsLayer], {hover: true});
 	map.addControl(select);
-	select.activate();
+	select.deactivate();
 	
 	//a function for handling the update information after the drag of a feature is done
 	function endDrag_boundaries(feature, pixel) {
@@ -139,10 +139,12 @@ function MapWidget(listener){
     	if(draggable){
     		drag_boundaries.activate();
     		drag_waypoints.activate();
+    		select.activate();
     	}
     	else{
     		drag_boundaries.deactivate();
     		drag_waypoints.deactivate();
+    		select.deactivate();
     	} 	
     }
     
