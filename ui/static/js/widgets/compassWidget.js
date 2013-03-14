@@ -165,15 +165,21 @@ function CompassWidget() {
 		 */
 		var sheetDegrees;
 		// Store the value we received in our global variable
+		
 		sheetPercentHeading = sheetPercent;
 		if (sheetPercent > 100)
 			sheetPercent = 100;
 		else if (sheetPercent < 0)
 			sheetPercent = 0;
 		sheetDegrees = 90*(1-0.01*sheetPercent);
-		
+		/*
 		if((windHeading - boatHeading) > 0 && (windHeading - boatHeading) > 180)
+			sheetDegrees = (-1)*sheetDegrees;*/
+		if (windHeading < 0)
+		{
 			sheetDegrees = (-1)*sheetDegrees;
+		}
+			
 			
 		sailMast.transitionTo({
 	            rotation: Math.PI * sheetDegrees / 180,
@@ -193,6 +199,8 @@ function CompassWidget() {
 	    });
 	    // Update sheet because the wind may have crossed the transom
 	    this.setSheet(sheetPercentHeading);
+	    // Update the wind direction
+	    this.setWindDirection(windHeading);
 	    
 	    // Update boat heading on text display
 	    textBoatHeading.setText('Boat Heading: ' + boatHeading + ' degrees');
@@ -201,8 +209,9 @@ function CompassWidget() {
 	
 	this.setWindDirection = function(degreeWindDirection) {
 		windHeading = degreeWindDirection;
+		var rotation = ((Math.PI * (degreeWindDirection+boatHeading+270-20)) / 180);
 		windWedge.transitionTo({
-	            rotation: Math.PI * (-90-20+degreeWindDirection) / 180,
+	            rotation: rotation,
 	            duration:1
 	    });
 	    // Update sheet because the wind may have crossed the transom

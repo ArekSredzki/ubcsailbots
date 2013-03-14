@@ -26,8 +26,14 @@ function getlog(){
 	        $("#telemetry-latitudeCell").text(overviewData.telemetry.latitude.toFixed(parseInt(5)));
 	        $("#telemetry-longitudeCell").text(overviewData.telemetry.longitude.toFixed(parseInt(5)));
 	        $("#connectionStatus-satNumCell").text(overviewData.connectionStatus.gpsSat);
+	        if (overviewData.connectionStatus.automode=1){
+	          $("#connectionStatus-autoMode").text("Auto");
+	        }
+	        else{
+            $("#connectionStatus-autoMode").text("RC");
+          }
 	        $("#connectionStatus-gpsAccuracyCell").text(overviewData.connectionStatus.HDOP);
-	        $("#telemetry-rudderCell").text(overviewData.telemetry.rudder);
+	        $("#telemetry-rudderCell").text(overviewData.telemetry.Rudder);
 	        
 	        // Update map widget
 	     	mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);

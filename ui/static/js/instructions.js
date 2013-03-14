@@ -6,13 +6,13 @@
 var mapWidget;
 var overviewData;
 
-var latBoundaryTextBoxes = new Array("blat1", "blat2")
-var lonBoundaryTextBoxes = new Array("blon1", "blon2")
-var radBoundaryTextBoxes = new Array("brad1", "brad2")
+var latBoundaryTextBoxes = new Array("blat1", "blat2");
+var lonBoundaryTextBoxes = new Array("blon1", "blon2");
+var radBoundaryTextBoxes = new Array("brad1", "brad2");
 
-var latWaypointTextBoxes = new Array("lat1", "lat2", "lat3", "lat4")
-var lonWaypointTextBoxes = new Array("lon1", "lon2", "lon3", "lon4")
-var typeOfWaypointSelect = new Array("waypointtype1", "waypointtype2", "waypointtype3", "waypointtype4")
+var latWaypointTextBoxes = new Array("lat1", "lat2", "lat3", "lat4");
+var lonWaypointTextBoxes = new Array("lon1", "lon2", "lon3", "lon4");
+var typeOfWaypointSelect = new Array("waypointtype1", "waypointtype2", "waypointtype3", "waypointtype4");
 
 instructions = new Object();
 instructions.challenge = "NONE";
@@ -26,12 +26,11 @@ $(function () {
   mapWidget.setDraggableMode(true);
   setTimeout('getlog()',1000);
   
-  // install jquery ui elements
-  $('#sendDataButton').button();
-  $('#addWaypointButton').button();
-  $('#addBoundaryButton').button();
-  $( "#description" ).combobox();
-
+  	// install jquery ui elements
+  	$('#sendDataButton').button();
+  	$('#addWaypointButton').button();
+  	$('#addBoundaryButton').button();
+  	$( "#description" ).combobox();
 })
 
 
@@ -45,7 +44,7 @@ function getlog(){
         	overviewData=data;
     			mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
     	    setTimeout('getlog()',1000);
-    	    console.log(overviewData)
+    	    console.log(overviewData);
 	     },
 	     fail : function(){
 	       setTimeout('getlog()',1000);
@@ -69,80 +68,134 @@ function senddata(){
 
 function addWaypoint(){
 	var newWaypoint = new Array()
-	newWaypoint [0] = overviewData.telemetry.latitude
-	newWaypoint [1] = overviewData.telemetry.longitude
-	newWaypoint [2] = "pointToPoint"
-	instructions.waypoints.push(newWaypoint) 
+	newWaypoint [0] = overviewData.telemetry.latitude;
+	newWaypoint [1] = overviewData.telemetry.longitude;
+	newWaypoint [2] = "pointToPoint";
+	
+	
+	instructions.waypoints.push(newWaypoint); 
 	mapWidget.update_waypoints(instructions.waypoints);
 	updateWaypointDataDisplayTable()
 	console.log(instructions.waypoints)
+	
 }
 
 function addBoundary(){
-	var newBoundary = new Array()
-	newBoundary [0] = overviewData.telemetry.latitude
-	newBoundary [1] = overviewData.telemetry.longitude
+	var newBoundary = new Array();
+	newBoundary [0] = overviewData.telemetry.latitude;
+	newBoundary [1] = overviewData.telemetry.longitude;
 	newBoundary [2] = 200 //radius
-	instructions.boundaries.push(newBoundary)
+	instructions.boundaries.push(newBoundary);
 	mapWidget.update_boundaries(instructions.boundaries);
-	updateBoundaryDataDisplayTable()
-	console.log(instructions.boundaries)
+	updateBoundaryDataDisplayTable();
+	console.log(instructions.boundaries);
 }
 
 function setChallenge(sel){
 	instructions.challenge = sel.options[sel.selectedIndex].value;
-	console.log(instructions.challenge) 
+	console.log(instructions.challenge) ;
 }
-function updateWaypointDataDisplayTable(){
-	for(var i=0; i < 4 ; i++){
-		$('#'+latWaypointTextBoxes[i]).val("")
-		$('#'+lonWaypointTextBoxes[i]).val("")
-		$('#'+typeOfWaypointSelect[i]).val("none")
-	}
-	for(var i=0; i<instructions.waypoints.length; i++){
-		$('#'+latWaypointTextBoxes[i]).val(instructions.waypoints[i][0])
-		$('#'+lonWaypointTextBoxes[i]).val(instructions.waypoints[i][1])
-		$('#'+typeOfWaypointSelect[i]).val(instructions.waypoints[i][2])
+
+function updateWaypointDataDisplayTable()
+{
+	// First remove all rows from table
+	$("#waypointListTable .waypointRow").remove();
+	
+	// Create waypoint template in a string
+	var waypointRowString = 
+	'<tr id="waypointRow$NUM" class="waypointRow"><td style="background:#5f9be3;color:#fff;">Wpt $NUM</td><td>lat:</td>' +
+					'<td><input type="text" id="lat$NUM" size="8" onkeyup="updateWaypoints($NUM)"></td>' +
+	        		'<td>lon:</td>' +
+	        		'<td><input type="text" id="lon$NUM" size="8" onkeyup="updateWaypoints($NUM)"></td>' +
+	        		'<td>type:</td>' +
+	        		'<td><select id="waypointtype$NUM" onchange="updateWaypoints($NUM)"><option value="none"></option><option value="pointToPoint">Point to Point</option><option value="roundBuoy">Round Buoy</option><option value="ld_start_finish">ld Start Finish</option><option value="ld_first">ld First</option><option value="ld_second">ld Second</option><option value="nav_first">nav First</option><option value="nav_finish">nav Second</option><option value="station_keeping">Station Keeping</option></select></td>' +
+	        		'<td><button id="deleteWaypointButton$NUM" onclick="deleteWaypoint($NUM)">X</button></td>' +
+	 '</tr>';
+	 console.log(waypointRowString);
+	
+	// Foreach value in the length (including if there is no values), add a waypoint marker
+	for (var i=0; i<instructions.waypoints.length; i++)
+	{
+		
+		$('#waypointListTable > tbody:last').append(waypointRowString.split('$NUM').join(i+1));
+		console.log('Added row to data display table');
+		
+		$('#lat'+(i+1)).val("");
+		$('#lon'+(i+1)).val("");
+		$('#waypointtype'+(i+1)).val("none");
 	}
 	
-	
+	for (var i=0; i<instructions.waypoints.length; i++){
+		$('#lat'+(i+1)).val(instructions.waypoints[i][0]);
+		$('#lon'+(i+1)).val(instructions.waypoints[i][1]);
+		$('#waypointtype'+(i+1)).val(instructions.waypoints[i][2]);
+	}
 }
+
 function updateBoundaryDataDisplayTable(){
-	for(var i=0; i< 2; i++){
-		$('#'+latBoundaryTextBoxes[i]).val("")
-		$('#'+lonBoundaryTextBoxes[i]).val("")
-		$('#'+radBoundaryTextBoxes[i]).val("")
+		// First remove all rows from table
+	$("#boundaryListTable .boundaryRow").remove();
+	
+	// Create waypoint template in a string
+	var boundaryRowString = 
+	'<tr id="boundaryRow$NUM" class="boundaryRow"><td style="background:#5f9be3;color:#fff;">Boundary $NUM</td><td>lat:</td>' +
+					'<td><input type="text" id="blat$NUM" size="8" onkeyup="updateBoundaries($NUM)"></td>' +
+	        		'<td>lon:</td>' +
+	        		'<td><input type="text" id="blon$NUM" size="8" onkeyup="updateBoundaries($NUM)"></td>' +
+	        		'<td>radius:</td>' +
+	        		'<td> <input type="text" id="brad$NUM" size="8" onkeyup="updateBoundaries($NUM)"></td>' +
+	        		'<td><button id="deleteBoundaryButton$NUM" onclick="deleteBoundary($NUM)">X</button></td>' +
+	 '</tr>';
+	 console.log(boundaryRowString);
+	
+	// Foreach value in the length (including if there is no values), add a waypoint marker
+	for (var i=0; i<instructions.boundaries.length; i++)
+	{
+		
+		$('#boundaryListTable > tbody:last').append(boundaryRowString.split('$NUM').join(i+1));
+		console.log('Added row to data display table');
+		
+		$('#blat'+(i+1)).val("");
+		$('#blon'+(i+1)).val("");
+		$('#brad'+(i+1)).val("none");
 	}
 	
-	for(var i=0; i<instructions.boundaries.length; i++){
-		$('#'+latBoundaryTextBoxes[i]).val(instructions.boundaries[i][0])
-		$('#'+lonBoundaryTextBoxes[i]).val(instructions.boundaries[i][1])
-		$('#'+radBoundaryTextBoxes[i]).val(instructions.boundaries[i][2])
+	for (var i=0; i<instructions.boundaries.length; i++){
+		$('#blat'+(i+1)).val(instructions.boundaries[i][0]);
+		$('#blon'+(i+1)).val(instructions.boundaries[i][1]);
+		$('#brad'+(i+1)).val(instructions.boundaries[i][2]);
 	}
 	
 }
-function updateWaypoints(index){
+function updateWaypoints(number){
+	var index = number-1;
 	instructions.waypoints[index][0]=parseFloat($('#'+latWaypointTextBoxes[index]).val(),10)
 	instructions.waypoints[index][1]=parseFloat($('#'+lonWaypointTextBoxes[index]).val(),10)
 	instructions.waypoints[index][2]=$('#'+typeOfWaypointSelect[index]).val()
 	mapWidget.update_waypoints(instructions.waypoints)	
 		
 }
-function updateBoundaries(index){
+function updateBoundaries(number){
+	var index = number-1;
 	instructions.boundaries[index][0]=parseFloat($('#'+latBoundaryTextBoxes[index]).val(),10)
 	instructions.boundaries[index][1]=parseFloat($('#'+lonBoundaryTextBoxes[index]).val(),10)
 	instructions.boundaries[index][2]=parseFloat($('#'+radBoundaryTextBoxes[index]).val(),10)
 	mapWidget.update_boundaries(instructions.boundaries);
 }
 
-function deleteWaypoint(index){
-	instructions.waypoints.splice(index,1);
+function deleteWaypoint(number){
+	// NOTE: number is not an index (shifted by +1)
+	instructions.waypoints.splice(number-1,1);
 	mapWidget.update_waypoints(instructions.waypoints);
 	updateWaypointDataDisplayTable();
+	
+	// Delete the table row
+	//$('#waypointRow' + (index+1)).remove();
 }
 
-function deleteBoundary(index){
-	instructions.boundaries.splice(index,1);
+function deleteBoundary(number){
+	// NOTE: number is not an index (shifted by +1)
+	instructions.boundaries.splice(number-1,1);
 	mapWidget.update_boundaries(instructions.boundaries);
 	updateBoundaryDataDisplayTable();
 }
