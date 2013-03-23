@@ -6,14 +6,6 @@
 var mapWidget;
 var overviewData;
 
-var latBoundaryTextBoxes = new Array("blat1", "blat2");
-var lonBoundaryTextBoxes = new Array("blon1", "blon2");
-var radBoundaryTextBoxes = new Array("brad1", "brad2");
-
-var latWaypointTextBoxes = new Array("lat1", "lat2", "lat3", "lat4");
-var lonWaypointTextBoxes = new Array("lon1", "lon2", "lon3", "lon4");
-var typeOfWaypointSelect = new Array("waypointtype1", "waypointtype2", "waypointtype3", "waypointtype4");
-
 instructions = new Object();
 instructions.challenge = "NONE";
 instructions.waypoints = new Array();
@@ -169,17 +161,17 @@ function updateBoundaryDataDisplayTable(){
 }
 function updateWaypoints(number){
 	var index = number-1;
-	instructions.waypoints[index][0]=parseFloat($('#'+latWaypointTextBoxes[index]).val(),10)
-	instructions.waypoints[index][1]=parseFloat($('#'+lonWaypointTextBoxes[index]).val(),10)
-	instructions.waypoints[index][2]=$('#'+typeOfWaypointSelect[index]).val()
+	instructions.waypoints[index][0]=parseFloat($('#lat'+number).val(),10)
+	instructions.waypoints[index][1]=parseFloat($('#lon'+number).val(),10)
+	instructions.waypoints[index][2]=$('#waypointtype'+number).val()
 	mapWidget.update_waypoints(instructions.waypoints)	
 		
 }
 function updateBoundaries(number){
 	var index = number-1;
-	instructions.boundaries[index][0]=parseFloat($('#'+latBoundaryTextBoxes[index]).val(),10)
-	instructions.boundaries[index][1]=parseFloat($('#'+lonBoundaryTextBoxes[index]).val(),10)
-	instructions.boundaries[index][2]=parseFloat($('#'+radBoundaryTextBoxes[index]).val(),10)
+	instructions.boundaries[index][0]=parseFloat($('#blat'+number).val(),10)
+	instructions.boundaries[index][1]=parseFloat($('#blon'+number).val(),10)
+	instructions.boundaries[index][2]=parseFloat($('#brad'+number).val(),10)
 	mapWidget.update_boundaries(instructions.boundaries);
 }
 
