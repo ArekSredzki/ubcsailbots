@@ -1,3 +1,4 @@
+"use strict";
 function MapWidget(listener){
     // Start position for the map (hardcoded here for simplicity)
     this.default_lat = 49.27628;
@@ -12,7 +13,7 @@ function MapWidget(listener){
     this.listener = listener || null;
   
     //Initialise the 'map' object
-    map = new OpenLayers.Map("map", {
+   var map = new OpenLayers.Map("map", {
         controls: [
                     new OpenLayers.Control.Navigation(),
                     new OpenLayers.Control.Zoom(),
@@ -30,24 +31,24 @@ function MapWidget(listener){
     map.addLayer(tilesLayer);
 
     //we create a new boat layer and add it to the map
-    boatLayer = new OpenLayers.Layer.Markers("Boat");
+    var boatLayer = new OpenLayers.Layer.Markers("Boat");
     map.addLayer(boatLayer);
     
     //we create a new waypoints layer and add it to the map
-    waypointsLayer = new OpenLayers.Layer.Vector("Waypoints");
+    var waypointsLayer = new OpenLayers.Layer.Vector("Waypoints");
     map.addLayer(waypointsLayer);
     
     //we create a new boundarys layer and add it to the map
-    boundariesLayer = new OpenLayers.Layer.Vector("Boundaries");
+    var boundariesLayer = new OpenLayers.Layer.Vector("Boundaries");
     map.addLayer(boundariesLayer);
     
     
     // we add draggable control to the map
-	drag_boundaries = new OpenLayers.Control.DragFeature(boundariesLayer, {onComplete: endDrag_boundaries});
+	var drag_boundaries = new OpenLayers.Control.DragFeature(boundariesLayer, {onComplete: endDrag_boundaries});
 	map.addControl(drag_boundaries);
 	drag_boundaries.deactivate();
 	
-	drag_waypoints = new OpenLayers.Control.DragFeature(waypointsLayer, {onComplete: endDrag_waypoints});
+	var drag_waypoints = new OpenLayers.Control.DragFeature(waypointsLayer, {onComplete: endDrag_waypoints});
 	map.addControl(drag_waypoints);
 	drag_waypoints.deactivate();
 	
@@ -61,12 +62,12 @@ function MapWidget(listener){
 	function endDrag_boundaries(feature, pixel) {
 	    var boundariesList = getBoundaries();
     	listener.updateBoundaries(boundariesList);
-	}
+	};
 	
 	function endDrag_waypoints(feature, pixel) {
 	    var waypointsList = getWaypoints();
 	    listener.updateWaypoints(waypointsList);
-	}
+	};
 
 
 
@@ -75,7 +76,7 @@ function MapWidget(listener){
 	    lon = lon || this.default_lon;
         var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
         map.setCenter(lonLat, this.zoom);        
-    }
+   }
 
 
     this.update_boat_location = function(lon,lat) {
@@ -145,10 +146,10 @@ function MapWidget(listener){
     		drag_boundaries.deactivate();
     		drag_waypoints.deactivate();
     		select.deactivate();
-    	} 	
+    	}; 	
     }
     
-    getBoundaries = function(){	
+    var getBoundaries = function(){	
     	var boundaries = new Array();
     	for(var i=0; i<boundariesLayer.features.length; i++){
     		var newBoundary = new Array();  			
@@ -158,9 +159,9 @@ function MapWidget(listener){
   			boundaries.push(newBoundary);  			
   		}  		
     	return boundaries;
-    }
+    };
     
-     getWaypoints = function(){	
+    var getWaypoints = function(){	
     	var waypoints = new Array();
     	for(var i=0; i<waypointsLayer.features.length; i++){
     		var newWaypoint = new Array();    		  			
@@ -169,9 +170,9 @@ function MapWidget(listener){
   			waypoints.push(newWaypoint);  			
   		}  		
     	return waypoints;
-    }
+    };
     
     
     
     
-}
+};

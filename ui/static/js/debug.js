@@ -1,3 +1,4 @@
+"use strict";
 function logMessage(message, logName, containerId)
 {
 	var now = new Date();

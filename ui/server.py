@@ -111,7 +111,8 @@ class api:
 
 class getlog:
     def GET(self):
-        return "Debug Message"
+        debugger = apiControl.getDebugMessages();
+        return debugger
 
 class shutdown: 
     def GET(self): 

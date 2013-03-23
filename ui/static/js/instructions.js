@@ -3,6 +3,7 @@
  *
  *
  */
+"use strict";
 var mapWidget;
 var overviewData;
 
@@ -14,7 +15,7 @@ var latWaypointTextBoxes = new Array("lat1", "lat2", "lat3", "lat4");
 var lonWaypointTextBoxes = new Array("lon1", "lon2", "lon3", "lon4");
 var typeOfWaypointSelect = new Array("waypointtype1", "waypointtype2", "waypointtype3", "waypointtype4");
 
-instructions = new Object();
+var instructions = new Object();
 instructions.challenge = "NONE";
 instructions.waypoints = new Array();
 instructions.boundaries = new Array();

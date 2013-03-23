@@ -25,6 +25,9 @@ class ApiControl:
         except:
           return "nodata"
         
+    def getDebugMessages(self):
+        debugMessage = inteface.getDebugMessages()
+        return debugMessage
     
     # forces data to be updated from the Control Unit
     def forceDataUpdate(self):
