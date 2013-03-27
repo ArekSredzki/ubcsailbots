@@ -160,7 +160,6 @@ function updateBoundaryDataDisplayTable(){
 	
 }
 function updateWaypoints(number){
-	var index = number-1;
 	instructions.waypoints[index][0]=parseFloat($('#lat'+number).val(),10)
 	instructions.waypoints[index][1]=parseFloat($('#lon'+number).val(),10)
 	instructions.waypoints[index][2]=$('#waypointtype'+number).val()
@@ -168,7 +167,6 @@ function updateWaypoints(number){
 		
 }
 function updateBoundaries(number){
-	var index = number-1;
 	instructions.boundaries[index][0]=parseFloat($('#blat'+number).val(),10)
 	instructions.boundaries[index][1]=parseFloat($('#blon'+number).val(),10)
 	instructions.boundaries[index][2]=parseFloat($('#brad'+number).val(),10)
