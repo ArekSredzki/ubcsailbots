@@ -13,11 +13,18 @@ runControlCode=True
 if runControlCode:
   from control.GuiHandler import GuiHandler
   interface = GuiHandler()
-  Thread(target=control.__main__.main, args=()).start()
+  controlThread = Thread(target=control.__main__.main)
+  controlThread.daemon = True
+  controlThread.start()
 else:
   from simulator import Simulator
   interface = Simulator()
 
-
 server.apiControl = ApiControl(interface)
-Thread(target=server.app.run, args=()).start()
+
+
+try:
+  server.app.run()
+except KeyboardInterrupt:
+  pass
+
