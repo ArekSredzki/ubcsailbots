@@ -22,7 +22,7 @@ $(function () {
   	$('#sendDataButton').button();
   	$('#addWaypointButton').button();
   	$('#addBoundaryButton').button();
-  	$( "#description" ).combobox();
+  	//$( "#description" ).combobox();
 })
 
 
