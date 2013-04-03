@@ -6,15 +6,6 @@
 "use strict";
 var mapWidget;
 var overviewData;
-
-var latBoundaryTextBoxes = new Array("blat1", "blat2");
-var lonBoundaryTextBoxes = new Array("blon1", "blon2");
-var radBoundaryTextBoxes = new Array("brad1", "brad2");
-
-var latWaypointTextBoxes = new Array("lat1", "lat2", "lat3", "lat4");
-var lonWaypointTextBoxes = new Array("lon1", "lon2", "lon3", "lon4");
-var typeOfWaypointSelect = new Array("waypointtype1", "waypointtype2", "waypointtype3", "waypointtype4");
-
 var instructions = new Object();
 instructions.challenge = "NONE";
 instructions.waypoints = new Array();
@@ -31,7 +22,7 @@ $(function () {
   	$('#sendDataButton').button();
   	$('#addWaypointButton').button();
   	$('#addBoundaryButton').button();
-  	$( "#description" ).combobox();
+  	//$( "#description" ).combobox();
 })
 
 
@@ -109,7 +100,7 @@ function updateWaypointDataDisplayTable()
 	        		'<td>lon:</td>' +
 	        		'<td><input type="text" id="lon$NUM" size="8" onkeyup="updateWaypoints($NUM)"></td>' +
 	        		'<td>type:</td>' +
-	        		'<td><select id="waypointtype$NUM" onchange="updateWaypoints($NUM)"><option value="none"></option><option value="pointToPoint">Point to Point</option><option value="roundBuoy">Round Buoy</option><option value="ld_start_finish">ld Start Finish</option><option value="ld_first">ld First</option><option value="ld_second">ld Second</option><option value="nav_first">nav First</option><option value="nav_finish">nav Second</option><option value="station_keeping">Station Keeping</option></select></td>' +
+	        		'<td><select id="waypointtype$NUM" onchange="updateWaypoints($NUM)"><option value="none"></option><option value="pointToPoint">Point to Point</option><option value="roundBuoyPort">Round BuoyPort</option><option value="roundBuoyStbd">Round Buoy Stbd</option><option value="ld_start_finish">ld Start Finish</option><option value="ld_first">ld First</option><option value="ld_second">ld Second</option><option value="nav_first">nav First</option><option value="nav_start_port">nav start port</option><option value="nav_start_stbd">nav start stb</option><option value="station_keeping">Station Keeping</option></select></td>' +
 	        		'<td><button id="deleteWaypointButton$NUM" onclick="deleteWaypoint($NUM)">X</button></td>' +
 	 '</tr>';
 	 console.log(waypointRowString);
@@ -169,18 +160,18 @@ function updateBoundaryDataDisplayTable(){
 	
 }
 function updateWaypoints(number){
-	var index = number-1;
-	instructions.waypoints[index][0]=parseFloat($('#'+latWaypointTextBoxes[index]).val(),10)
-	instructions.waypoints[index][1]=parseFloat($('#'+lonWaypointTextBoxes[index]).val(),10)
-	instructions.waypoints[index][2]=$('#'+typeOfWaypointSelect[index]).val()
+  var index = number-1;
+	instructions.waypoints[index][0]=parseFloat($('#lat'+number).val(),10)
+	instructions.waypoints[index][1]=parseFloat($('#lon'+number).val(),10)
+	instructions.waypoints[index][2]=$('#waypointtype'+number).val()
 	mapWidget.update_waypoints(instructions.waypoints)	
 		
 }
 function updateBoundaries(number){
-	var index = number-1;
-	instructions.boundaries[index][0]=parseFloat($('#'+latBoundaryTextBoxes[index]).val(),10)
-	instructions.boundaries[index][1]=parseFloat($('#'+lonBoundaryTextBoxes[index]).val(),10)
-	instructions.boundaries[index][2]=parseFloat($('#'+radBoundaryTextBoxes[index]).val(),10)
+  var index = number-1;
+	instructions.boundaries[index][0]=parseFloat($('#blat'+number).val(),10)
+	instructions.boundaries[index][1]=parseFloat($('#blon'+number).val(),10)
+	instructions.boundaries[index][2]=parseFloat($('#brad'+number).val(),10)
 	mapWidget.update_boundaries(instructions.boundaries);
 }
 
