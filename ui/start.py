@@ -1,5 +1,5 @@
 import sys, os
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'control/'))
+sys.path.insert(0,os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 import server
 from threading import Thread
