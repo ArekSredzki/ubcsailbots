@@ -100,7 +100,7 @@ function updateWaypointDataDisplayTable()
 	        		'<td>lon:</td>' +
 	        		'<td><input type="text" id="lon$NUM" size="8" onkeyup="updateWaypoints($NUM)"></td>' +
 	        		'<td>type:</td>' +
-	        		'<td><select id="waypointtype$NUM" onchange="updateWaypoints($NUM)"><option value="none"></option><option value="pointToPoint">Point to Point</option><option value="roundBuoy">Round Buoy</option><option value="ld_start_finish">ld Start Finish</option><option value="ld_first">ld First</option><option value="ld_second">ld Second</option><option value="nav_first">nav First</option><option value="nav_finish">nav Second</option><option value="station_keeping">Station Keeping</option></select></td>' +
+	        		'<td><select id="waypointtype$NUM" onchange="updateWaypoints($NUM)"><option value="none"></option><option value="pointToPoint">Point to Point</option><option value="roundBuoyPort">Round BuoyPort</option><option value="roundBuoyStbd">Round Buoy Stbd</option><option value="ld_start_finish">ld Start Finish</option><option value="ld_first">ld First</option><option value="ld_second">ld Second</option><option value="nav_first">nav First</option><option value="nav_start_port">nav start port</option><option value="nav_start_stbd">nav start stb</option><option value="station_keeping">Station Keeping</option></select></td>' +
 	        		'<td><button id="deleteWaypointButton$NUM" onclick="deleteWaypoint($NUM)">X</button></td>' +
 	 '</tr>';
 	 console.log(waypointRowString);
@@ -160,6 +160,7 @@ function updateBoundaryDataDisplayTable(){
 	
 }
 function updateWaypoints(number){
+  var index = number-1;
 	instructions.waypoints[index][0]=parseFloat($('#lat'+number).val(),10)
 	instructions.waypoints[index][1]=parseFloat($('#lon'+number).val(),10)
 	instructions.waypoints[index][2]=$('#waypointtype'+number).val()
@@ -167,6 +168,7 @@ function updateWaypoints(number){
 		
 }
 function updateBoundaries(number){
+  var index = number-1;
 	instructions.boundaries[index][0]=parseFloat($('#blat'+number).val(),10)
 	instructions.boundaries[index][1]=parseFloat($('#blon'+number).val(),10)
 	instructions.boundaries[index][2]=parseFloat($('#brad'+number).val(),10)
