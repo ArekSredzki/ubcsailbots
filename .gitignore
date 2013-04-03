@@ -3,3 +3,4 @@
 *.pydevproject
 *.db
 *.DS_Store
+*.log

@@ -27,7 +27,7 @@ import piardio.mockarduino
 mock = True
 
 # Main - pass challenge or logic function name as argument
-def main(argv=None):
+def run(argv=None):
     #with open(path.join(path.dirname(__file__),'log/sailbot.log'), 'w'):
     #    pass
     #logging.basicConfig(filename=path.join(path.dirname(__file__),'log/sailbot.log'), format='%(levelname)s:%(message)s', level=logging.DEBUG)

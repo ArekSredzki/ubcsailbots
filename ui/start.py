@@ -6,14 +6,14 @@ from threading import Thread
 from api import ApiControl
 
 print(sys.path)
-import control.__main__
+import control.main
 
 runControlCode=True
 
 if runControlCode:
   from control.GuiHandler import GuiHandler
   interface = GuiHandler()
-  controlThread = Thread(target=control.__main__.main)
+  controlThread = Thread(target=control.main.run)
   controlThread.daemon = True
   controlThread.start()
 else:
