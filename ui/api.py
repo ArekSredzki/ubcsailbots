@@ -26,7 +26,7 @@ class ApiControl:
           return "nodata"
         
     def getDebugMessages(self):
-        debugMessage = inteface.getDebugMessages()
+        debugMessage = self.interface.getDebugMessages()
         return debugMessage
     
     # forces data to be updated from the Control Unit
