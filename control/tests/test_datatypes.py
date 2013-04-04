@@ -1,5 +1,6 @@
 #Unit Tests of DataTypes.py Module
-
+import sys, os
+sys.path.append(os.path.abspath('../'))
 import unittest
 import math
 import control.datatype.datatypes as datatype

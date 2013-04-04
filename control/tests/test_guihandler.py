@@ -1,5 +1,6 @@
 # Unit tests for the guihandler
-
+import sys, os
+sys.path.append(os.path.abspath('../'))
 import unittest
 from control import GuiHandler
 from control import GlobalVars as gVars

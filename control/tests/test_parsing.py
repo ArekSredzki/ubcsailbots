@@ -1,5 +1,6 @@
 #Unit Tests of parsing.py Module
-
+import sys, os
+sys.path.append(os.path.abspath('../'))
 import unittest
 from control.parser import parsing
 from os import path

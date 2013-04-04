@@ -1,9 +1,9 @@
 #Unit tests of standardcalc.py module
-
+import sys, os
+sys.path.append(os.path.abspath('../'))
 import unittest
 import math
-import sys
-sys.path.append("..")
+
 from control.logic import standardcalc
 from control.datatype import datatypes
 from control import StaticVars as sVars

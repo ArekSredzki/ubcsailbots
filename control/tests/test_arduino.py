@@ -3,7 +3,8 @@ Created on Jan 20, 2013
 
 @author: joshandrews
 '''
-
+import sys, os
+sys.path.append(os.path.abspath('../'))
 import unittest
 import serial
 from control.piardio import arduino
