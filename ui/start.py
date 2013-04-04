@@ -1,16 +1,15 @@
 import sys, os
-sys.path.insert(0,os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+sys.path.append(os.path.abspath('../'))
+print(sys.path)
 
 import server
 from threading import Thread
 from api import ApiControl
 
-print(sys.path)
-import control.main
-
 runControlCode=True
 
 if runControlCode:
+  import control.main
   from control.GuiHandler import GuiHandler
   interface = GuiHandler()
   controlThread = Thread(target=control.main.run)
