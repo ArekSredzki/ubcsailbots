@@ -86,6 +86,6 @@ def printArdArray(arr):
     
 if __name__ == '__main__':
     try:
-        sys.exit(main())
+        sys.exit(run())
     except KeyboardInterrupt:
         print ("\n Exit - Keyboard Interrupt")
