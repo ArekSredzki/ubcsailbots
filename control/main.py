@@ -43,17 +43,9 @@ def run(argv=None):
     s.enter(1, 1, setGlobVar, (arduino, s,))
     thread.start_new_thread(s.run, ())
     
-    # i is for testing purposes only
-    i = 0
     while (gVars.run):
         # When the function queue has waiting calls, and there is no currently running process,
         # switch processes to the next function in the queue (FIFO)
-        
-        i +=1
-        if i == 5:
-            # round buoy test
-            coresailinglogic.roundBuoyPort(datatypes.GPSCoordinate(49.276037,-123.195105), 179)
-            
             
         if (len(gVars.functionQueue) > 0 and gVars.currentProcess is None and gVars.currentData[sVars.AUT_INDEX] == 1):
             unkillAllFunctions()
