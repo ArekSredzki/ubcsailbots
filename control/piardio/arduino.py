@@ -51,6 +51,7 @@ class arduino:
     
     def __init__(self):
         self.ser = serial.Serial(SERIAL_PORT, BAUD)
+        time.sleep(2)
         
     # Calls adjust_sheets on arduino with sheet percentage
     def adjust_sheets(self, sheet_percent):                                                
