@@ -30,8 +30,6 @@ mock = True
 def run(argv=None):
     #with open(path.join(path.dirname(__file__),'log/sailbot.log'), 'w'):
     #    pass
-    #logging.basicConfig(filename=path.join(path.dirname(__file__),'log/sailbot.log'), format='%(levelname)s:%(message)s', level=logging.DEBUG)
-    #logger = logging.getLogger("sailbot.log")
     gVars.logger = sailbotlogger.logger()
     gVars.logger.info("Start")
     
@@ -44,14 +42,21 @@ def run(argv=None):
     s = sched.scheduler(time.time, time.sleep)
     s.enter(1, 1, setGlobVar, (arduino, s,))
     thread.start_new_thread(s.run, ())
+    
+    # i is for testing purposes only
     i = 0
     while (gVars.run):
         # When the function queue has waiting calls, and there is no currently running process,
         # switch processes to the next function in the queue (FIFO)
+        
         i +=1
         if i == 5:
+            # round buoy test
             coresailinglogic.roundBuoyPort(datatypes.GPSCoordinate(49.276037,-123.195105), 179)
-        if (len(gVars.functionQueue) > 0 and gVars.currentProcess is None):
+            
+            
+        if (len(gVars.functionQueue) > 0 and gVars.currentProcess is None and gVars.currentData[sVars.AUT_INDEX] == 1):
+            unkillAllFunctions()
             gVars.currentProcess = gVars.functionQueue.pop(0)
             gVars.currentParams = gVars.queueParameters.pop(0)
             if (gVars.currentProcess == sVars.GO_AROUND_PORT or gVars.currentProcess == sVars.GO_AROUND_STBD or gVars.currentProcess == sVars.GO_TO):
@@ -70,7 +75,8 @@ def run(argv=None):
                 gVars.logger.warning("No instruction task named " + str(gVars.currentProcess))
                 gVars.currentProcess = None
                 gVars.currentParams = None
-        time.sleep(1)
+                
+        time.sleep(.5)
         
 
 def setGlobVar(arduino, sc):
@@ -84,6 +90,14 @@ def setGlobVar(arduino, sc):
 def printArdArray(arr):
     print("Heading: " + str(arr[sVars.HOG_INDEX]) + ", COG: " + str(arr[sVars.COG_INDEX]) + ", SOG: " + str(arr[sVars.SOG_INDEX]) + ", AWA: " + str(arr[sVars.AWA_INDEX]) + ", GPS[" + str(arr[sVars.GPS_INDEX]) + "]" + ", Sheet Percent: " + str(arr[sVars.SHT_INDEX]) + ", Num of Satellites: " + str(arr[sVars.SAT_INDEX]) + ", Accuracy: " + str(arr[sVars.ACC_INDEX]) + ", Rudder: " + str(arr[sVars.RUD_INDEX]))
     
+def unkillAllFunctions():
+    # All current kill flags must be added here.
+    gVars.kill_flagPTP = 0
+    gVars.kill_flagNav = 0
+    gVars.kill_flagSK = 0
+    gVars.kill_flagRB = 0
+    gVars.kill_flagLD = 0
+
 if __name__ == '__main__':
     try:
         sys.exit(run())

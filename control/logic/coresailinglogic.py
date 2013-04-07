@@ -27,10 +27,13 @@ AWA_METHOD = 2
 end_flag=0
 
 # --- Round Buoy Port---
-# Input: TODO
-# Output: TODO
-def roundBuoyPort(BuoyLoc, FinalBearing):
+# Input: Round Buoy location, Final bearing with respect to North
+def roundBuoyPort(BuoyLoc, FinalBearing=None):
     currentData = gVars.currentData
+    
+    if FinalBearing is None:
+        FinalBearing = standardcalc.boundTo180(currentData[gps_index]-179)
+    
     GPSCoord = currentData[gps_index]
     # appWindAng = currentData[awa_index]
     InitCog = currentData[cog_index] # Course  over ground    
@@ -79,7 +82,7 @@ def roundBuoyPort(BuoyLoc, FinalBearing):
     # 10 represents the degree of error around the destination point
     # Calls point to point function until it reaches location past buoy
     # Adding 10 does not increase the radius by 10 meters(ERROR!) - fixed
-    if (GPSCoord.long >= standardcalc.GPSDistAway(destination, 10, 0).long):# or GPSCoord.long <= standardcalc.GPSDistAway(destination, -10, 0).long) and (GPSCoord.lat >= standardcalc.GPSDistAway(destination, 0, 10).lat or GPSCoord.lat <= standardcalc.GPSDistAway(destination, 0, -10).lat): 
+    if (GPSCoord.long >= standardcalc.GPSDistAway(destination, 10, 0).long and gVars.kill_flagRB == 0):# or GPSCoord.long <= standardcalc.GPSDistAway(destination, -10, 0).long) and (GPSCoord.lat >= standardcalc.GPSDistAway(destination, 0, 10).lat or GPSCoord.lat <= standardcalc.GPSDistAway(destination, 0, -10).lat): 
         pointToPoint(datatypes.GPSCoordinate(destination.lat, destination.long),1)
         GPSCoord.long = gVars.currentData[gps_index].long
         GPSCoord.lat = gVars.currentData[gps_index].lat
@@ -114,7 +117,7 @@ def roundBuoyPort(BuoyLoc, FinalBearing):
         # 10 represents the degree of error around the destination point
         # Calls point to point function until it reaches location past buoy
         # Adding 10 does not increase the radius by 10 meters(ERROR!) - fixed
-        if (GPSCoord.long >= standardcalc.GPSDistAway(destination, 10, 0).long or GPSCoord.long <= standardcalc.GPSDistAway(destination, -10, 0).long) and (GPSCoord.lat >= standardcalc.GPSDistAway(destination, 0, 10).lat or GPSCoord.lat <= standardcalc.GPSDistAway(destination, 0, -10).lat): 
+        if (GPSCoord.long >= standardcalc.GPSDistAway(destination, 10, 0).long or GPSCoord.long <= standardcalc.GPSDistAway(destination, -10, 0).long) and (GPSCoord.lat >= standardcalc.GPSDistAway(destination, 0, 10).lat or GPSCoord.lat <= standardcalc.GPSDistAway(destination, 0, -10).lat)  and gVars.kill_flagRB == 0: 
             pointToPoint(datatypes.GPSCoordinate(destination.lat, destination.long),1)
             GPSCoord.long = gVars.currentData[gps_index].long
             GPSCoord.lat = gVars.currentData[gps_index].lat 
@@ -122,10 +125,12 @@ def roundBuoyPort(BuoyLoc, FinalBearing):
     return 0
 
 # --- Round Buoy Stbd---
-# Input: TODO
-# Output: TODO
-def roundBuoyStbd(BuoyLoc, FinalBearing):
+# Input: Round Buoy location, Final bearing with respect to North
+def roundBuoyStbd(BuoyLoc, FinalBearing=None):
     currentData = gVars.currentData
+        
+    if FinalBearing is None:
+        FinalBearing = standardcalc.boundTo180(currentData[gps_index]-179)
         
     GPSCoord = currentData[gps_index]
     appWindAng = currentData[awa_index]
@@ -173,7 +178,8 @@ def roundBuoyStbd(BuoyLoc, FinalBearing):
     # 10 represents the degree of error around the destination point
     # Calls point to point function until it reaches location past buoy
     # Adding 10 does not increase the radius by 10 meters(ERROR!) - fixed 
-    pointToPoint(datatypes.GPSCoordinate(destination.lat, destination.long),1)
+    if gVars.kill_flagRB == 0:
+        pointToPoint(datatypes.GPSCoordinate(destination.lat, destination.long),1)
     
     # Checks if the boat needs to round the buoy or just pass it
     vect = datatypes.GPSCoordinate()
@@ -192,13 +198,18 @@ def roundBuoyStbd(BuoyLoc, FinalBearing):
         # 10 represents the degree of error around the destination point
         # Calls point to point function until it reaches location past buoy
         # Adding 10 does not increase the radius by 10 meters(ERROR!) - fixed
-        if (GPSCoord.long >= standardcalc.GPSDistAway(destination, 10, 0).long or GPSCoord.long <= standardcalc.GPSDistAway(destination, -10, 0).long) and (GPSCoord.lat >= standardcalc.GPSDistAway(destination, 0, 10).lat or GPSCoord.lat <= standardcalc.GPSDistAway(destination, 0, -10).lat): 
+        if (GPSCoord.long >= standardcalc.GPSDistAway(destination, 10, 0).long or GPSCoord.long <= standardcalc.GPSDistAway(destination, -10, 0).long) and (GPSCoord.lat >= standardcalc.GPSDistAway(destination, 0, 10).lat or GPSCoord.lat <= standardcalc.GPSDistAway(destination, 0, -10).lat) and gVars.kill_flagRB == 0: 
             pointToPoint(datatypes.GPSCoordinate(destination.lat, destination.long),1)
             GPSCoord.long = gVars.currentData[gps_index].long
             GPSCoord.lat = gVars.currentData[gps_index].lat 
             
     return 0
 
+# Wrapper round buoy which default calls port rounding
+def roundBuoy(BuoyLoc, FinalBearing=None):
+    # Could be optimized to call the most optimal round buoy function (probably not worth it)
+    roundBuoyPort(BuoyLoc, FinalBearing)
+    
 def killPointToPoint():
     gVars.kill_flagPTP = 1
 
@@ -228,7 +239,7 @@ def pointToPointAWA(Dest, initialTack, ACCEPTANCE_DISTANCE):
     while(end_flag == 0 and gVars.kill_flagPTP == 0):
         gVars.logger.info("End flag and kill flag OK")
         
-        while(gVars.currentData[aut_index] == False):
+        while(gVars.currentData[aut_index] == 0):
             time.sleep(0.1)
             
         currentData = gVars.currentData
@@ -257,7 +268,7 @@ def pointToPointAWA(Dest, initialTack, ACCEPTANCE_DISTANCE):
                     while(abs(hog-standardcalc.angleBetweenTwoCoords(GPSCoord, Dest))<80 and gVars.kill_flagPTP ==0):
                         gVars.logger.info("On starboard tack")
                         
-                        while(gVars.currentData[aut_index] == False):
+                        while(gVars.currentData[aut_index] == 0):
                             time.sleep(0.1)
                         
                         gVars.tacked_flag = 0
@@ -298,7 +309,7 @@ def pointToPointAWA(Dest, initialTack, ACCEPTANCE_DISTANCE):
                     initialTack = None
                     while(abs(hog-standardcalc.angleBetweenTwoCoords(GPSCoord, Dest))<80 and gVars.kill_flagPTP == 0):
                         gVars.logger.info("On port tack")
-                        while(gVars.currentData[aut_index] == False):
+                        while(gVars.currentData[aut_index] == 0):
                             time.sleep(0.1)
                         gVars.tacked_flag = 0
                         GPSCoord = currentData[gps_index]
@@ -365,7 +376,7 @@ def pointToPointTWA(Dest, initialTack, ACCEPTANCE_DISTANCE):
     gVars.logger.info("Started point to pointTWA")
     
     while(end_flag == 0 and gVars.kill_flagPTP == 0):
-        while(gVars.currentData[aut_index] == False):
+        while(gVars.currentData[aut_index] == 0):
             time.sleep(0.1)
         currentData = gVars.currentData
         GPSCoord = currentData[gps_index]
@@ -407,7 +418,7 @@ def pointToPointTWA(Dest, initialTack, ACCEPTANCE_DISTANCE):
                     initialTack = None
                     while(abs(hog-standardcalc.angleBetweenTwoCoords(GPSCoord, Dest))<80 and gVars.kill_flagPTP ==0):
                         gVars.logger.info("On starboard tack")
-                        while(gVars.currentData[aut_index] == False):
+                        while(gVars.currentData[aut_index] == 0):
                             time.sleep(0.1)
                         gVars.tacked_flag = 0
                         GPSCoord = currentData[gps_index]
@@ -453,7 +464,7 @@ def pointToPointTWA(Dest, initialTack, ACCEPTANCE_DISTANCE):
                     initialTack = None
                     while(abs(hog-standardcalc.angleBetweenTwoCoords(GPSCoord, Dest))<80 and gVars.kill_flagPTP == 0):
                         gVars.logger.info("On port tack")
-                        while(gVars.currentData[aut_index] == False):
+                        while(gVars.currentData[aut_index] == 0):
                             time.sleep(0.1)
                         gVars.tacked_flag = 0
                         GPSCoord = currentData[gps_index]

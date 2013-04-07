@@ -13,7 +13,7 @@ Global Variables for the control logic
 
 instructions = None
 # Array for all current data from arduino
-#    Format: TODO
+#    Format: [HOG, COG, SOG, AWA, GPS, SHT, SAT, ACC, AUT, RUD]
 currentData = []
 functionQueue = []
 queueParameters = []
@@ -31,7 +31,9 @@ logger = None
 arduino = None
 tacked_flag = 0
 TrueWindAngle = 0
+
 kill_flagPTP = 0
 kill_flagNav = 0
-logBuffer = ""
 kill_flagSK = 0
+kill_flagRB = 0
+kill_flagLD = 0

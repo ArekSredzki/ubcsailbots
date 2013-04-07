@@ -8,29 +8,16 @@ import sys
 sys.path.append("..")
 import control.StaticVars as sVars
 from control import GlobalVars as gVars
-from control.logic import standardcalc
 from control.logic import coresailinglogic
 
-HOG_INDEX=0     # Heading over Ground
-COG_INDEX=1     # Course over Ground
-SOG_INDEX=2     # Speed over Ground
-AWA_INDEX=3     # Apparent Wind Angle Average
-GPS_INDEX=4     # GPS Coordinate
-SHT_INDEX=5     # Sheet Percentage
-SAT_INDEX=6     # GPS Number of Satellites
-ACC_INDEX=7     # GPS Accuracy (HDOP)
-AUT_INDEX=8     # Auto Mode
-RUD_INDEX=9     # Rudder
-
-
 def run(waypoint1, waypoint2, waypoint3):
-    currentData = gVars.currentData
     startPoint = None
     markOne = None
     markTwo = None
    
     wayList = [waypoint1, waypoint2, waypoint3]
-
+    
+    # Sets all waypoints to their appropriate types
     for waypoint in wayList:
         if(waypoint.wtype == sVars.LD_START_FINISH):
             startPoint = waypoint.coordinate
@@ -42,8 +29,16 @@ def run(waypoint1, waypoint2, waypoint3):
     ldWaypoints = [markOne, startPoint, markTwo, startPoint, markOne, startPoint, markTwo, startPoint]
     
     for waypoint in ldWaypoints:
-        gVars.logger.info("Heading toward " + waypoint + " which is mark " + ldWaypoints.index(waypoint) + " of " + len(ldWaypoints))
-        coresailinglogic.pointToPoint(waypoint, None, 20)
-        
-
-    return 0
+        if gVars.kill_flagLD == 0:
+            gVars.logger.info("Heading toward " + waypoint + " which is mark " + ldWaypoints.index(waypoint) + " of " + len(ldWaypoints))
+            
+            # Startpoint does not require a buoy rounding
+            if waypoint != startPoint:
+                coresailinglogic.pointToPoint(waypoint, None, 20)
+                # Currently will round all buoys port.  May need to be changed for course outline
+                coresailinglogic.roundBuoyPort(waypoint)
+            else:
+                coresailinglogic.pointToPoint(waypoint, None, 3)
+                
+        else:
+            break

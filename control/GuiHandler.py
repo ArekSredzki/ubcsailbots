@@ -44,6 +44,7 @@ class GuiHandler:
     # returns all the telemetry data as an object
     # ex. apparent wind, gps location, SOG, COG, heading, etc.
     def getData(self):
+        self._killAllFunctions()
         arr = gVars.currentData
         if (not gVars.taskStartTime):
             seconds = None
@@ -62,3 +63,11 @@ class GuiHandler:
         buff = logger.buffer
         logger.clearBuffer()
         return buff
+    
+    def _killAllFunctions(self):
+        # All current kill flags must be added here.
+        gVars.kill_flagPTP = 1
+        gVars.kill_flagNav = 1
+        gVars.kill_flagSK = 1
+        gVars.kill_flagRB = 1
+        gVars.kill_flagLD = 1
