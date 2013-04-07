@@ -24,7 +24,7 @@ import piardio.mockarduino
 # Mock:
     #   - If true, mock will run from a mock arduino class which simulates boat and wind conditions (see readme)
     #   - If false, mock will run off of an actual arduino through dev/tty ports     
-mock = True
+mock = False
 
 # Main - pass challenge or logic function name as argument
 def run(argv=None):
@@ -85,7 +85,7 @@ def setGlobVar(arduino, sc):
     if (mock):
         sc.enter(1, 1, setGlobVar, (gVars.arduino, sc,))
     else:
-        sc.enter(.3, 1, setGlobVar, (gVars.arduino, sc,))
+        sc.enter(1, 1, setGlobVar, (gVars.arduino, sc,))
     
 def printArdArray(arr):
     print("Heading: " + str(arr[sVars.HOG_INDEX]) + ", COG: " + str(arr[sVars.COG_INDEX]) + ", SOG: " + str(arr[sVars.SOG_INDEX]) + ", AWA: " + str(arr[sVars.AWA_INDEX]) + ", GPS[" + str(arr[sVars.GPS_INDEX]) + "]" + ", Sheet Percent: " + str(arr[sVars.SHT_INDEX]) + ", Num of Satellites: " + str(arr[sVars.SAT_INDEX]) + ", Accuracy: " + str(arr[sVars.ACC_INDEX]) + ", Rudder: " + str(arr[sVars.RUD_INDEX]))

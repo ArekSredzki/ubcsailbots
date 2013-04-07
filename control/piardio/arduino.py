@@ -38,7 +38,7 @@ print coms
 usbserials = []
 for com in coms:
     for port in com:
-        if "usbserial" in port:
+        if "USB" in port:
             usbserials.append(port)
 
 if (len(usbserials) > 0):
