@@ -38,6 +38,7 @@ def run(argv=None):
         arduino = piardio.arduino.arduino()
     else:
         arduino = piardio.mockarduino.arduino()
+    gVars.logger.info("Created Arduino object")
     gVars.arduino = arduino
     s = sched.scheduler(time.time, time.sleep)
     s.enter(1, 1, setGlobVar, (arduino, s,))
