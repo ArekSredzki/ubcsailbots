@@ -20,6 +20,7 @@ import control.GlobalVars as gVars
 import control.StaticVars as sVars
 import piardio.arduino
 import piardio.mockarduino
+import traceback
 
 # Mock:
     #   - If true, mock will run from a mock arduino class which simulates boat and wind conditions (see readme)
@@ -57,25 +58,29 @@ def run(argv=None):
                 try:
                     getattr(coresailinglogic, gVars.currentProcess)(*gVars.currentParams)
                 except Exception, errtext:
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext))
+                    exc_type, exc_value, exc_traceback = sys.exc_info()
+                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + str(repr(traceback.format_exception(exc_type, exc_value, exc_traceback))))
             elif (gVars.currentProcess == sVars.NAVIGATION_CHALLENGE):
                 gVars.taskStartTime = datetime.now()
                 try:
                     navigation.run(*gVars.currentParams)
                 except Exception, errtext:
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext))
+                    exc_type, exc_value, exc_traceback = sys.exc_info()
+                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + str(repr(traceback.format_exception(exc_type, exc_value, exc_traceback))))
             elif (gVars.currentProcess == sVars.STATION_KEEPING_CHALLENGE):
                 gVars.taskStartTime = datetime.now()
                 try:
                     stationkeeping.run(*gVars.currentParams)
                 except Exception, errtext:
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext))
+                    exc_type, exc_value, exc_traceback = sys.exc_info()
+                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + str(repr(traceback.format_exception(exc_type, exc_value, exc_traceback))))
             elif (gVars.currentProcess == sVars.LONG_DISTANCE_CHALLENGE):
                 gVars.taskStartTime = datetime.now()
                 try:
                     longdistance.run(*gVars.currentParams)
                 except Exception, errtext:
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext))
+                    exc_type, exc_value, exc_traceback = sys.exc_info()
+                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + str(repr(traceback.format_exception(exc_type, exc_value, exc_traceback))))
             else:
                 gVars.logger.warning("No instruction task named " + str(gVars.currentProcess))
                 gVars.currentProcess = None

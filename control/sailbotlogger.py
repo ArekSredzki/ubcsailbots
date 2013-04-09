@@ -38,6 +38,6 @@ class logger:
         self.logger.info(msg)
         self.buffer += ("[INFO]:" + msg + "  " + str(datetime.datetime.now()) + "<br>")  
         print self.buffer
-        
+    
     def clearBuffer(self):
         self.buffer = ""
