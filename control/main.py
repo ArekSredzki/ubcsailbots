@@ -54,7 +54,10 @@ def run(argv=None):
             gVars.currentParams = gVars.queueParameters.pop(0)
             if (gVars.currentProcess == sVars.GO_AROUND_PORT or gVars.currentProcess == sVars.GO_AROUND_STBD or gVars.currentProcess == sVars.GO_TO):
                 gVars.taskStartTime = datetime.now()
-                thread.start_new_thread(getattr(coresailinglogic, gVars.currentProcess), gVars.currentParams)
+                try:
+                    thread.start_new_thread(getattr(coresailinglogic, gVars.currentProcess), gVars.currentParams)
+                except Exception:
+                    gVars.logger.error("Caught exception in " + gVars.currentProcess + ":\n" + Exception)
             elif (gVars.currentProcess == sVars.NAVIGATION_CHALLENGE):
                 gVars.taskStartTime = datetime.now()
                 thread.start_new_thread(navigation.run, gVars.currentParams)
