@@ -25,7 +25,7 @@ import traceback
 # Mock:
     #   - If true, mock will run from a mock arduino class which simulates boat and wind conditions (see readme)
     #   - If false, mock will run off of an actual arduino through dev/tty ports     
-mock = False
+mock = True
 
 # Main - pass challenge or logic function name as argument
 def run(argv=None):
@@ -110,7 +110,7 @@ def unkillAllFunctions():
     gVars.kill_flagRB = 0
     gVars.kill_flagLD = 0
 
-def killAllFunctions(self):
+def killAllFunctions():
     # All current kill flags must be added here.
     gVars.kill_flagPTP = 1
     gVars.kill_flagNav = 1
