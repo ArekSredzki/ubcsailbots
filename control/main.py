@@ -59,28 +59,28 @@ def run(argv=None):
                     getattr(coresailinglogic, gVars.currentProcess)(*gVars.currentParams)
                 except Exception, errtext:
                     exc_type, exc_value, exc_traceback = sys.exc_info()
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + str(repr(traceback.format_exception(exc_type, exc_value, exc_traceback))).replace('\n', '<br>'))
+                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
             elif (gVars.currentProcess == sVars.NAVIGATION_CHALLENGE):
                 gVars.taskStartTime = datetime.now()
                 try:
                     navigation.run(*gVars.currentParams)
                 except Exception, errtext:
                     exc_type, exc_value, exc_traceback = sys.exc_info()
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + str(repr(traceback.format_exception(exc_type, exc_value, exc_traceback))).replace('\n', '<br>'))
+                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
             elif (gVars.currentProcess == sVars.STATION_KEEPING_CHALLENGE):
                 gVars.taskStartTime = datetime.now()
                 try:
                     stationkeeping.run(*gVars.currentParams)
                 except Exception, errtext:
                     exc_type, exc_value, exc_traceback = sys.exc_info()
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + str(repr(traceback.format_exception(exc_type, exc_value, exc_traceback))).replace('\n', '<br>'))
+                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
             elif (gVars.currentProcess == sVars.LONG_DISTANCE_CHALLENGE):
                 gVars.taskStartTime = datetime.now()
                 try:
                     longdistance.run(*gVars.currentParams)
                 except Exception, errtext:
                     exc_type, exc_value, exc_traceback = sys.exc_info()
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + str(repr(traceback.format_exception(exc_type, exc_value, exc_traceback))).replace('\n', '<br>'))
+                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
             else:
                 gVars.logger.warning("No instruction task named " + str(gVars.currentProcess))
                 gVars.currentProcess = None
