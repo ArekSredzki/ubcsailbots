@@ -85,8 +85,8 @@ def run(argv=None):
                     gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
             else:
                 gVars.logger.warning("No instruction task named " + str(gVars.currentProcess))
-                gVars.currentProcess = None
-                gVars.currentParams = None
+            gVars.currentProcess = None
+            gVars.currentParams = None
                 
         time.sleep(.5)
         
