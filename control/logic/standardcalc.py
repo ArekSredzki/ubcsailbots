@@ -217,7 +217,21 @@ def getTrueWindAngle(awa, sog):
         sVars.AWA_THRESHOLD += 1
         
         if(sVars.AWA_THRESHOLD >= 100):
-            return None    
+            return None  
+
+def getWeatherSetting(awa, sog):
+    minIndex = 0
+    min = 500
+    SOGList = parsing.parse(path.join(path.dirname(__file__), 'SOGarray'))
+    SOGrow = SOGList[abs(int(awa))]
+    
+    for i in range(len(SOGrow)):
+        if(abs(SOGrow[i]-sog)<min):
+            minIndex = i
+            min = abs(SOGrow[i]-sog)
+            
+    gVars.currentColumn = minIndex
+        
 
 # takes in a list of speeds. Deletes first element and appends the current speed to the end
 def changeSpdList(spdList):
@@ -310,6 +324,12 @@ def portTackWanted(AWA,initialTack):
 
 def doWeStillWantToTack(hog,GPSCoord,Dest):
     if(abs(hog-angleBetweenTwoCoords(GPSCoord, Dest))<80 and gVars.kill_flagPTP ==0):
+        return 1
+    else:
+        return 0
+    
+def isThereChangeToAWAorWeatherOrMode(AWA,newAWA,oldColumn,tackSailing,newTackSailing):
+    if(AWA != newAWA or oldColumn != gVars.currentColumn or tackSailing != newTackSailing):
         return 1
     else:
         return 0
