@@ -16,27 +16,27 @@ class logger:
     
     def warn(self, msg):
         self.logger.warn(msg)
-        self.buffer += ("[WARN]:" + msg + "  " + str(datetime.datetime.now()) + "\n")
+        self.buffer += ("[WARN]:" + msg + "  " + str(datetime.datetime.now()) + "<br>")
         
     def warning(self, msg):
         self.logger.warning(msg)
-        self.buffer += ("[WARNING]:" + msg + "  " + str(datetime.datetime.now()) + "\n")    
+        self.buffer += ("[WARNING]:" + msg + "  " + str(datetime.datetime.now()) + "<br>")    
         
     def critical(self, msg):
         self.logger.critical(msg)
-        self.buffer += ("[CRITICAL]:" + msg + "  " + str(datetime.datetime.now()) + "\n")
+        self.buffer += ("[CRITICAL]:" + msg + "  " + str(datetime.datetime.now()) + "<br>")
     
     def debug(self, msg):
         self.logger.debug(msg)
-        self.buffer += ("[DEBUG]:" + msg + "  " + str(datetime.datetime.now()) + "\n")
+        self.buffer += ("[DEBUG]:" + msg + "  " + str(datetime.datetime.now()) + "<br>")
     
     def error(self, msg):
         self.logger.error(msg)
-        self.buffer += ("[ERROR]:" + msg + "  " + str(datetime.datetime.now()) + "\n")  
+        self.buffer += ("[ERROR]:" + msg + "  " + str(datetime.datetime.now()) + "<br>")  
           
     def info(self, msg):
         self.logger.info(msg)
-        self.buffer += ("[INFO]:" + msg + "  " + str(datetime.datetime.now()) + "\n")  
+        self.buffer += ("[INFO]:" + msg + "  " + str(datetime.datetime.now()) + "<br>")  
         print self.buffer
         
     def clearBuffer(self):
