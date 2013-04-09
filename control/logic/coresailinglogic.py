@@ -297,7 +297,7 @@ def pointToPoint(Dest, initialTack = None, ACCEPTANCE_DISTANCE = sVars.ACCEPTANC
                 elif(standardcalc.portTackWanted(newappWindAng,initialTack)):
                     newTackSailing = 2
                     initialTack = None
-                    while(standardcalc.doWeStillWantToTackabs(hog,GPSCoord,Dest)):
+                    while(standardcalc.doWeStillWantToTack(hog,GPSCoord,Dest)):
                         gVars.logger.info("On port tack")
                         gVars.tacked_flag = 0
                         GPSCoord = currentData[gps_index]
