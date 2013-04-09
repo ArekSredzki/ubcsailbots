@@ -14,7 +14,7 @@ var mapWidget;
 
 $(function () {
   mapWidget = new MapWidget(new MapListener());
-  mapWidget.setMapCenter();
+  setMapCenter();  
   mapWidget.setDraggableMode(true);
   setTimeout('getlog()',1000);
   
@@ -215,6 +215,18 @@ function MapListener(){
 }
 
 
+function setMapCenter(){
+$.ajax({
+        url: "api?request=overviewData",
+        type: 'GET',
+        dataType: "json",
+        success: function (overviewData) {
+          console.log(overviewData);
+          mapWidget.setMapCenter(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
+        },
+  });
+
+}
 
 
 
