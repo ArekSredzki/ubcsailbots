@@ -5,8 +5,7 @@ var instructionsDataLocal;
 //create map widget
 $(function () {
   mapWidget = new MapWidget();
-  mapWidget.setMapCenter();
-  
+  setMapCenter();  
   compassWidget = new CompassWidget();
   compassWidget.init();
   getInstructions();
@@ -67,6 +66,19 @@ function getInstructions(){
     			mapWidget.update_boundaries(instructionsData.boundaries);
 	      }
 	});
+}
+
+function setMapCenter(){
+$.ajax({
+        url: "api?request=overviewData",
+        type: 'GET',
+        dataType: "json",
+        success: function (overviewData) {
+          console.log(overviewData);
+          mapWidget.setMapCenter(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
+        },
+  });
+
 }
 
 
