@@ -20,11 +20,11 @@ def run(waypoint1, waypoint2, waypoint3):
     # Sets all waypoints to their appropriate types
     for waypoint in wayList:
         if(waypoint.wtype == sVars.LD_START_FINISH):
-            startPoint = waypoint.coordinate
+            startPoint = waypoint
         elif(waypoint.wtype == sVars.LD_FIRST):
-            markOne = waypoint.coordinate
+            markOne = waypoint
         elif(waypoint.wtype == sVars.LD_SECOND):
-            markTwo = waypoint.coordinate
+            markTwo = waypoint
     
     ldWaypoints = [markOne, startPoint, markTwo, startPoint, markOne, startPoint, markTwo, startPoint]
     
@@ -33,12 +33,12 @@ def run(waypoint1, waypoint2, waypoint3):
             gVars.logger.info("Heading toward " + waypoint.wtype + " which is mark " + str(ldWaypoints.index(waypoint)) + " of " + str(len(ldWaypoints)))
             
             # Startpoint does not require a buoy rounding
-            if waypoint != startPoint:
-                coresailinglogic.pointToPoint(waypoint, None, 20)
+            if waypoint.coordinate != startPoint.coordinate:
+                coresailinglogic.pointToPoint(waypoint.coordinate, None, 20)
                 # Currently will round all buoys port.  May need to be changed for course outline
-                coresailinglogic.roundBuoyPort(waypoint)
+                coresailinglogic.roundBuoyPort(waypoint.coordinate)
             else:
-                coresailinglogic.pointToPoint(waypoint, None, 3)
+                coresailinglogic.pointToPoint(waypoint.coordinate, None, 3)
                 
         else:
             break

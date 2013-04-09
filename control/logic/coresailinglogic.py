@@ -32,7 +32,7 @@ def roundBuoyPort(BuoyLoc, FinalBearing=None):
     currentData = gVars.currentData
     
     if FinalBearing is None:
-        FinalBearing = standardcalc.boundTo180(currentData[gps_index]-179)
+        FinalBearing = standardcalc.boundTo180(standardcalc.angleBetweenTwoCoords(currentData[gps_index], BuoyLoc)-179)
     
     GPSCoord = currentData[gps_index]
     # appWindAng = currentData[awa_index]
@@ -130,7 +130,7 @@ def roundBuoyStbd(BuoyLoc, FinalBearing=None):
     currentData = gVars.currentData
         
     if FinalBearing is None:
-        FinalBearing = standardcalc.boundTo180(currentData[gps_index]-179)
+        FinalBearing = standardcalc.boundTo180(standardcalc.angleBetweenTwoCoords(currentData[gps_index], BuoyLoc)-179)
         
     GPSCoord = currentData[gps_index]
     appWindAng = currentData[awa_index]
