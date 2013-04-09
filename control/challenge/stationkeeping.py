@@ -17,10 +17,10 @@ from control.logic import coresailinglogic
 def setWayPtCoords(boxCoords): #sets the waypoints of the challenge
     wayPtCoords = []    #order = top face, right face, bottom face, left face
     if (boxCoords[0].lat == boxCoords[1].lat):    #square
-        wayPtCoords[0] = standardcalc.GPSDistAway(boxCoords[0], 20.0, 100.0)
-        wayPtCoords[1] = standardcalc.GPSDistAway(boxCoords[1], 100.0, -20.0)
-        wayPtCoords[2] = standardcalc.GPSDistAway(boxCoords[2], -20.0, -100.0)
-        wayPtCoords[3] = standardcalc.GPSDistAway(boxCoords[3], -100.0, 20.0)
+        wayPtCoords.append(standardcalc.GPSDistAway(boxCoords[0], 20.0, 100.0))
+        wayPtCoords.append(standardcalc.GPSDistAway(boxCoords[1], 100.0, -20.0))
+        wayPtCoords.append(standardcalc.GPSDistAway(boxCoords[2], -20.0, -100.0))
+        wayPtCoords.append(standardcalc.GPSDistAway(boxCoords[3], -100.0, 20.0))
     elif (boxCoords[0].lat < boxCoords[1].lat):     #diamond or tilted left square
         cAngle = standardcalc.angleBetweenTwoCoords(boxCoords[0],boxCoords[1])
         wayPntDist1 = 100.0*math.cos(cAngle)
@@ -32,10 +32,10 @@ def setWayPtCoords(boxCoords): #sets the waypoints of the challenge
         rightMidpnt = standardcalc.GPSDistAway(boxCoords[1], midDist2, -midDist1)
         botMidpnt = standardcalc.GPSDistAway(boxCoords[2], -midDist1, -midDist2)
         leftMidpnt = standardcalc.GPSDistAway(boxCoords[3], -midDist2, midDist1)
-        wayPtCoords[0] = standardcalc.GPSDistAway(topMidpnt, -wayPntDist1, wayPntDist2)
-        wayPtCoords[1] = standardcalc.GPSDistAway(rightMidpnt, wayPntDist2, wayPntDist1)
-        wayPtCoords[2] = standardcalc.GPSDistAway(botMidpnt, wayPntDist1, -wayPntDist2)
-        wayPtCoords[3] = standardcalc.GPSDistAway(leftMidpnt, -wayPntDist2, -wayPntDist1)
+        wayPtCoords.append(standardcalc.GPSDistAway(topMidpnt, -wayPntDist1, wayPntDist2))
+        wayPtCoords.append(standardcalc.GPSDistAway(rightMidpnt, wayPntDist2, wayPntDist1))
+        wayPtCoords.append(standardcalc.GPSDistAway(botMidpnt, wayPntDist1, -wayPntDist2))
+        wayPtCoords.append(standardcalc.GPSDistAway(leftMidpnt, -wayPntDist2, -wayPntDist1))
     else:    #right tilted square
         cAngle = 180 - standardcalc.angleBetweenTwoCoords(boxCoords[0],boxCoords[1])
         wayPntDist1 = 100.0*math.cos(cAngle)
@@ -47,10 +47,10 @@ def setWayPtCoords(boxCoords): #sets the waypoints of the challenge
         rightMidpnt = standardcalc.GPSDistAway(boxCoords[1], -midDist2, -midDist1)
         botMidpnt = standardcalc.GPSDistAway(boxCoords[2], -midDist1, midDist2)
         leftMidpnt = standardcalc.GPSDistAway(boxCoords[3], midDist2, midDist1)
-        wayPtCoords[0] = standardcalc.GPSDistAway(topMidpnt, wayPntDist1, wayPntDist2)
-        wayPtCoords[1] = standardcalc.GPSDistAway(rightMidpnt, wayPntDist2, -wayPntDist1)
-        wayPtCoords[2] = standardcalc.GPSDistAway(botMidpnt, -wayPntDist1, -wayPntDist2)
-        wayPtCoords[3] = standardcalc.GPSDistAway(leftMidpnt, -wayPntDist2, wayPntDist1)
+        wayPtCoords.append(standardcalc.GPSDistAway(topMidpnt, wayPntDist1, wayPntDist2))
+        wayPtCoords.append(standardcalc.GPSDistAway(rightMidpnt, wayPntDist2, -wayPntDist1))
+        wayPtCoords.append(standardcalc.GPSDistAway(botMidpnt, -wayPntDist1, -wayPntDist2))
+        wayPtCoords.append(standardcalc.GPSDistAway(leftMidpnt, -wayPntDist2, wayPntDist1))
         
     return wayPtCoords
 
@@ -71,10 +71,10 @@ def getBoxDist(boxCoords):
     topLeftAngle = standardcalc.findCosLawAngle(TL2TR, TL2Boat, TR2Boat)
     rightTopAngle = standardcalc.findCosLawAngle(TR2BR, TR2Boat, BR2Boat)
         
-    boxDistList[0] = TL2Boat * math.sin(topLeftAngle)   #top dist
-    boxDistList[1] = TR2Boat * math.sin(rightTopAngle)   #right dist
-    boxDistList[2] = 40 - boxDistList[0] #bottom dist
-    boxDistList[3] = 40 - boxDistList[1] #left dist
+    boxDistList.append( TL2Boat * math.sin(topLeftAngle) )  #top dist
+    boxDistList.append( TR2Boat * math.sin(rightTopAngle) )  #right dist
+    boxDistList.append( 40 - boxDistList[0] ) #bottom dist
+    boxDistList.append( 40 - boxDistList[1] ) #left dist
     return boxDistList
 
 def run(topLeftWaypnt, topRightWaypnt, botLeftWaypnt, botRightWaypnt):
@@ -88,8 +88,8 @@ def run(topLeftWaypnt, topRightWaypnt, botLeftWaypnt, botRightWaypnt):
     boxDistList = getBoxDist(boxCoords)  #top, right, bottom, left
     meanSpd = 0.75   #from old arduino code
     gVars.SKCurrentWaypnt = boxDistList.index(min(boxDistList))
-    thread.start_new_thread(coresailinglogic.pointToPoint, boxCoords[gVars.SKCurrentWaypnt])
-    gVars.logger.info("The current waypoint is " + gVars.SKCurrentWaypnt + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
+    thread.start_new_thread(coresailinglogic.pointToPoint, (boxCoords[gVars.SKCurrentWaypnt], ))
+    gVars.logger.info("The current waypoint is " + str(gVars.SKCurrentWaypnt) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
     gVars.logger.info("Station Keeping Initialization finished. Now running Station Keeping Challenge")
     skrun(boxCoords, wayPtCoords, spdList, meanSpd)
     return
@@ -105,38 +105,38 @@ def skrun(boxCoords, wayPtCoords, spdList, meanSpd):
             if (standardcalc.isWPNoGo(gVars.currentData[sVars.AWA_INDEX],gVars.currentData[sVars.HOG_INDEX], gVars.SKCurrentWaypnt, gVars.currentData[sVars.SOG_INDEX], gVars.currentData[sVars.GPS_INDEX])):
                 gVars.logger.info("The boat is sailing upwind. Changing current waypoint.")
                 gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 1) % 4
-                gVars.logger.info("The current waypoint is " + gVars.SKCurrentWaypnt + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
+                gVars.logger.info("The current waypoint is " + str(gVars.SKCurrentWaypnt) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
                 gVars.kill_flagPTP = 1
-                thread.start_new_thread(coresailinglogic.pointToPoint, boxCoords[gVars.SKCurrentWaypnt])
+                thread.start_new_thread(coresailinglogic.pointToPoint, (boxCoords[gVars.SKCurrentWaypnt], ))
                 turning = 1
             if (boxDistList[gVars.SKCurrentWaypnt] < 5):
                 gVars.logger.info("The boat is too close to an edge. Changing current waypoint.")
                 gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 2) % 4
-                gVars.logger.info("The current waypoint is " + gVars.SKCurrentWaypnt + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
+                gVars.logger.info("The current waypoint is " + str(gVars.SKCurrentWaypnt) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
                 gVars.kill_flagPTP = 1
                 gVars.logger.info("Commencing gybe.")
                 if (gVars.currentData[sVars.AWA_INDEX] < 0):
                     gVars.arduino.gybe(1)
                 else:
                     gVars.arduino.gybe(0)
-                thread.start_new_thread(coresailinglogic.pointToPoint, boxCoords[gVars.SKCurrentWaypnt])
+                thread.start_new_thread(coresailinglogic.pointToPoint, (boxCoords[gVars.SKCurrentWaypnt], ))
                 turning = 1
             if (turning == 0):
                 spdList = standardcalc.changeSpdList(spdList)
                 meanSpd = standardcalc.meanOfList(spdList)
-                gVars.logger.info("The mean speed of the boat is " + meanSpd + " metres per second.")
+                gVars.logger.info("The mean speed of the boat is " + str(meanSpd) + " metres per second.")
             if (boxDistList[gVars.SKCurrentWaypnt] >= meanSpd*(secLeft+2)):  #leeway of 2 seconds
                 exiting = 1
                 gVars.logger.info("Station Keeping event is about to end. Exiting to current waypoint.")
             elif (boxDistList[(gVars.SKCurrentWaypnt + 2) % 4] >= meanSpd*(secLeft+2+4) ): #leeway of 2 seconds, 4 seconds for gybe
                 gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 2) % 4
                 gVars.kill_flagPTP = 1
-                gVars.logger.info("Station Keeping event is about to end. Gybing and exiting to waypoint " + gVars.SKCurrentWaypnt)
+                gVars.logger.info("Station Keeping event is about to end. Gybing and exiting to waypoint " + str(gVars.SKCurrentWaypnt))
                 if (gVars.currentData[sVars.AWA_INDEX] < 0):
                     gVars.arduino.gybe(1)
                 else:
                     gVars.arduino.gybe(0)
-                thread.start_new_thread(coresailinglogic.pointToPoint, boxCoords[gVars.SKCurrentWaypnt])
+                thread.start_new_thread(coresailinglogic.pointToPoint, (boxCoords[gVars.SKCurrentWaypnt], ))
                 exiting = 1
     if (gVars.kill_flagSK == 1):
         gVars.logger.info("Station Keeping Kill Flag initialized. Station Keeping Challenge has been stopped.")
