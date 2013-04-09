@@ -310,7 +310,7 @@ def pointToPoint(Dest, initialTack = None, ACCEPTANCE_DISTANCE = sVars.ACCEPTANC
                         #TWA = abs(int(TWA))
                         #print ("TWA is: " + str(newTWA))
                         
-                        if(standardcalc.isThereChangetoAWAorWeatherOrMode(appWindAng,newappWindAng,oldColumn,tackSailing,newTackSailing)):
+                        if(standardcalc.isThereChangeToAWAorWeatherOrMode(appWindAng,newappWindAng,oldColumn,tackSailing,newTackSailing)):
                             gVars.logger.info("Changing sheets and rudder")
                             arduino.adjust_sheets(sheetList[abs(int(newappWindAng))][gVars.currentColumn])
                             arduino.steer(AWA_METHOD,hog-newappWindAng+43)
