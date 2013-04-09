@@ -60,7 +60,7 @@ def run(Waypoint1,Waypoint2,Waypoint3):
     if(num_nav_start_port > 1 or num_nav_start_stbd > 1 or num_nav_first > 1):
         gVars.logger.error("Repeating or too many arguments")
     
-    interpolatedPoint = datatypes.GPSCoordinate((PortStartInnerPoint.latitude+StarboardStartInnerPoint.latitude)/2,(PortStartInnerPoint.longitude+StarboardStartInnerPoint.longitude)/2)
+    interpolatedPoint = datatypes.GPSCoordinate((PortStartInnerPoint.lat+StarboardStartInnerPoint.lat)/2,(PortStartInnerPoint.long+StarboardStartInnerPoint.long)/2)
     angleOfCourse = standardcalc.angleBetweenTwoCoords(interpolatedPoint, BuoyCoords)
     boundAngle = math.atan(HORIZ_BOUNDARY_DISTANCE/30)*180/math.pi
     

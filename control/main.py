@@ -24,7 +24,7 @@ import piardio.mockarduino
 # Mock:
     #   - If true, mock will run from a mock arduino class which simulates boat and wind conditions (see readme)
     #   - If false, mock will run off of an actual arduino through dev/tty ports     
-mock = False
+mock = True
 
 # Main - pass challenge or logic function name as argument
 def run(argv=None):
@@ -55,18 +55,27 @@ def run(argv=None):
             if (gVars.currentProcess == sVars.GO_AROUND_PORT or gVars.currentProcess == sVars.GO_AROUND_STBD or gVars.currentProcess == sVars.GO_TO):
                 gVars.taskStartTime = datetime.now()
                 try:
-                    thread.start_new_thread(getattr(coresailinglogic, gVars.currentProcess), gVars.currentParams)
-                except Exception:
-                    gVars.logger.error("Caught exception in " + gVars.currentProcess + ":\n" + Exception)
+                    getattr(coresailinglogic, gVars.currentProcess)(*gVars.currentParams)
+                except Exception, errtext:
+                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext))
             elif (gVars.currentProcess == sVars.NAVIGATION_CHALLENGE):
                 gVars.taskStartTime = datetime.now()
-                thread.start_new_thread(navigation.run, gVars.currentParams)
+                try:
+                    navigation.run(*gVars.currentParams)
+                except Exception, errtext:
+                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext))
             elif (gVars.currentProcess == sVars.STATION_KEEPING_CHALLENGE):
                 gVars.taskStartTime = datetime.now()
-                thread.start_new_thread(stationkeeping.run, gVars.currentParams)
+                try:
+                    stationkeeping.run(*gVars.currentParams)
+                except Exception, errtext:
+                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext))
             elif (gVars.currentProcess == sVars.LONG_DISTANCE_CHALLENGE):
                 gVars.taskStartTime = datetime.now()
-                thread.start_new_thread(longdistance.run, gVars.currentParams)
+                try:
+                    longdistance.run(*gVars.currentParams)
+                except Exception, errtext:
+                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext))
             else:
                 gVars.logger.warning("No instruction task named " + str(gVars.currentProcess))
                 gVars.currentProcess = None
