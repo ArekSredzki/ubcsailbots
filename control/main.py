@@ -50,6 +50,8 @@ def run(argv=None):
         # switch processes to the next function in the queue (FIFO)
             
         if (len(gVars.functionQueue) > 0 and gVars.currentProcess is None and gVars.currentData[sVars.AUT_INDEX] == 1):
+            killAllFunctions()
+            time.sleep(.5)
             unkillAllFunctions()
             gVars.currentProcess = gVars.functionQueue.pop(0)
             gVars.currentParams = gVars.queueParameters.pop(0)
@@ -83,8 +85,8 @@ def run(argv=None):
                     gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
             else:
                 gVars.logger.warning("No instruction task named " + str(gVars.currentProcess))
-                gVars.currentProcess = None
-                gVars.currentParams = None
+            gVars.currentProcess = None
+            gVars.currentParams = None
                 
         time.sleep(.5)
         
@@ -107,6 +109,14 @@ def unkillAllFunctions():
     gVars.kill_flagSK = 0
     gVars.kill_flagRB = 0
     gVars.kill_flagLD = 0
+
+def killAllFunctions(self):
+    # All current kill flags must be added here.
+    gVars.kill_flagPTP = 1
+    gVars.kill_flagNav = 1
+    gVars.kill_flagSK = 1
+    gVars.kill_flagRB = 1
+    gVars.kill_flagLD = 1
 
 if __name__ == '__main__':
     try:

@@ -30,7 +30,7 @@ def run(waypoint1, waypoint2, waypoint3):
     
     for waypoint in ldWaypoints:
         if gVars.kill_flagLD == 0:
-            gVars.logger.info("Heading toward " + waypoint + " which is mark " + ldWaypoints.index(waypoint) + " of " + len(ldWaypoints))
+            gVars.logger.info("Heading toward " + waypoint.wtype + " which is mark " + str(ldWaypoints.index(waypoint)) + " of " + str(len(ldWaypoints)))
             
             # Startpoint does not require a buoy rounding
             if waypoint != startPoint:
