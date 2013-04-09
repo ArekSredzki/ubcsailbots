@@ -88,7 +88,7 @@ def run(topLeftWaypnt, topRightWaypnt, botLeftWaypnt, botRightWaypnt):
     boxDistList = getBoxDist(boxCoords)  #top, right, bottom, left
     meanSpd = 0.75   #from old arduino code
     gVars.SKCurrentWaypnt = boxDistList.index(min(boxDistList))
-    thread.start_new_thread(coresailinglogic.pointToPoint, (boxCoords[gVars.SKCurrentWaypnt], ))
+    thread.start_new_thread(coresailinglogic.pointToPoint, (wayPtCoords[gVars.SKCurrentWaypnt], ))
     gVars.logger.info("The current waypoint is " + str(gVars.SKCurrentWaypnt) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
     gVars.logger.info("Station Keeping Initialization finished. Now running Station Keeping Challenge")
     skrun(boxCoords, wayPtCoords, spdList, meanSpd)
@@ -102,12 +102,12 @@ def skrun(boxCoords, wayPtCoords, spdList, meanSpd):
         SKTimer()
         boxDistList = getBoxDist(boxCoords)
         if (exiting == 0):
-            if (standardcalc.isWPNoGo(gVars.currentData[sVars.AWA_INDEX],gVars.currentData[sVars.HOG_INDEX], gVars.SKCurrentWaypnt, gVars.currentData[sVars.SOG_INDEX], gVars.currentData[sVars.GPS_INDEX])):
+            if (standardcalc.isWPNoGo(gVars.currentData[sVars.AWA_INDEX],gVars.currentData[sVars.HOG_INDEX], wayPtCoords[gVars.SKCurrentWaypnt], gVars.currentData[sVars.SOG_INDEX], gVars.currentData[sVars.GPS_INDEX])):
                 gVars.logger.info("The boat is sailing upwind. Changing current waypoint.")
                 gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 1) % 4
                 gVars.logger.info("The current waypoint is " + str(gVars.SKCurrentWaypnt) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
                 gVars.kill_flagPTP = 1
-                thread.start_new_thread(coresailinglogic.pointToPoint, (boxCoords[gVars.SKCurrentWaypnt], ))
+                thread.start_new_thread(coresailinglogic.pointToPoint, (wayPtCoords[gVars.SKCurrentWaypnt], ))
                 turning = 1
             if (boxDistList[gVars.SKCurrentWaypnt] < 5):
                 gVars.logger.info("The boat is too close to an edge. Changing current waypoint.")
@@ -119,7 +119,7 @@ def skrun(boxCoords, wayPtCoords, spdList, meanSpd):
                     gVars.arduino.gybe(1)
                 else:
                     gVars.arduino.gybe(0)
-                thread.start_new_thread(coresailinglogic.pointToPoint, (boxCoords[gVars.SKCurrentWaypnt], ))
+                thread.start_new_thread(coresailinglogic.pointToPoint, (wayPtCoords[gVars.SKCurrentWaypnt], ))
                 turning = 1
             if (turning == 0):
                 spdList = standardcalc.changeSpdList(spdList)
@@ -136,7 +136,7 @@ def skrun(boxCoords, wayPtCoords, spdList, meanSpd):
                     gVars.arduino.gybe(1)
                 else:
                     gVars.arduino.gybe(0)
-                thread.start_new_thread(coresailinglogic.pointToPoint, (boxCoords[gVars.SKCurrentWaypnt], ))
+                thread.start_new_thread(coresailinglogic.pointToPoint, (wayPtCoords[gVars.SKCurrentWaypnt], ))
                 exiting = 1
     if (gVars.kill_flagSK == 1):
         gVars.logger.info("Station Keeping Kill Flag initialized. Station Keeping Challenge has been stopped.")
