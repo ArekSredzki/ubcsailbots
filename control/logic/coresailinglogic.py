@@ -238,10 +238,6 @@ def pointToPointAWA(Dest, initialTack, ACCEPTANCE_DISTANCE):
     
     while(end_flag == 0 and gVars.kill_flagPTP == 0):
         gVars.logger.info("End flag and kill flag OK")
-        
-        while(gVars.currentData[aut_index] == 0):
-            time.sleep(0.1)
-            
         currentData = gVars.currentData
         GPSCoord = currentData[gps_index]
         newappWindAng = currentData[awa_index]
@@ -267,9 +263,6 @@ def pointToPointAWA(Dest, initialTack, ACCEPTANCE_DISTANCE):
                     initialTack = None
                     while(abs(hog-standardcalc.angleBetweenTwoCoords(GPSCoord, Dest))<80 and gVars.kill_flagPTP ==0):
                         gVars.logger.info("On starboard tack")
-                        
-                        while(gVars.currentData[aut_index] == 0):
-                            time.sleep(0.1)
                         
                         gVars.tacked_flag = 0
                         GPSCoord = currentData[gps_index]
@@ -309,8 +302,6 @@ def pointToPointAWA(Dest, initialTack, ACCEPTANCE_DISTANCE):
                     initialTack = None
                     while(abs(hog-standardcalc.angleBetweenTwoCoords(GPSCoord, Dest))<80 and gVars.kill_flagPTP == 0):
                         gVars.logger.info("On port tack")
-                        while(gVars.currentData[aut_index] == 0):
-                            time.sleep(0.1)
                         gVars.tacked_flag = 0
                         GPSCoord = currentData[gps_index]
                         newappWindAng = currentData[awa_index]
