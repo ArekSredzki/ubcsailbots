@@ -38,7 +38,9 @@ function getDebugLog(){
   		type: 'GET',
   		dataType: "text",
   		success: function (data) {
-  			logMessage(data, 'Debug Messages', '#debugLogConsole');
+  		  if (data!=""){
+  			 logMessage(data, 'Debug Messages', '#debugLogConsole');
+  			}
         	//$("#debugLogConsole").append(data+'<br/>');
         	// Make sure that we automatically scroll to the bottom 
          setTimeout('getDebugLog()',1000);
