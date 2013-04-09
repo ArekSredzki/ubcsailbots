@@ -21,7 +21,7 @@ function logMessage(message, logName, containerId)
 
 
 
-	$(containerId).append(currentTime + ', ' + message + '<br />');
+	$(containerId).append(message + '<br />');
 	$(containerId).scrollTop($(containerId)[0].scrollHeight);
 	
 	console.log(currentFullDate + ', ' + message);
