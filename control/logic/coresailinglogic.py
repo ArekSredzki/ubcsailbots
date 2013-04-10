@@ -22,7 +22,9 @@ aut_index=sVars.AUT_INDEX
 
 COMPASS_METHOD = 0
 COG_METHOD = 1
-AWA_METHOD = 2 
+AWA_METHOD = 2
+
+TACKING_ANGLE = 34 
 
 end_flag=0
 
@@ -325,13 +327,14 @@ def killPointToPoint():
 # --- Point to Point ---
 # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
 # Output: Nothing
-def pointToPoint(Dest, initialTack = None, ACCEPTANCE_DISTANCE = sVars.ACCEPTANCE_DISTANCE_DEFAULT):
+def pointToPoint(Dest, _initialTack = None, ACCEPTANCE_DISTANCE = sVars.ACCEPTANCE_DISTANCE_DEFAULT):
     sheetList = parsing.parse(path.join(path.dirname(__file__), 'apparentSheetSetting'))
-    tackSailing = 0
     newTackSailing = 0
     gVars.kill_flagPTP = 0
     end_flag = 0
-    arduino = gVars.arduino
+    global appWindAng, oldColumn, tackDirection, tackSailing, initialTack
+    initialTack = _initialTack
+    tackSailing = 0
     appWindAng = 0
     oldColumn = 0
     tackDirection = 0
@@ -361,99 +364,19 @@ def pointToPoint(Dest, initialTack = None, ACCEPTANCE_DISTANCE = sVars.ACCEPTANC
                 #To get it wrt to current heading, we use hog-TWA-45-hog and hog-TWA+45-hog.  Both terms have hogs cancelling out.
                 #We are left with -TWA-45 and -TWA+45, which makes sense since the original TWA was always with respect to the boat.
                 #Since we are trying to figure out which one is closest to turn to, we use absolute values.
-                if(standardcalc.starboardTackWanted(newappWindAng,initialTack)):
-                    newTackSailing = 1
-                    initialTack = None
-                    while(standardcalc.doWeStillWantToTack(hog,GPSCoord,Dest)):
-                        gVars.logger.info("On starboard tack")
-                        
-                        gVars.tacked_flag = 0
-                        GPSCoord = currentData[gps_index]
-                        newappWindAng = currentData[awa_index]
-                        cog = currentData[cog_index]
-                        hog = currentData[hog_index]
-                        sog = currentData[sog_index] * 100  #Using speed in cm/s
-                                               
-                        standardcalc.getWeatherSetting(newappWindAng, sog)                            
-                        
-                        if( standardcalc.isThereChangeToAWAorWeatherOrMode(appWindAng,newappWindAng,oldColumn,tackSailing,newTackSailing) ):
-                            gVars.logger.info("Changing sheets and rudder")
-                            arduino.adjust_sheets(sheetList[abs(int(newappWindAng))][gVars.currentColumn])
-                            arduino.steer(AWA_METHOD,hog-newappWindAng-43)
-                            appWindAng = newappWindAng
-                            oldColumn = gVars.currentColumn
-                            tackSailing = newTackSailing
-                            
-                        if(newappWindAng > 0):
-                            tackDirection = 1
-                        else:
-                            tackDirection = 0
-                        
-                        if( len(gVars.boundaries) > 0 ):
-                            for boundary in gVars.boundaries:
-                                if(standardcalc.distBetweenTwoCoords(boundary, GPSCoord) <= boundary.radius):
-                                    gVars.logger.info("Tacked from boundary")
-                                    arduino.tack(gVars.currentColumn,tackDirection)
-                                    gVars.tacked_flag = 1
-                                    break
-                        if(gVars.tacked_flag):
-                            break
-                        
-                    if(gVars.tacked_flag == 0):                                                                
-                        arduino.tack(gVars.currentColumn,tackDirection)
-                    gVars.logger.info("Tacked from 80 degrees")
+                if(starboardTackWanted(newappWindAng,initialTack)):
+                    maintainTack(False, Dest, sheetList)
                     
-                elif(standardcalc.portTackWanted(newappWindAng,initialTack)):
-                    newTackSailing = 2
-                    initialTack = None
-                    while(standardcalc.doWeStillWantToTack(hog,GPSCoord,Dest)):
-                        gVars.logger.info("On port tack")
-                        gVars.tacked_flag = 0
-                        GPSCoord = currentData[gps_index]
-                        newappWindAng = currentData[awa_index]
-                        cog = currentData[cog_index]
-                        hog = currentData[hog_index]
-                        sog = currentData[sog_index]*100
-                        
-                        standardcalc.getWeatherSetting(newappWindAng,sog)
-                        #TWA = abs(int(TWA))
-                        #print ("TWA is: " + str(newTWA))
-                        
-                        if(standardcalc.isThereChangeToAWAorWeatherOrMode(appWindAng,newappWindAng,oldColumn,tackSailing,newTackSailing)):
-                            gVars.logger.info("Changing sheets and rudder")
-                            arduino.adjust_sheets(sheetList[abs(int(newappWindAng))][gVars.currentColumn])
-                            arduino.steer(AWA_METHOD,hog-newappWindAng+43)
-                            appWindAng = newappWindAng
-                            oldColumn = gVars.currentColumn
-                            tackSailing = newTackSailing
-                            
-                        if(newappWindAng > 0):
-                            tackDirection = 1
-                        else:
-                            tackDirection = 0
-                            
-                        if( len(gVars.boundaries) > 0 ):
-                            for boundary in gVars.boundaries:
-                                if(standardcalc.distBetweenTwoCoords(boundary, GPSCoord) <= boundary.radius):
-                                    gVars.logger.info("Tacked from boundary")
-                                    arduino.tack(gVars.currentColumn,tackDirection)
-                                    gVars.tacked_flag = 1
-                                    break
-                        
-                        if(gVars.tacked_flag):
-                            break
-                        
-                    if(gVars.tacked_flag == 0):                                                                
-                        arduino.tack(gVars.currentColumn,tackDirection)
-                    gVars.logger.info("Tacked from 80 degrees")
+                elif(portTackWanted(newappWindAng,initialTack)):
+                    maintainTack(True, Dest, sheetList)
                     
             else:
                 gVars.logger.info("Sailing straight to point")
                 newTackSailing = 3
-                if(standardcalc.isThereChangeToAWAorWeatherOrMode(appWindAng,newappWindAng,oldColumn,tackSailing,newTackSailing)):
+                if(isThereChangeToAWAorWeatherOrMode(appWindAng,newappWindAng,oldColumn,tackSailing,newTackSailing)):
                     gVars.logger.info("Changing sheets and rudder")
-                    arduino.adjust_sheets(sheetList[abs(int(newappWindAng))][gVars.currentColumn])
-                    arduino.steer(COMPASS_METHOD,standardcalc.angleBetweenTwoCoords(GPSCoord,Dest))
+                    gVars.arduino.adjust_sheets(sheetList[abs(int(newappWindAng))][gVars.currentColumn])
+                    gVars.arduino.steer(COMPASS_METHOD,standardcalc.angleBetweenTwoCoords(GPSCoord,Dest))
                     appWindAng = newappWindAng
                     oldColumn = gVars.currentColumn
                     tackSailing = newTackSailing
@@ -463,3 +386,75 @@ def pointToPoint(Dest, initialTack = None, ACCEPTANCE_DISTANCE = sVars.ACCEPTANC
             gVars.logger.info("Finished Point to Point")
     
     return 0
+
+def maintainTack(port, dest, sheetList):
+    global appWindAng, oldColumn, tackDirection, tackSailing, initialTack
+    if port:
+        newTackSailing = 2
+    else:
+        newTackSailing = 1
+    initialTack = None
+    gVars.tacked_flag = 0
+    currentData = gVars.currentData
+    while(doWeStillWantToTack(currentData[sVars.HOG_INDEX],currentData[sVars.GPS_INDEX],dest)):        
+        gVars.tacked_flag = 0
+        GPSCoord = currentData[gps_index]
+        newappWindAng = currentData[awa_index]
+        hog = currentData[hog_index]
+        sog = currentData[sog_index] * 100  #Using speed in cm/s
+                               
+        standardcalc.getWeatherSetting(newappWindAng, sog)                            
+        
+        if( isThereChangeToAWAorWeatherOrMode(appWindAng,newappWindAng,oldColumn,tackSailing,newTackSailing) ):
+            gVars.logger.info("Changing sheets and rudder")
+            gVars.arduino.adjust_sheets(sheetList[abs(int(newappWindAng))][gVars.currentColumn])
+            if port:
+                gVars.arduino.steer(AWA_METHOD,hog-newappWindAng+TACKING_ANGLE)
+            else:
+                gVars.arduino.steer(AWA_METHOD,hog-newappWindAng-TACKING_ANGLE)
+            appWindAng = newappWindAng
+            oldColumn = gVars.currentColumn
+            tackSailing = newTackSailing
+            
+        if(newappWindAng > 0):
+            tackDirection = 1
+        else:
+            tackDirection = 0
+        
+        if( len(gVars.boundaries) > 0 ):
+            for boundary in gVars.boundaries:
+                if(standardcalc.distBetweenTwoCoords(boundary, GPSCoord) <= boundary.radius):
+                    gVars.logger.info("Tacked from boundary")
+                    gVars.arduino.tack(gVars.currentColumn,tackDirection)
+                    gVars.tacked_flag = 1
+                    break
+        if(gVars.tacked_flag):
+            break
+        
+    if(gVars.tacked_flag == 0):                                                                
+        gVars.arduino.tack(gVars.currentColumn,tackDirection)
+        gVars.logger.info("Tacked from 80 degrees")
+    
+def starboardTackWanted(AWA,initialTack):
+    if( (abs(-AWA-TACKING_ANGLE)<abs(-AWA+TACKING_ANGLE) and initialTack is None) or initialTack == 1 ):
+        return 1
+    else:
+        return 0
+        
+def portTackWanted(AWA,initialTack):
+    if( (abs(-AWA-TACKING_ANGLE)>=abs(-AWA+TACKING_ANGLE) and initialTack is None) or initialTack == 0 ):
+        return 1
+    else:
+        return 0
+
+def doWeStillWantToTack(hog,GPSCoord,Dest):
+    if(abs(hog-standardcalc.angleBetweenTwoCoords(GPSCoord, Dest))<80 and gVars.kill_flagPTP ==0):
+        return 1
+    else:
+        return 0
+    
+def isThereChangeToAWAorWeatherOrMode(AWA,newAWA,oldColumn,tackSailing,newTackSailing):
+    if(AWA != newAWA or oldColumn != gVars.currentColumn or tackSailing != newTackSailing):
+        return 1
+    else:
+        return 0
