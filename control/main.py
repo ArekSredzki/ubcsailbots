@@ -25,7 +25,7 @@ import traceback
 # Mock:
     #   - If true, mock will run from a mock arduino class which simulates boat and wind conditions (see readme)
     #   - If false, mock will run off of an actual arduino through dev/tty ports     
-mock = True
+mock = False
 
 # Main - pass challenge or logic function name as argument
 def run(argv=None):
@@ -42,7 +42,7 @@ def run(argv=None):
     gVars.logger.info("Created Arduino object")
     gVars.arduino = arduino
     s = sched.scheduler(time.time, time.sleep)
-    s.enter(1, 1, setGlobVar, (arduino, s,))
+    s.enter(1, 1, setGlobVar, (s,))
     thread.start_new_thread(s.run, ())
     
     while (gVars.run):
@@ -91,7 +91,9 @@ def run(argv=None):
         time.sleep(.5)
         
 
-def setGlobVar(arduino, sc):
+def setGlobVar(sc):
+    if gVars.currentProcess == None:
+        killAllFunctions()
     gVars.currentData = gVars.arduino.getFromArduino()
     printArdArray(gVars.currentData)
     if (mock):
