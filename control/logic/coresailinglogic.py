@@ -194,45 +194,25 @@ def roundBuoyStbd(BuoyLoc, FinalBearing=None):
             
     return 0
 
-def roundBuoyPort2(BuoyLoc, FinalLoc):
-    currentData = gVars.currentData
-    GPSCoord = currentData[gps_index]
+def roundBuoy(BuoyLoc, FinalLoc=gVars.currentData[gps_index], port=True):
+    GPSCoord = gVars.currentData[gps_index]
     
-    X = 16.64 # Degrees, Calculated
-    Dest = 23.41 # Meters, Distance from boat to buoy
+    ANGLE_BOAT_TO_TARGET_WRT_BUOY = 138
+    calc = roundBuoyCalc(10, BuoyLoc, ANGLE_BOAT_TO_TARGET_WRT_BUOY)
+    
+    X = calc.Angle
+    Dest = calc.Dest # Meters, Distance from boat to target (after buoy)
     angleToNorth = standardcalc.angleBetweenTwoCoords(GPSCoord, BuoyLoc)
-    quadDir = None
+    move = None
     
-    if GPSCoord.long > BuoyLoc.long and GPSCoord.lat > BuoyLoc.lat:
-        moveLong = abs(math.sin(180 - angleToNorth + X)) * -1 # - X movement 
-        moveLat = abs(math.cos(180 - angleToNorth + X)) * - 1 # - Y movement
-        quadDir = 3;
-        #For setting the 2nd point
-        moveLong2 = abs(math.sin(angleToNorth -90 - X)) # + X Movement
-        moveLat2 = abs(math.cos(angleToNorth - 90 - X)) * -1 # - Y Movement
-    elif GPSCoord.long < BuoyLoc.long and GPSCoord.lat > BuoyLoc.lat:
-        moveLong = abs(math.cos(angleToNorth -90 - X)) # + X Movement
-        moveLat = abs(math.sin(angleToNorth - 90 - X)) * -1 # - Y Movement
-        quadDir = 4;
-        #For setting the 2nd point
-        moveLong2 = abs(math.cos(angleToNorth - X)) # + X Movement
-        moveLat2 = abs(math.sin(angleToNorth - X)) # + Y Movement
-    elif GPSCoord.long < BuoyLoc.long and GPSCoord.lat < BuoyLoc.lat:
-        moveLong = abs(math.sin(angleToNorth - X)) # + X Movement
-        moveLat = abs(math.cos(angleToNorth - X)) # + Y Movement
-        quadDir = 1;
-        moveLong2 = abs(math.sin(angleToNorth - X)) * - 1 # - X Movement
-        moveLat2 = abs(math.cos(angleToNorth - X)) # + Y Movement 
+    if port:
+        move = portCalcRoundBuoy(GPSCoord, BuoyLoc, angleToNorth, X)
     else:
-        moveLong = abs(math.sin(angleToNorth + X)) * - 1 # - X Movement
-        moveLat = abs(math.cos(angleToNorth + X)) # + Y Movement 
-        quadDir = 2;
-        moveLong2 = abs(math.cos(180 - angleToNorth + X)) * -1 # - X movement 
-        moveLat2 = abs(math.sin(180 - angleToNorth + X)) * - 1 # - Y movement
+        move = starCalcRoundBuoy(GPSCoord, BuoyLoc, angleToNorth, X)
                 
-    moveLong *= Dest 
-    moveLat *= Dest 
-    destination = standardcalc.GPSDistAway(GPSCoord, moveLong, moveLat)
+    move[0].Long *= Dest 
+    move[0].Lat *= Dest 
+    destination = standardcalc.GPSDistAway(GPSCoord, move[0].Long, move[0].Lat)
 
     if (GPSCoord.long >= standardcalc.GPSDistAway(destination, 10, 0).long): 
         pointToPoint(datatypes.GPSCoordinate(destination.lat, destination.long),1)
@@ -243,11 +223,103 @@ def roundBuoyPort2(BuoyLoc, FinalLoc):
     angleToBuoy = standardcalc.angleBetweenTwoCoords(PassBuoyData[gps_index], BuoyLoc)
     
     if angleToTarget < standardcalc.boundTo180(angleToBuoy + 15) and angleToTarget > standardcalc.boundTo180(angleToBuoy - 15): 
-        destination = standardcalc.GPSDistAway(GPSCoord, moveLong2, moveLat2)
+        destination = standardcalc.GPSDistAway(GPSCoord, move[1].Long, move[1].Lat)
         pointToPoint(datatypes.GPSCoordinate(destination.lat, destination.long),1)
         
     return 0
+
+def portCalcRoundBuoy(GPSCoord, BuoyLoc, angleToNorth, X):
+    if GPSCoord.long > BuoyLoc.long and GPSCoord.lat > BuoyLoc.lat:
+        # 1st Point: Quadrant 3
+        moveLong = abs(math.sin(180 - angleToNorth + X)) * -1 # - X movement 
+        moveLat = abs(math.cos(180 - angleToNorth + X)) * - 1 # - Y movement
+        # 2nd Point: Quadrant 4
+        moveLong2 = abs(math.sin(angleToNorth -90 - X)) # + X Movement
+        moveLat2 = abs(math.cos(angleToNorth - 90 - X)) * -1 # - Y Movement
+    elif GPSCoord.long < BuoyLoc.long and GPSCoord.lat > BuoyLoc.lat:
+        # 1st Point: Quadrant 4
+        moveLong = abs(math.cos(angleToNorth -90 - X)) # + X Movement
+        moveLat = abs(math.sin(angleToNorth - 90 - X)) * -1 # - Y Movement
+        # 2nd Point: Quadrant 1
+        moveLong2 = abs(math.cos(angleToNorth - X)) # + X Movement
+        moveLat2 = abs(math.sin(angleToNorth - X)) # + Y Movement
+    elif GPSCoord.long < BuoyLoc.long and GPSCoord.lat < BuoyLoc.lat:
+        # 1st Point: Quadrant 1
+        moveLong = abs(math.sin(angleToNorth - X)) # + X Movement
+        moveLat = abs(math.cos(angleToNorth - X)) # + Y Movement
+        # 2nd Point: Quadrant 2
+        moveLong2 = abs(math.sin(angleToNorth - X)) * - 1 # - X Movement
+        moveLat2 = abs(math.cos(angleToNorth - X)) # + Y Movement 
+    else:
+        # 1st Point: Quadrant 2
+        moveLong = abs(math.sin(angleToNorth + X)) * - 1 # - X Movement
+        moveLat = abs(math.cos(angleToNorth + X)) # + Y Movement 
+        # 2nd Point: Quadrant 3
+        moveLong2 = abs(math.cos(180 - angleToNorth + X)) * -1 # - X movement 
+        moveLat2 = abs(math.sin(180 - angleToNorth + X)) * - 1 # - Y movement
     
+    move = None
+    move[0].long = moveLong
+    move[0].lat = moveLat
+    move[1].long = moveLong2
+    move[1].lat = moveLat2
+    
+    return move
+
+def starCalcRoundBuoy(GPSCoord, BuoyLoc, angleToNorth, X):
+    if GPSCoord.long > BuoyLoc.long and GPSCoord.lat > BuoyLoc.lat:
+        # 1st Point: Quadrant 3
+        moveLong = abs(math.cos(180 - angleToNorth + X)) * -1 # - X movement 
+        moveLat = abs(math.sin(180 - angleToNorth + X)) * - 1 # - Y movement
+        # 2nd Point: Quadrant 2
+        moveLong2 = abs(math.sin(angleToNorth + X)) * - 1 # - X Movement
+        moveLat2 = abs(math.cos(angleToNorth + X)) # + Y Movement 
+    elif GPSCoord.long < BuoyLoc.long and GPSCoord.lat > BuoyLoc.lat:
+        # 1st Point: Quadrant 4
+        moveLong = abs(math.sin(angleToNorth -90 - X)) # + X Movement
+        moveLat = abs(math.cos(angleToNorth - 90 - X)) * -1 # - Y Movement
+        # 2nd Point: Quadrant 3
+        moveLong2 = abs(math.sin(180 - angleToNorth + X)) * -1 # - X movement 
+        moveLat2 = abs(math.cos(180 - angleToNorth + X)) * - 1 # - Y movement
+    elif GPSCoord.long < BuoyLoc.long and GPSCoord.lat < BuoyLoc.lat:
+        # 1st Point: Quadrant 1
+        moveLong = abs(math.cos(angleToNorth - X)) # + X Movement
+        moveLat = abs(math.sin(angleToNorth - X)) # + Y Movement
+        # 2nd Point: Quadrant 4
+        moveLong2 = abs(math.cos(angleToNorth -90 - X)) # + X Movement
+        moveLat2 = abs(math.sin(angleToNorth - 90 - X)) * -1 # - Y Movement
+    else:
+        # 1st Point: Quadrant 2
+        moveLong = abs(math.sin(angleToNorth - X)) * - 1 # - X Movement
+        moveLat = abs(math.cos(angleToNorth - X)) # + Y Movement 
+        # 2nd Point: Quadrant 1
+        moveLong2 = abs(math.sin(angleToNorth - X)) # + X Movement
+        moveLat2 = abs(math.cos(angleToNorth - X)) # + Y Movement
+        
+        move = None
+        move[0].long = moveLong
+        move[0].lat = moveLat
+        move[1].long = moveLong2
+        move[1].lat = moveLat2
+    
+    return move
+
+def roundBuoyCalc(DisTargetToBuoy=10, BuoyLoc, gamma ):
+    currentData = gVars.currentData
+    GPSCoord = currentData[gps_index]
+    
+    DisBoatToBuoy = math.sqrt((BuoyLoc.x - GPSCoord.x)^2 + (BuoyLoc.y - GPSCoord.y)^2)
+    Dest = math.sqrt(DisTargetToBuoy^2 + DisBoatToBuoy^2 - 2*DisTargetToBuoy*DisBoatToBuoy*math.cos(gamma))
+    theta2 = 180 - gamma
+    x1 = math.cos(theta2)*DisTargetToBuoy
+    outX = math.acos((DisBoatToBuoy + x1)/Dest)
+    
+    calc = None
+    calc.Angle = outX
+    calc.Dest = Dest
+    
+    return calc
+        
 def killPointToPoint():
     gVars.kill_flagPTP = 1
 
