@@ -31,6 +31,8 @@ end_flag=0
 # --- Round Buoy Port---
 # Input: Round Buoy location, Final bearing with respect to North
 def roundBuoyPort(BuoyLoc, FinalBearing=None):
+    roundBuoy(BuoyLoc)
+    '''
     currentData = gVars.currentData
     
     if FinalBearing is None:
@@ -112,7 +114,7 @@ def roundBuoyPort(BuoyLoc, FinalBearing=None):
             GPSCoord.lat = gVars.currentData[gps_index].lat 
     
     return 0
-
+    '''
 # --- Round Buoy Stbd---
 # Input: Round Buoy location, Final bearing with respect to North
 def roundBuoyStbd(BuoyLoc, FinalBearing=None):
@@ -194,11 +196,12 @@ def roundBuoyStbd(BuoyLoc, FinalBearing=None):
             
     return 0
 
-def roundBuoy(BuoyLoc, FinalLoc=gVars.currentData[gps_index], port=True):
+def roundBuoy(BuoyLoc, FinalLoc=None, port=True):
     GPSCoord = gVars.currentData[gps_index]
-    
+    if FinalLoc == None:
+        FinalLoc = GPSCoord
     ANGLE_BOAT_TO_TARGET_WRT_BUOY = 138
-    calc = roundBuoyCalc(10, BuoyLoc, ANGLE_BOAT_TO_TARGET_WRT_BUOY)
+    calc = roundBuoyCalc(BuoyLoc, ANGLE_BOAT_TO_TARGET_WRT_BUOY, 10)
     
     X = calc.Angle
     Dest = calc.Dest # Meters, Distance from boat to target (after buoy)
@@ -304,14 +307,15 @@ def starCalcRoundBuoy(GPSCoord, BuoyLoc, angleToNorth, X):
     
     return move
 
-def roundBuoyCalc(DisTargetToBuoy=10, BuoyLoc, gamma ):
+def roundBuoyCalc(BuoyLoc, gamma, DisTargetToBuoy=10):
     currentData = gVars.currentData
     GPSCoord = currentData[gps_index]
     
-    DisBoatToBuoy = math.sqrt((BuoyLoc.x - GPSCoord.x)^2 + (BuoyLoc.y - GPSCoord.y)^2)
-    Dest = math.sqrt(DisTargetToBuoy^2 + DisBoatToBuoy^2 - 2*DisTargetToBuoy*DisBoatToBuoy*math.cos(gamma))
+    DisBoatToBuoy = standardcalc.distBetweenTwoCoords(BuoyLoc, GPSCoord)
+    Dest = math.sqrt(DisTargetToBuoy**2 + DisBoatToBuoy**2 - 2*DisTargetToBuoy*DisBoatToBuoy*math.cos(gamma))
     theta2 = 180 - gamma
     x1 = math.cos(theta2)*DisTargetToBuoy
+    gVars.logger.info(str((DisBoatToBuoy + x1)/Dest))
     outX = math.acos((DisBoatToBuoy + x1)/Dest)
     
     calc = None
