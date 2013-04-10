@@ -194,9 +194,8 @@ def roundBuoyStbd(BuoyLoc, FinalBearing=None):
             
     return 0
 
-def roundBuoy(port=True, BuoyLoc, FinalLoc):
-    currentData = gVars.currentData
-    GPSCoord = currentData[gps_index]
+def roundBuoy(BuoyLoc, FinalLoc=gVars.currentData[gps_index], port=True):
+    GPSCoord = gVars.currentData[gps_index]
     
     ANGLE_BOAT_TO_TARGET_WRT_BUOY = 138
     calc = roundBuoyCalc(10, BuoyLoc, ANGLE_BOAT_TO_TARGET_WRT_BUOY)
