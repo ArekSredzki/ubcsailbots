@@ -98,20 +98,7 @@ def roundBuoyPort(BuoyLoc, FinalBearing=None):
     buoyAngle -= 90 
     buoyAngle = standardcalc.boundTo180(buoyAngle) #git later
     
-    if FinalBearing < buoyAngle and FinalBearing > standardcalc.boundTo180(buoyAngle - 90):
-        """if reflectLong > BuoyLoc.long and GPSCoord.lat > BuoyLoc.lat:
-            moveLong2 = abs(math.cos(180 - angleToNorth + X)) * -1 # - X movement 
-            moveLat2 = abs(math.sin(180 - angleToNorth + X)) * - 1 # - Y movement
-        elif reflectLong < BuoyLoc.long and GPSCoord.lat > BuoyLoc.lat:
-            moveLong2 = abs(math.sin(angleToNorth -90 - X)) # + X Movement
-            moveLat2 = abs(math.cos(angleToNorth - 90 - X)) * -1 # - Y Movement
-        elif reflectLong < BuoyLoc.long and GPSCoord.lat < BuoyLoc.lat:
-            moveLong2 = abs(math.cos(angleToNorth - X)) # + X Movement
-            moveLat2 = abs(math.sin(angleToNorth - X)) # + Y Movement
-        else:
-            moveLong2 = abs(math.sin(angleToNorth - X)) * - 1 # - X Movement
-            moveLat2 = abs(math.cos(angleToNorth - X)) # + Y Movement"""
-        
+    if FinalBearing < buoyAngle and FinalBearing > standardcalc.boundTo180(buoyAngle - 90):        
         destination = standardcalc.GPSDistAway(GPSCoord, moveLong2, moveLat2)
         
         # 10 represents the degree of error around the destination point
@@ -205,10 +192,59 @@ def roundBuoyStbd(BuoyLoc, FinalBearing=None):
             
     return 0
 
-# Wrapper round buoy which default calls port rounding
-def roundBuoy(BuoyLoc, FinalBearing=None):
-    # Could be optimized to call the most optimal round buoy function (probably not worth it)
-    roundBuoyPort(BuoyLoc, FinalBearing)
+def roundBuoyPort2(BuoyLoc, FinalLoc):
+    currentData = gVars.currentData
+    GPSCoord = currentData[gps_index]
+    
+    X = 16.64 # Degrees, Calculated
+    Dest = 23.41 # Meters, Distance from boat to buoy
+    angleToNorth = standardcalc.angleBetweenTwoCoords(GPSCoord, BuoyLoc)
+    quadDir = None
+    
+    if GPSCoord.long > BuoyLoc.long and GPSCoord.lat > BuoyLoc.lat:
+        moveLong = abs(math.sin(180 - angleToNorth + X)) * -1 # - X movement 
+        moveLat = abs(math.cos(180 - angleToNorth + X)) * - 1 # - Y movement
+        quadDir = 3;
+        #For setting the 2nd point
+        moveLong2 = abs(math.sin(angleToNorth -90 - X)) # + X Movement
+        moveLat2 = abs(math.cos(angleToNorth - 90 - X)) * -1 # - Y Movement
+    elif GPSCoord.long < BuoyLoc.long and GPSCoord.lat > BuoyLoc.lat:
+        moveLong = abs(math.cos(angleToNorth -90 - X)) # + X Movement
+        moveLat = abs(math.sin(angleToNorth - 90 - X)) * -1 # - Y Movement
+        quadDir = 4;
+        #For setting the 2nd point
+        moveLong2 = abs(math.cos(angleToNorth - X)) # + X Movement
+        moveLat2 = abs(math.sin(angleToNorth - X)) # + Y Movement
+    elif GPSCoord.long < BuoyLoc.long and GPSCoord.lat < BuoyLoc.lat:
+        moveLong = abs(math.sin(angleToNorth - X)) # + X Movement
+        moveLat = abs(math.cos(angleToNorth - X)) # + Y Movement
+        quadDir = 1;
+        moveLong2 = abs(math.sin(angleToNorth - X)) * - 1 # - X Movement
+        moveLat2 = abs(math.cos(angleToNorth - X)) # + Y Movement 
+    else:
+        moveLong = abs(math.sin(angleToNorth + X)) * - 1 # - X Movement
+        moveLat = abs(math.cos(angleToNorth + X)) # + Y Movement 
+        quadDir = 2;
+        moveLong2 = abs(math.cos(180 - angleToNorth + X)) * -1 # - X movement 
+        moveLat2 = abs(math.sin(180 - angleToNorth + X)) * - 1 # - Y movement
+                
+    moveLong *= Dest 
+    moveLat *= Dest 
+    destination = standardcalc.GPSDistAway(GPSCoord, moveLong, moveLat)
+
+    if (GPSCoord.long >= standardcalc.GPSDistAway(destination, 10, 0).long): 
+        pointToPoint(datatypes.GPSCoordinate(destination.lat, destination.long),1)
+        
+    # Checks if the boat needs to round the buoy or just pass it
+    PassBuoyData = gVars.currentData
+    angleToTarget = standardcalc.angleBetweenTwoCoords(PassBuoyData[gps_index], FinalLoc)
+    angleToBuoy = standardcalc.angleBetweenTwoCoords(PassBuoyData[gps_index], BuoyLoc)
+    
+    if angleToTarget < standardcalc.boundTo180(angleToBuoy + 15) and angleToTarget > standardcalc.boundTo180(angleToBuoy - 15): 
+        destination = standardcalc.GPSDistAway(GPSCoord, moveLong2, moveLat2)
+        pointToPoint(datatypes.GPSCoordinate(destination.lat, destination.long),1)
+        
+    return 0
     
 def killPointToPoint():
     gVars.kill_flagPTP = 1
