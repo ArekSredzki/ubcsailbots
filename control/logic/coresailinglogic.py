@@ -203,8 +203,8 @@ def roundBuoy(BuoyLoc, FinalLoc=None, port=True):
     ANGLE_BOAT_TO_TARGET_WRT_BUOY = 138
     calc = roundBuoyCalc(BuoyLoc, ANGLE_BOAT_TO_TARGET_WRT_BUOY, 10)
     
-    X = calc.Angle
-    Dest = calc.Dest # Meters, Distance from boat to target (after buoy)
+    X = calc[0]
+    Dest = calc[1] # Meters, Distance from boat to target (after buoy)
     angleToNorth = standardcalc.angleBetweenTwoCoords(GPSCoord, BuoyLoc)
     move = None
     
@@ -213,12 +213,21 @@ def roundBuoy(BuoyLoc, FinalLoc=None, port=True):
     else:
         move = starCalcRoundBuoy(GPSCoord, BuoyLoc, angleToNorth, X)
                 
-    move[0].Long *= Dest 
-    move[0].Lat *= Dest 
-    destination = standardcalc.GPSDistAway(GPSCoord, move[0].Long, move[0].Lat)
+    # move = [long, lat, long, lat]
+    moveLong = move[0]
+    moveLat = move[1]
+    moveLong2 = move[2]
+    moveLat2 = move[3]
+    
+    
+    moveLong *= Dest 
+    moveLat *= Dest 
+    destination = standardcalc.GPSDistAway(GPSCoord, moveLong, moveLat)
 
     if (GPSCoord.long >= standardcalc.GPSDistAway(destination, 10, 0).long): 
+        gVars.logger.info("Going to first point")
         pointToPoint(datatypes.GPSCoordinate(destination.lat, destination.long),1)
+        
         
     # Checks if the boat needs to round the buoy or just pass it
     PassBuoyData = gVars.currentData
@@ -226,7 +235,7 @@ def roundBuoy(BuoyLoc, FinalLoc=None, port=True):
     angleToBuoy = standardcalc.angleBetweenTwoCoords(PassBuoyData[gps_index], BuoyLoc)
     
     if angleToTarget < standardcalc.boundTo180(angleToBuoy + 15) and angleToTarget > standardcalc.boundTo180(angleToBuoy - 15): 
-        destination = standardcalc.GPSDistAway(GPSCoord, move[1].Long, move[1].Lat)
+        destination = standardcalc.GPSDistAway(GPSCoord, moveLong2, moveLat2)
         pointToPoint(datatypes.GPSCoordinate(destination.lat, destination.long),1)
         
     return 0
@@ -261,11 +270,7 @@ def portCalcRoundBuoy(GPSCoord, BuoyLoc, angleToNorth, X):
         moveLong2 = abs(math.cos(180 - angleToNorth + X)) * -1 # - X movement 
         moveLat2 = abs(math.sin(180 - angleToNorth + X)) * - 1 # - Y movement
     
-    move = None
-    move[0].long = moveLong
-    move[0].lat = moveLat
-    move[1].long = moveLong2
-    move[1].lat = moveLat2
+    move = [moveLong, moveLat, moveLong2, moveLat2]
     
     return move
 
@@ -299,28 +304,23 @@ def starCalcRoundBuoy(GPSCoord, BuoyLoc, angleToNorth, X):
         moveLong2 = abs(math.sin(angleToNorth - X)) # + X Movement
         moveLat2 = abs(math.cos(angleToNorth - X)) # + Y Movement
         
-        move = None
-        move[0].long = moveLong
-        move[0].lat = moveLat
-        move[1].long = moveLong2
-        move[1].lat = moveLat2
+    move = [moveLong, moveLat, moveLong2, moveLat2]
     
     return move
 
 def roundBuoyCalc(BuoyLoc, gamma, DisTargetToBuoy=10):
-    currentData = gVars.currentData
-    GPSCoord = currentData[gps_index]
+    GPSCoord = gVars.currentData[gps_index]
     
     DisBoatToBuoy = standardcalc.distBetweenTwoCoords(BuoyLoc, GPSCoord)
-    Dest = math.sqrt(DisTargetToBuoy**2 + DisBoatToBuoy**2 - 2*DisTargetToBuoy*DisBoatToBuoy*math.cos(gamma))
-    theta2 = 180 - gamma
+    Dest = math.sqrt(DisTargetToBuoy**2 + DisBoatToBuoy**2 - 2*DisTargetToBuoy*DisBoatToBuoy*math.cos(math.radians(gamma)))
+    theta2 = math.radians(180 - gamma)
+    gVars.logger.info("theta2: " + str(theta2))
+    gVars.logger.info("cos(theta2): " + str(math.cos(theta2)))
     x1 = math.cos(theta2)*DisTargetToBuoy
-    gVars.logger.info(str((DisBoatToBuoy + x1)/Dest))
+    gVars.logger.info(" distboattobuoy: " +str(DisBoatToBuoy) + " x1: "+str(x1) + " dest: "+ str(Dest))
     outX = math.acos((DisBoatToBuoy + x1)/Dest)
     
-    calc = None
-    calc.Angle = outX
-    calc.Dest = Dest
+    calc = [outX, Dest]
     
     return calc
         
