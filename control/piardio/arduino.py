@@ -118,7 +118,7 @@ class arduino:
             ardArr = re.findall("[^,\s][^\,]*[^,\s]*", ardArr)
             i = 0
             while (i < len(ardArr)):
-              print i
+                print i
                 ardArr[i] = float(ardArr[i])
                 i+=1     
         if (len(ardArr) > 0):
