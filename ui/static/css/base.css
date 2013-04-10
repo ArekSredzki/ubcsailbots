@@ -43,7 +43,6 @@ html, body {
     list-style-type:none;
     background-color:none;  
     margin:auto;
-    display:inline;
 }
 
 #navigationBar li {
