@@ -51,7 +51,6 @@ class arduino:
     
     def __init__(self):
         self.ser = serial.Serial(SERIAL_PORT, BAUD)
-        time.sleep(2)
         
     # Calls adjust_sheets on arduino with sheet percentage
     def adjust_sheets(self, sheet_percent):                                                
@@ -113,10 +112,13 @@ class arduino:
         print ardArr
         if (len(ardBuffer) > 0):
             ardArr = ardArr.replace(" ", "")
+            ardArr = ardArr.replace("\x00", "")
+
         if (len(ardArr) > 0):
             ardArr = re.findall("[^,\s][^\,]*[^,\s]*", ardArr)
             i = 0
             while (i < len(ardArr)):
+              print i
                 ardArr[i] = float(ardArr[i])
                 i+=1     
         if (len(ardArr) > 0):
