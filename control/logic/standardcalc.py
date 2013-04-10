@@ -110,7 +110,7 @@ def distBetweenTwoCoords(coord1, coord2):
 
 #Returns the angle in degrees
 def angleBetweenTwoCoords(sourceCoord, destCoord):
-    GPSCoord = datatypes.GPSCoordinate
+    GPSCoord = datatypes.GPSCoordinate()
     
     if(sourceCoord.lat > destCoord.lat):
         GPSCoord.lat = sourceCoord.lat
