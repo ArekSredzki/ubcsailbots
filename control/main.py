@@ -34,7 +34,7 @@ def run(argv=None):
     gVars.logger = sailbotlogger.logger()
     gVars.logger.info("Start")
     
-    print("Mock Enabled: " + str(mock))
+    gVars.logger.info("Mock Enabled: " + str(mock))
     if (mock == False):        
         arduino = piardio.arduino.arduino()
     else:
@@ -124,4 +124,4 @@ if __name__ == '__main__':
     try:
         sys.exit(run())
     except KeyboardInterrupt:
-        print ("\n Exit - Keyboard Interrupt")
+        gVars.logger.info("\n Exit - Keyboard Interrupt")

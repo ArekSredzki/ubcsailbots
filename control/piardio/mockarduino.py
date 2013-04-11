@@ -11,6 +11,7 @@ boat data that can be used by the control logic and gui.
 '''
 
 from control.datatype import datatypes
+from control.logic import standardcalc
 import control.StaticVars as sVars
 import random
 import math
@@ -48,52 +49,55 @@ class arduino:
         print(self.ardArray)
         
     def getFromArduino(self):
-        self._update()
+        self._updateAll()
         return self.ardArray
     
-    def tack(self, x, y):
+    def tack(self, weather, tack):
         hog = self.ardArray[sVars.HOG_INDEX]
-        if (self.actualWindAngle < hog):
-            hog = self.actualWindAngle - 45
+       
+        # Format
+        #     Tack: Port=0 Stbd=1
+        if (tack == 1):
+            hog += 100
         else:
-            hog = self.actualWindAngle + 45
-        
-        if (hog > 180):
-            hog -= 360
-        elif (hog < -180):
-            hog += 360
+            hog -= 100
+            
+        hog = standardcalc.boundTo180(hog)
         
         self.ardArray[sVars.HOG_INDEX] = hog
     
     def gybe(self, x):
         pass
+    
     def adjust_sheets(self, sheet_percent):                                                
         self.ardArray[sVars.SHT_INDEX] = sheet_percent
         
     def steer(self, method, degree):
         self.ardArray[sVars.HOG_INDEX] = degree
     
-    def _update(self):
+    def _updateActualWind(self):
+        # Updates actual wind angle
         if (ALLOW_WIND_REVERSAL):
             self.actualWindAngle += random.uniform(-.2, 0)
         else:
-            self.actualWindAngle += random.uniform(-.1, .1)
+            self.actualWindAngle += random.uniform(-.1, .1)     
+        self.actualWindAngle = standardcalc.boundTo180(self.actualWindAngle)  
         
-        if (self.actualWindAngle < -180):
-            self.actualWindAngle += 360
-        if (self.actualWindAngle > 180):
-            self.actualWindAngle -= 360            
-                
+    def _updateHOG(self):
+        # Updates slight variation in HOG      
         self.ardArray[sVars.HOG_INDEX] += round(random.uniform(-.1, .1), 2)
-
+    
+    def _updateCOG(self):
+        # Sets the course over ground
         if (math.fabs(self.ardArray[sVars.COG_INDEX]+self.currplusmin-self.ardArray[sVars.HOG_INDEX]) < .4):
             self.ardArray[sVars.COG_INDEX] += round(random.uniform(-.1, .1), 2)
         elif (self.ardArray[sVars.COG_INDEX]+self.currplusmin < self.ardArray[sVars.HOG_INDEX]):
             self.ardArray[sVars.COG_INDEX] += round(random.uniform(0, 5), 2)
         elif (self.ardArray[sVars.COG_INDEX]+self.currplusmin > self.ardArray[sVars.HOG_INDEX]):
             self.ardArray[sVars.COG_INDEX] += round(random.uniform(-5, 0), 2)
-        
-                
+        self.ardArray[sVars.COG_INDEX] = standardcalc.boundTo180(self.ardArray[sVars.COG_INDEX])
+    
+    def _updateSOG(self):
         # Gets the boat up to speed and allows for a little variation
         if (math.fabs(self.ardArray[sVars.SOG_INDEX]-self.idealBoatSpd) < .2):
             self.ardArray[sVars.SOG_INDEX] += round(random.uniform(-.1, .1), 2)
@@ -101,16 +105,19 @@ class arduino:
             self.ardArray[sVars.SOG_INDEX] += round(random.uniform(0, .2), 2)
         elif (self.ardArray[sVars.SOG_INDEX] >= self.idealBoatSpd):
             self.ardArray[sVars.SOG_INDEX] += round(random.uniform(-.2, 0), 2)
-        
-        
+    
+    def _updateAWA(self):
         # Sets the apparent wind angle
         boat_bearing = self.ardArray[sVars.HOG_INDEX]
+        
+        # Reverse direction for boat vector
         if (boat_bearing >= 0):
             boat_bearing -= 180
         else:
             boat_bearing += 180
         boat_speed = self.ardArray[sVars.SOG_INDEX]
         
+        # Reverse direction for wind vector
         wind_bearing = self.actualWindAngle
         if (wind_bearing >= 0):
             wind_bearing -= 180
@@ -144,21 +151,20 @@ class arduino:
             else:
                 awa += math.pi
          
-        awa = awa * 180/math.pi
+        awa = math.degrees(awa)
             
         awa -= self.ardArray[sVars.HOG_INDEX]
         
-        if (awa > 180):
-            awa -= 360
-        elif (awa < -180):
-            awa += 360
+        awa = standardcalc.boundTo180(awa)
         
         self.ardArray[sVars.AWA_INDEX] = awa
         self.previousx = x
-        
+    
+    def _updateGPS(self):
         # Calculation for change in GPS Coordinate
         heading = self.ardArray[sVars.HOG_INDEX]
         
+        # Convert to 360 degree heading
         if (heading < 0):
             heading = 360 + heading
         
@@ -175,3 +181,12 @@ class arduino:
         
         self.ardArray[sVars.GPS_INDEX].lat = lat
         self.ardArray[sVars.GPS_INDEX].long = lon
+    
+    def _updateAll(self):
+        self._updateActualWind()    
+        self._updateHOG()
+        self._updateCOG()
+        self._updateSOG()
+        self._updateAWA()
+        self._updateGPS()     
+        
