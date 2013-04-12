@@ -23,6 +23,9 @@ EARTH_RADIUS = 6378140
 ALLOW_WIND_REVERSAL = False
 STRONG_CURRENT = False
 
+# Set this to hold a constant AWA.  Otherwise set it to None.  Useful 
+# for functionality testing on Challenges. Not as much useful point to point.
+STATIC_AWA = 45
 
 class arduino:
     def __init__(self):
@@ -107,58 +110,62 @@ class arduino:
             self.ardArray[sVars.SOG_INDEX] += round(random.uniform(-.2, 0), 2)
     
     def _updateAWA(self):
-        # Sets the apparent wind angle
-        boat_bearing = self.ardArray[sVars.HOG_INDEX]
-        
-        # Reverse direction for boat vector
-        if (boat_bearing >= 0):
-            boat_bearing -= 180
-        else:
-            boat_bearing += 180
-        boat_speed = self.ardArray[sVars.SOG_INDEX]
-        
-        # Reverse direction for wind vector
-        wind_bearing = self.actualWindAngle
-        if (wind_bearing >= 0):
-            wind_bearing -= 180
-        else:
-            wind_bearing += 180
+        if STATIC_AWA == None:
+            # Sets the apparent wind angle
+            boat_bearing = self.ardArray[sVars.HOG_INDEX]
             
-        wind_speed = self.actualWindSpeed
-        
-        boat_x = boat_speed * math.cos(boat_bearing)
-        boat_y = boat_speed * math.sin(boat_bearing)
-        wind_x = wind_speed * math.cos(wind_bearing)
-        wind_y = wind_speed * math.sin(wind_bearing)
-        
-        x = boat_x + wind_x
-        y = boat_y + wind_y
-        
-        if self.previousx is None:
-            self.previousx = x
-        
-        awa = math.atan(y/x)
-
-        if(math.copysign(self.previousx, x) != self.previousx or self.flipflag): 
-            if (not self.flipflag):
-                self.flipflag = True
-            elif (math.copysign(self.previousx, x) != self.previousx):
-                self.flipflag = False
-                
-            print(str(self.previousx) + ", " + str(x))  
-            if(awa > 0):
-                awa -= math.pi
+            # Reverse direction for boat vector
+            if (boat_bearing >= 0):
+                boat_bearing -= 180
             else:
-                awa += math.pi
-         
-        awa = math.degrees(awa)
+                boat_bearing += 180
+            boat_speed = self.ardArray[sVars.SOG_INDEX]
             
-        awa -= self.ardArray[sVars.HOG_INDEX]
-        
-        awa = standardcalc.boundTo180(awa)
+            # Reverse direction for wind vector
+            wind_bearing = self.actualWindAngle
+            if (wind_bearing >= 0):
+                wind_bearing -= 180
+            else:
+                wind_bearing += 180
+                
+            wind_speed = self.actualWindSpeed
+            
+            boat_x = boat_speed * math.cos(boat_bearing)
+            boat_y = boat_speed * math.sin(boat_bearing)
+            wind_x = wind_speed * math.cos(wind_bearing)
+            wind_y = wind_speed * math.sin(wind_bearing)
+            
+            x = boat_x + wind_x
+            y = boat_y + wind_y
+            
+            if self.previousx is None:
+                self.previousx = x
+            
+            awa = math.atan(y/x)
+    
+            if(math.copysign(self.previousx, x) != self.previousx or self.flipflag): 
+                if (not self.flipflag):
+                    self.flipflag = True
+                elif (math.copysign(self.previousx, x) != self.previousx):
+                    self.flipflag = False
+                    
+                print(str(self.previousx) + ", " + str(x))  
+                if(awa > 0):
+                    awa -= math.pi
+                else:
+                    awa += math.pi
+             
+            awa = math.degrees(awa)
+                
+            awa -= self.ardArray[sVars.HOG_INDEX]
+            
+            awa = standardcalc.boundTo180(awa)
+            
+            self.previousx = x
+        else:
+            awa = STATIC_AWA
         
         self.ardArray[sVars.AWA_INDEX] = awa
-        self.previousx = x
     
     def _updateGPS(self):
         # Calculation for change in GPS Coordinate

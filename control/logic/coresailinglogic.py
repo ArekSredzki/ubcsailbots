@@ -118,6 +118,8 @@ def roundBuoyPort(BuoyLoc, FinalBearing=None):
 # --- Round Buoy Stbd---
 # Input: Round Buoy location, Final bearing with respect to North
 def roundBuoyStbd(BuoyLoc, FinalBearing=None):
+    roundBuoy(BuoyLoc, None, False)
+    '''
     currentData = gVars.currentData
         
     if FinalBearing is None:
@@ -195,7 +197,7 @@ def roundBuoyStbd(BuoyLoc, FinalBearing=None):
             GPSCoord.lat = gVars.currentData[gps_index].lat 
             
     return 0
-
+    '''
 def roundBuoy(BuoyLoc, FinalLoc=None, port=True):
     GPSCoord = gVars.currentData[gps_index]
     if FinalLoc == None:
