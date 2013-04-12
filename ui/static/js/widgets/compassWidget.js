@@ -208,17 +208,17 @@ function CompassWidget() {
 	}
 	
 	this.setWindDirection = function(degreeWindDirection) {
-		windHeading = -1*degreeWindDirection;
-		var rotation = ((Math.PI * (windHeading+boatHeading+270-20)) / 180);
+		windHeading = degreeWindDirection;
+		var rotation = ((Math.PI * (degreeWindDirection+boatHeading+270-20)) / 180);
 		windWedge.transitionTo({
 	            rotation: rotation,
-	            duration:0.1
+	            duration:1
 	    });
 	    // Update sheet because the wind may have crossed the transom
 	    this.setSheet(sheetPercentHeading);
 	    
 	    // Update wind heading on text display
-	    textWindHeading.setText('Wind Heading: ' + degreeWindDirection + ' degrees');
+	    textWindHeading.setText('Wind Heading: ' + windHeading + ' degrees');
 	    textLayer.draw();
 	}
 	
