@@ -37,9 +37,9 @@ class arduino:
         self.idealBoatSpd = round(random.uniform(.5, 1), 2)*self.windStrength
         self.previousx = None
         if (STRONG_CURRENT):
-            self.currplusmin = round(random.uniform(-4, 4), 2)
+            self.currplusmin = round(random.uniform(-4, -2), 2)
         else:
-            self.currplusmin = round(random.uniform(-1, 1), 2)
+            self.currplusmin = 0
         
         print("Current Plus/Min: " + str(self.currplusmin))  
         # Instantiates an array of initial conditions which simulates putting a boat in the water.
@@ -87,7 +87,7 @@ class arduino:
         
     def _updateHOG(self):
         # Updates slight variation in HOG      
-        self.arduinoData.hog += round(random.uniform(-.1, .1), 2)
+        self.arduinoData.hog += (round(random.uniform(-.1, .1), 2) + self.currplusmin)
     
     def _updateCOG(self):
         # Sets the course over ground
