@@ -53,7 +53,7 @@ function getlog(){
 	     	
 	     	// Update compass widget
 	     	compassWidget.setSheet(overviewData.telemetry.SheetPercent);
-	     	compassWidget.setBoatHeading(overviewData.telemetry.Heading);
+	     	compassWidget.setBoatHeading(overviewData.telemetry.Heading.toFixed(parseInt(0)));
 	     	compassWidget.setWindDirection(overviewData.telemetry.AWA);
 	     	setTimeout('getlog()',1000);
 	      },
