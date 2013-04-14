@@ -45,7 +45,7 @@ class PointToPoint(sailingtask.SailingTask):
             cog = gVars.currentData.cog
             hog = gVars.currentData.hog
             sog = gVars.currentData.sog * 100
-            angleBetweenCoords = standardcalc.angleBetweenTwoCoords()        
+            angleBetweenCoords = standardcalc.angleBetweenTwoCoords(GPSCoord,Dest)        
             
             if(standardcalc.distBetweenTwoCoords(GPSCoord, Dest) > ACCEPTANCE_DISTANCE):
                 gVars.logger.info("Boat not at point, continuing code")
