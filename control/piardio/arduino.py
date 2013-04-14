@@ -121,22 +121,22 @@ class arduino:
                 ardArr[i] = float(ardArr[i])
                 i+=1     
         if (len(ardArr) > 0):
-            arr = self.interpretArr(ardArr)
-            return arr
+            arduinoData = self.interpretArr(ardArr)
+            return arduinoData
         else:
             return None
     
     # Takes an array from the arduino and maps it to the appropriate objects in the python array
     def interpretArr(self, ardArr):
-        arr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        arr[sVars.HOG_INDEX] = ardArr[ARD_HOG]
-        arr[sVars.COG_INDEX] = ardArr[ARD_COG]
-        arr[sVars.SOG_INDEX] = ardArr[ARD_SOG]
-        arr[sVars.AWA_INDEX] = ardArr[ARD_AWAV]
-        arr[sVars.GPS_INDEX] = datatypes.GPSCoordinate(ardArr[ARD_LAT]/10000000, ardArr[ARD_LONG]/10000000)
-        arr[sVars.SHT_INDEX] = ardArr[ARD_SHT]
-        arr[sVars.SAT_INDEX] = ardArr[ARD_SAT]
-        arr[sVars.ACC_INDEX] = ardArr[ARD_ACC]
-        arr[sVars.AUT_INDEX] = ardArr[ARD_AUT]
-        arr[sVars.RUD_INDEX] = ardArr[ARD_RUD]
-        return arr
+        arduinoData = datatypes.ArduinoData()
+        arduinoData.hog = ardArr[ARD_HOG]
+        arduinoData.cog = ardArr[ARD_COG]
+        arduinoData.sog = ardArr[ARD_SOG]
+        arduinoData.awa = ardArr[ARD_AWAV]
+        arduinoData.gps_coord = datatypes.GPSCoordinate(ardArr[ARD_LAT]/10000000, ardArr[ARD_LONG]/10000000)
+        arduinoData.sheet_percent = ardArr[ARD_SHT]
+        arduinoData.num_sat = ardArr[ARD_SAT]
+        arduinoData.gps_accuracy = ardArr[ARD_ACC]
+        arduinoData.auto = ardArr[ARD_AUT]
+        arduinoData.rudder = ardArr[ARD_RUD]
+        return arduinoData

@@ -238,7 +238,7 @@ def changeSpdList(spdList):
     if (len(spdList) == 0):
         return -1
     del spdList[0]
-    spdList.append(gVars.currentData[sVars.SOG_INDEX])
+    spdList.append(gVars.currentData.sog)
     return spdList
 
 def meanOfList(numberList):

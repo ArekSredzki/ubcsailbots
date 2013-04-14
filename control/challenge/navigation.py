@@ -9,21 +9,11 @@ import thread
 import sys
 sys.path.append("..")
 from control.logic import standardcalc
-from control.logic import coresailinglogic
 from control.datatype import datatypes
 from control import GlobalVars as gVars
 from control import StaticVars as sVars
-
-hog_index=sVars.HOG_INDEX
-cog_index=sVars.COG_INDEX
-sog_index=sVars.SOG_INDEX
-awa_index=sVars.AWA_INDEX
-gps_index=sVars.GPS_INDEX
-sht_index=sVars.SHT_INDEX
-aut_index=sVars.AUT_INDEX
-COMPASS_METHOD = 0
-COG_METHOD = 1
-AWA_METHOD = 2
+from control.logic import roundbuoy
+from control.logic import pointtopoint
 
 HORIZ_BOUNDARY_DISTANCE = 60 
 
@@ -31,8 +21,7 @@ HORIZ_BOUNDARY_DISTANCE = 60
 #Input: Buoy GPS Coordinates (Latitude and Longitude of the Buoy), Left Inner Point (The coordinates of the left innermost gate), Right Inner Point (The coordinates of the right innermost gate)
 #Output: None
 def run(Waypoint1,Waypoint2,Waypoint3):
-    currentData = gVars.currentData
-    GPSCoord = currentData[gps_index]
+    GPSCoord = gVars.currentData.gps_coord
     
     gVars.kill_flagNav = 0
     
@@ -78,19 +67,19 @@ def run(Waypoint1,Waypoint2,Waypoint3):
     buoySailPoint = setNavigationBuoyPoint(BuoyCoords, GPSCoord, 10)
     
     if(gVars.kill_flagNav == 0):
-        coresailinglogic.pointToPoint(buoySailPoint)
+        pointtopoint.run(buoySailPoint)
     
     if(gVars.kill_flagNav == 0):
-        coresailinglogic.roundBuoyPort(BuoyCoords,standardcalc.angleBetweenTwoCoords(BuoyCoords,GPSCoord))
+        pointtopoint.roundbuoy(BuoyCoords,standardcalc.angleBetweenTwoCoords(BuoyCoords,GPSCoord))
     
     if(gVars.kill_flagNav == 0):
-        thread.start_new_thread(coresailinglogic.pointToPoint, interpolatedPoint)
+        thread.start_new_thread(pointtopoint.run, interpolatedPoint)
     
     while(standardcalc.distBetweenTwoCoords(GPSCoord, interpolatedPoint)>sVars.ACCEPTANCE_DISTANCE_DEFAULT and gVars.kill_flagNav == 0):
-        GPSCoord = currentData[gps_index]
-        appWindAng = currentData[awa_index]
+        GPSCoord = gVars.currentData.gps_coord
+        appWindAng = gVars.currentData.gps_coord
         
-        while(gVars.currentData[aut_index] == False):
+        while(gVars.currentData.auto == False):
             time.sleep(0.1)
         
         if(standardcalc.distBetweenTwoCoords(GPSCoord,leftBoundaryPoint) > bound_dist or standardcalc.distBetweenTwoCoords(GPSCoord,rightBoundaryPoint) > bound_dist):

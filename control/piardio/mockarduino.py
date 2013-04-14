@@ -15,7 +15,6 @@ from control.logic import standardcalc
 import control.StaticVars as sVars
 import random
 import math
-import thread
 
 EARTH_RADIUS = 6378140
 
@@ -46,17 +45,17 @@ class arduino:
         # Instantiates an array of initial conditions which simulates putting a boat in the water.
         cog = round(random.uniform(-179, 180), 2)
         hog = cog - round(random.uniform(-2, 2), 2)
-        self.ardArray = [hog, cog, 0,
+        self.arduinoData = datatypes.ArduinoData(hog, cog, 0,
                           round(random.uniform(-179, 180), 2), datatypes.GPSCoordinate(49.27480, -123.18960), 0, 
-                          15, 80, 1, 20]
-        print(self.ardArray)
+                          15, 80, 1, 20)
+        print(self.arduinoData)
         
     def getFromArduino(self):
         self._updateAll()
-        return self.ardArray
+        return self.arduinoData
     
     def tack(self, weather, tack):
-        hog = self.ardArray[sVars.HOG_INDEX]
+        hog = self.arduinoData.hog
        
         # Format
         #     Tack: Port=0 Stbd=1
@@ -67,16 +66,16 @@ class arduino:
             
         hog = standardcalc.boundTo180(hog)
         
-        self.ardArray[sVars.HOG_INDEX] = hog
+        self.arduinoData.hog = hog
     
     def gybe(self, x):
         pass
     
     def adjust_sheets(self, sheet_percent):                                                
-        self.ardArray[sVars.SHT_INDEX] = sheet_percent
+        self.arduinoData.sheet_percent = sheet_percent
         
     def steer(self, method, degree):
-        self.ardArray[sVars.HOG_INDEX] = degree
+        self.arduinoData.hog = degree
     
     def _updateActualWind(self):
         # Updates actual wind angle
@@ -88,38 +87,38 @@ class arduino:
         
     def _updateHOG(self):
         # Updates slight variation in HOG      
-        self.ardArray[sVars.HOG_INDEX] += round(random.uniform(-.1, .1), 2)
+        self.arduinoData.hog += round(random.uniform(-.1, .1), 2)
     
     def _updateCOG(self):
         # Sets the course over ground
-        if (math.fabs(self.ardArray[sVars.COG_INDEX]+self.currplusmin-self.ardArray[sVars.HOG_INDEX]) < .4):
-            self.ardArray[sVars.COG_INDEX] += round(random.uniform(-.1, .1), 2)
-        elif (self.ardArray[sVars.COG_INDEX]+self.currplusmin < self.ardArray[sVars.HOG_INDEX]):
-            self.ardArray[sVars.COG_INDEX] += round(random.uniform(0, 5), 2)
-        elif (self.ardArray[sVars.COG_INDEX]+self.currplusmin > self.ardArray[sVars.HOG_INDEX]):
-            self.ardArray[sVars.COG_INDEX] += round(random.uniform(-5, 0), 2)
-        self.ardArray[sVars.COG_INDEX] = standardcalc.boundTo180(self.ardArray[sVars.COG_INDEX])
+        if (math.fabs(self.arduinoData.cog + self.currplusmin - self.arduinoData.hog) < .4):
+            self.arduinoData.cog += round(random.uniform(-.1, .1), 2)
+        elif (self.arduinoData.cog + self.currplusmin < self.arduinoData.hog):
+            self.arduinoData.cog += round(random.uniform(0, 5), 2)
+        elif (self.arduinoData.cog + self.currplusmin > self.arduinoData.hog):
+            self.arduinoData.cog += round(random.uniform(-5, 0), 2)
+        self.arduinoData.cog = standardcalc.boundTo180(self.arduinoData.cog)
     
     def _updateSOG(self):
         # Gets the boat up to speed and allows for a little variation
-        if (math.fabs(self.ardArray[sVars.SOG_INDEX]-self.idealBoatSpd) < .2):
-            self.ardArray[sVars.SOG_INDEX] += round(random.uniform(-.1, .1), 2)
-        elif (self.ardArray[sVars.SOG_INDEX] < self.idealBoatSpd):
-            self.ardArray[sVars.SOG_INDEX] += round(random.uniform(0, .2), 2)
-        elif (self.ardArray[sVars.SOG_INDEX] >= self.idealBoatSpd):
-            self.ardArray[sVars.SOG_INDEX] += round(random.uniform(-.2, 0), 2)
+        if (math.fabs(self.arduinoData.sog - self.idealBoatSpd) < .2):
+            self.arduinoData.sog += round(random.uniform(-.1, .1), 2)
+        elif (self.arduinoData.sog < self.idealBoatSpd):
+            self.arduinoData.sog += round(random.uniform(0, .2), 2)
+        elif (self.arduinoData.sog >= self.idealBoatSpd):
+            self.arduinoData.sog += round(random.uniform(-.2, 0), 2)
     
     def _updateAWA(self):
         if STATIC_AWA == None:
             # Sets the apparent wind angle
-            boat_bearing = self.ardArray[sVars.HOG_INDEX]
+            boat_bearing = self.arduinoData.hog
             
             # Reverse direction for boat vector
             if (boat_bearing >= 0):
                 boat_bearing -= 180
             else:
                 boat_bearing += 180
-            boat_speed = self.ardArray[sVars.SOG_INDEX]
+            boat_speed = self.arduinoData.sog
             
             # Reverse direction for wind vector
             wind_bearing = self.actualWindAngle
@@ -157,7 +156,7 @@ class arduino:
              
             awa = math.degrees(awa)
                 
-            awa -= self.ardArray[sVars.HOG_INDEX]
+            awa -= self.arduinoData.hog
             
             awa = standardcalc.boundTo180(awa)
             
@@ -165,20 +164,20 @@ class arduino:
         else:
             awa = STATIC_AWA
         
-        self.ardArray[sVars.AWA_INDEX] = awa
+        self.arduinoData.awa = awa
     
     def _updateGPS(self):
         # Calculation for change in GPS Coordinate
-        heading = self.ardArray[sVars.HOG_INDEX]
+        heading = self.arduinoData.hog
         
         # Convert to 360 degree heading
         if (heading < 0):
             heading = 360 + heading
         
-        lon0 = self.ardArray[sVars.GPS_INDEX].long
-        lat0 = self.ardArray[sVars.GPS_INDEX].lat
-        heading = self.ardArray[sVars.HOG_INDEX]
-        speed = self.ardArray[sVars.SOG_INDEX]
+        lon0 = self.arduinoData.gps_coord.long
+        lat0 = self.arduinoData.gps_coord.lat
+        heading = self.arduinoData.hog
+        speed = self.arduinoData.sog
         
         x = speed * math.sin(heading*math.pi/180)
         y = speed * math.cos(heading*math.pi/180)
@@ -186,8 +185,8 @@ class arduino:
         lat = lat0 + 180 / math.pi * y / EARTH_RADIUS;
         lon = lon0 + 180 / math.pi / math.sin(lat0*math.pi/180) * x / EARTH_RADIUS;
         
-        self.ardArray[sVars.GPS_INDEX].lat = lat
-        self.ardArray[sVars.GPS_INDEX].long = lon
+        self.arduinoData.gps_coord.lat = lat
+        self.arduinoData.gps_coord.long = lon
     
     def _updateAll(self):
         self._updateActualWind()    

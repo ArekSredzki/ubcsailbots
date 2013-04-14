@@ -8,7 +8,8 @@ import sys
 sys.path.append("..")
 import control.StaticVars as sVars
 from control import GlobalVars as gVars
-from control.logic import coresailinglogic
+from control.logic import pointtopoint
+from control.logic import roundbuoy
 
 def run(waypoint1, waypoint2, waypoint3):
     startPoint = None
@@ -34,11 +35,11 @@ def run(waypoint1, waypoint2, waypoint3):
             
             # Startpoint does not require a buoy rounding
             if waypoint.coordinate != startPoint.coordinate:
-                coresailinglogic.pointToPoint(waypoint.coordinate, None, 20)
+                pointtopoint.run(waypoint.coordinate, None, 20)
                 # Currently will round all buoys port.  May need to be changed for course outline
-                coresailinglogic.roundBuoyPort(waypoint.coordinate)
+                roundbuoy.run(waypoint.coordinate)
             else:
-                coresailinglogic.pointToPoint(waypoint.coordinate, None, 3)
+                pointtopoint.run(waypoint.coordinate, None, 3)
                 
         else:
             break
