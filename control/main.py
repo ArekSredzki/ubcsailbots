@@ -75,11 +75,11 @@ def run(argv=None):
 def getTaskObject(process):
     if (process == sVars.GO_AROUND_PORT):
         return roundbuoy.RoundBuoy()
-    elif (process == sVars.GO_AROUDN_STBD):
+    elif (process == sVars.GO_AROUND_STBD):
         return roundbuoy.RoundBuoy()
     elif (process == sVars.GO_TO):
         return pointtopoint.PointToPoint()
-    elif (process == sVars.NAVIGATIN_CHALLENGE):
+    elif (process == sVars.NAVIGATION_CHALLENGE):
         return navigation.Navigation()
     elif (process == sVars.STATION_KEEPING_CHALLENGE):
         return stationkeeping.StationKeeping()
