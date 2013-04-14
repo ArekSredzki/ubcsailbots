@@ -109,7 +109,20 @@ def run(argv=None):
                 
         time.sleep(.5)
         
-
+def getTaskObject(process):
+    if (process == sVars.GO_AROUND_PORT):
+        return roundbuoy.RoundBuoy()
+    elif (process == sVars.GO_AROUDN_STBD):
+        return roundbuoy.RoundBuoy()
+    elif (process == sVars.GO_TO):
+        return pointtopoint.PointToPoint()
+    elif (process == sVars.NAVIGATIN_CHALLENGE):
+        return navigation.Navigation()
+    elif (process == sVars.STATION_KEEPING_CHALLENGE):
+        return stationkeeping.StationKeeping()
+    elif (process == sVars.LONG_DISTANCE):
+        return longdistance.LongDistance()
+    
 def setGlobVar(sc):
     if gVars.currentProcess == None:
         killAllFunctions()

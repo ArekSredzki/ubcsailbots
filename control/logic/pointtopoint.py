@@ -19,7 +19,6 @@ class PointToPoint(sailingtask.SailingTask):
         self.AWA_METHOD = 2
     
         self.TACKING_ANGLE = 34 
-        self.end_flag=0
         
     # --- Point to Point ---
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
