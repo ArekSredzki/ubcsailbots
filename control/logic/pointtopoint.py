@@ -157,6 +157,7 @@ class PointToPoint(sailingtask.SailingTask):
                         gVars.logger.info("Changing sheets and rudder")
                         arduino.adjust_sheets(sheetList[abs(int(newappWindAng))][gVars.currentColumn])
                         arduino.steer(self.COMPASS_METHOD,standardcalc.angleBetweenTwoCoords(GPSCoord,Dest))
+                        gVars.logger.info(str(standardcalc.angleBetweenTwoCoords(GPSCoord, Dest)))
                         appWindAng = newappWindAng
                         oldColumn = gVars.currentColumn
                         tackSailing = newTackSailing
