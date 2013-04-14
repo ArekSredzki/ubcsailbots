@@ -35,7 +35,7 @@ function getlog(){
 	        $("#connectionStatus-gpsAccuracyCell").text(overviewData.connectionStatus.HDOP);
 	        $("#telemetry-rudderCell").text(overviewData.telemetry.Rudder);
 	        $("#currentProcess-currentTaskCell").text(overviewData.currentProcess.name);
-	        $("#currentProcess-timeToCompletionCell").text(overviewData.currentProcess.time)
+	        $("#currentProcess-elapsedTimeCell").text(overviewData.currentProcess.Starttime+" s");
 	        // Update map widget
 	     	mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
 	     	
