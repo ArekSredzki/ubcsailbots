@@ -10,8 +10,6 @@ from control.logic import pointtopoint
 from control import GlobalVars as gVars
 from control.datatype import datatypes
 
-from control import *
-
 def run(BuoyLoc, FinalLoc=None, port=True):
     GPSCoord = gVars.currentData.gps_coord
     if FinalLoc == None:
