@@ -18,7 +18,9 @@ class PointToPoint(sailingtask.SailingTask):
         self.COG_METHOD = 1
         self.AWA_METHOD = 2
     
-        self.TACKING_ANGLE = 34 
+        self.TACKING_ANGLE = 34
+        
+        self.ANGLE_CHANGE_THRESHOLD = 5
         
     # --- Point to Point ---
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
@@ -32,6 +34,7 @@ class PointToPoint(sailingtask.SailingTask):
         arduino = gVars.arduino
         appWindAng = 0
         oldColumn = 0
+        oldAngleBetweenCoords = 0
         tackDirection = 0
         gVars.logger.info("Started point to pointAWA")
         
@@ -41,7 +44,8 @@ class PointToPoint(sailingtask.SailingTask):
             newappWindAng = gVars.currentData.awa
             cog = gVars.currentData.cog
             hog = gVars.currentData.hog
-            sog = gVars.currentData.sog * 100        
+            sog = gVars.currentData.sog * 100
+            angleBetweenCoords = standardcalc.angleBetweenTwoCoords()        
             
             if(standardcalc.distBetweenTwoCoords(GPSCoord, Dest) > ACCEPTANCE_DISTANCE):
                 gVars.logger.info("Boat not at point, continuing code")
@@ -149,13 +153,14 @@ class PointToPoint(sailingtask.SailingTask):
                 else:
                     gVars.logger.info("Sailing straight to point")
                     newTackSailing = 3
-                    if(self.isThereChangeToAWAorWeatherOrMode(appWindAng,newappWindAng,oldColumn,tackSailing,newTackSailing)):
+                    if(self.isThereChangeToAWAorWeatherOrModeOrAngle(appWindAng,newappWindAng,oldColumn,tackSailing,newTackSailing,oldAngleBetweenCoords, angleBetweenCoords)):
                         gVars.logger.info("Changing sheets and rudder")
                         arduino.adjust_sheets(sheetList[abs(int(newappWindAng))][gVars.currentColumn])
                         arduino.steer(self.COMPASS_METHOD,standardcalc.angleBetweenTwoCoords(GPSCoord,Dest))
                         appWindAng = newappWindAng
                         oldColumn = gVars.currentColumn
                         tackSailing = newTackSailing
+                        oldAngleBetweenCoords = angleBetweenCoords
                 
             else:
                 self.end_flag = 1
@@ -180,6 +185,12 @@ class PointToPoint(sailingtask.SailingTask):
     
     def doWeStillWantToTack(self, hog,GPSCoord,Dest):
         if(abs(hog-standardcalc.angleBetweenTwoCoords(GPSCoord, Dest))<80 and gVars.kill_flagPTP ==0):
+            return 1
+        else:
+            return 0
+        
+    def isThereChangeToAWAorWeatherOrModeOrAngle(self, AWA,newAWA,oldColumn,tackSailing,newTackSailing,oldAngle,newAngle):
+        if(AWA != newAWA or oldColumn != gVars.currentColumn or tackSailing != newTackSailing or abs(oldAngle-newAngle)>self.ANGLE_CHANGE_THRESHOLD):
             return 1
         else:
             return 0
