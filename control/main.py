@@ -57,59 +57,37 @@ def run(argv=None):
             unkillAllFunctions()
             gVars.currentProcess = gVars.functionQueue.pop(0)
             gVars.currentParams = gVars.queueParameters.pop(0)
-            if (gVars.currentProcess == sVars.GO_AROUND_PORT):
-                gVars.taskStartTime = datetime.now()
-                try:
-                    roundbuoy.run(*gVars.currentParams)
-                except Exception, errtext:
-                    exc_type, exc_value, exc_traceback = sys.exc_info()
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
+            task = getTaskObject(gVars.currentProcess)
             
-            elif(gVars.currentProcess == sVars.GO_AROUND_STBD):
-                gVars.taskStartTime = datetime.now()
-                try:
-                    roundbuoy.run(*gVars.currentParams, FinalLoc=None, port=False)
-                except Exception, errtext:
-                    exc_type, exc_value, exc_traceback = sys.exc_info()
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
+            gVars.taskStartTime = datetime.now()
             
-            elif(gVars.currentProcess == sVars.GO_TO):
-                gVars.taskStartTime = datetime.now()
-                try:
-                    pointtopoint.run(*gVars.currentParams)
-                except Exception, errtext:
-                    exc_type, exc_value, exc_traceback = sys.exc_info()
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
-                    
-            elif (gVars.currentProcess == sVars.NAVIGATION_CHALLENGE):
-                gVars.taskStartTime = datetime.now()
-                try:
-                    navigation.run(*gVars.currentParams)
-                except Exception, errtext:
-                    exc_type, exc_value, exc_traceback = sys.exc_info()
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
-            elif (gVars.currentProcess == sVars.STATION_KEEPING_CHALLENGE):
-                gVars.taskStartTime = datetime.now()
-                try:
-                    stationkeeping.run(*gVars.currentParams)
-                except Exception, errtext:
-                    exc_type, exc_value, exc_traceback = sys.exc_info()
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
-            elif (gVars.currentProcess == sVars.LONG_DISTANCE_CHALLENGE):
-                gVars.taskStartTime = datetime.now()
-                try:
-                    longdistance.run(*gVars.currentParams)
-                except Exception, errtext:
-                    exc_type, exc_value, exc_traceback = sys.exc_info()
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
-            else:
-                gVars.logger.warning("No instruction task named " + str(gVars.currentProcess))
+            try:
+                task.run(*gVars.currentParams)
+            except Exception, errtext:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
+            
             gVars.currentProcess = None
             gVars.currentParams = None
                 
         time.sleep(.5)
         
-
+def getTaskObject(process):
+    if (process == sVars.GO_AROUND_PORT):
+        return roundbuoy.RoundBuoy()
+    elif (process == sVars.GO_AROUND_STBD):
+        return roundbuoy.RoundBuoy()
+    elif (process == sVars.GO_TO):
+        return pointtopoint.PointToPoint()
+    elif (process == sVars.NAVIGATION_CHALLENGE):
+        return navigation.Navigation()
+    elif (process == sVars.STATION_KEEPING_CHALLENGE):
+        return stationkeeping.StationKeeping()
+    elif (process == sVars.LONG_DISTANCE):
+        return longdistance.LongDistance()
+    else:
+        gVars.logger.warning("No instruction task named " + str(process))
+    
 def setGlobVar(sc):
     if gVars.currentProcess == None:
         killAllFunctions()
