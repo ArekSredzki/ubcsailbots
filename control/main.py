@@ -83,7 +83,7 @@ def getTaskObject(process):
         return navigation.Navigation()
     elif (process == sVars.STATION_KEEPING_CHALLENGE):
         return stationkeeping.StationKeeping()
-    elif (process == sVars.LONG_DISTANCE):
+    elif (process == sVars.LONG_DISTANCE_CHALLENGE):
         return longdistance.LongDistance()
     else:
         gVars.logger.warning("No instruction task named " + str(process))
