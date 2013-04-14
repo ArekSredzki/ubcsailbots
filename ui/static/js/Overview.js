@@ -26,16 +26,28 @@ function getlog(){
 	        $("#telemetry-latitudeCell").text(overviewData.telemetry.latitude.toFixed(parseInt(5)));
 	        $("#telemetry-longitudeCell").text(overviewData.telemetry.longitude.toFixed(parseInt(5)));
 	        $("#connectionStatus-satNumCell").text(overviewData.connectionStatus.gpsSat);
-	        if (overviewData.connectionStatus.automode=1){
+	        if (overviewData.connectionStatus.automode == 1){
 	          $("#connectionStatus-autoMode").text("Auto");
 	        }
 	        else{
-            $("#connectionStatus-autoMode").text("RC");
-          }
+            	$("#connectionStatus-autoMode").text("RC");
+         	}
 	        $("#connectionStatus-gpsAccuracyCell").text(overviewData.connectionStatus.HDOP);
 	        $("#telemetry-rudderCell").text(overviewData.telemetry.Rudder);
-	        $("#currentProcess-currentTaskCell").text(overviewData.currentProcess.name);
-	        $("#currentProcess-elapsedTimeCell").text(overviewData.currentProcess.Starttime+" s");
+	        if(overviewData.currentProcess.name == null){	        	
+	        	$("#currentProcess-currentTaskCell").text("none");
+	        }
+	        else{
+	        	$("#currentProcess-currentTaskCell").text(overviewData.currentProcess.name);
+	        }
+	        var timeInSeconds = overviewData.currentProcess.Starttime;
+	        if(timeInSeconds != null){
+		        var date = new Date(null);
+		        date.setHours(0);
+		        date.setSeconds(timeInSeconds);
+		       	var time = date.toTimeString().substr(0,8);
+		      	$("#currentProcess-elapsedTimeCell").text(time);
+		 	}
 	        // Update map widget
 	     	mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
 	     	
