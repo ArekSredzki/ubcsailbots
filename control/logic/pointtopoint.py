@@ -38,6 +38,7 @@ class PointToPoint(sailingtask.SailingTask):
         oldColumn = 0
         oldAngleBetweenCoords = 0
         tackDirection = 0
+        printedStraight = 0
         gVars.logger.info("Started point to pointAWA")
         
         while(self.end_flag == 0 and gVars.kill_flagPTP == 0):
