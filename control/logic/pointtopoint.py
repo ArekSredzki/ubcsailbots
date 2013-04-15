@@ -228,6 +228,5 @@ class PointToPoint(sailingtask.SailingTask):
         
     def sailFromBoundary(self, boundaryNumber):
         boundary = gVars.boundaries[boundaryNumber]
-        if(gVars.currentData.gps_coord.lat > boundary.coordinate):
-            pass
+        #x_value = 
         return 0
