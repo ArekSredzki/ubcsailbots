@@ -155,14 +155,14 @@ class StationKeeping(sailingtask.SailingTask):
             boxDistList = self.getBoxDist(boxCoords)
             if (exiting == 0):
                 #gVars.logger.info("WPNSTUFF. Current waypoint lat: " + str(wayPtCoords[gVars.SKCurrentWaypnt].lat) + ". Current waypoint long: " + str(wayPtCoords[gVars.SKCurrentWaypnt].long) + ". current GPS lat: " + str(gVars.currentData.gps_coord.lat) + ". current GPS long: " + str(gVars.currentData.gps_coord.long))
-                if (standardcalc.isWPNoGoAWA(gVars.currentData.awa,gVars.currentData.hog, wayPtCoords[gVars.SKCurrentWaypnt], gVars.currentData.sog, gVars.currentData.gps_coord)):
+                if (((boxDistList[gVars.SKCurrentWaypnt] > 10) or (boxDistList[(gVars.SKCurrentWaypnt+2)%4] > 10)) and standardcalc.isWPNoGoAWA(gVars.currentData.awa,gVars.currentData.hog, wayPtCoords[gVars.SKCurrentWaypnt], gVars.currentData.sog, gVars.currentData.gps_coord)):
                     gVars.logger.info("The boat is sailing upwind. Changing current waypoint.")
                     gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 1) % 4
                     gVars.logger.info("The current waypoint is " + str(gVars.SKCurrentWaypnt) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
                     gVars.kill_flagPTP = 1
                     thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], ))
                     turning = 1
-                if (((boxDistList[0] < 10) or (boxDistList[1] < 10) or (boxDistList[2] < 10) or (boxDistList[3] < 10)) and (inTurnZone == 0)):
+                if (((boxDistList[gVars.SKCurrentWaypnt] < 10) or (boxDistList[(gVars.SKCurrentWaypnt+2)%4] < 10)) and (inTurnZone == 0)):
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
                     gVars.logger.info("The boat is too close to an edge. Changing current waypoint.")
                     gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 2) % 4
