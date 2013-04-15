@@ -312,3 +312,9 @@ def boundTo180(angle):
         return angle-360
     else:
         return angle
+    
+def SquareRT(a,posFlag=0):
+    if(posFlag==0):
+        return -math.sqrt(a)
+    else:
+        return math.sqrt(a)
