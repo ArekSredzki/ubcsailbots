@@ -6,6 +6,7 @@ Created on Jan 19, 2013
 import math
 import sys
 import thread
+import time
 sys.path.append("..")
 from datetime import datetime
 from control.logic import standardcalc
@@ -143,6 +144,7 @@ class StationKeeping(sailingtask.SailingTask):
     def skrun(self, boxCoords, wayPtCoords, spdList, meanSpd):
         exiting = 0
         while (((datetime.now() - gVars.taskStartTime).seconds < 300) and (gVars.kill_flagSK == 0)):
+            time.sleep(.1)
             secLeft = 300 - (datetime.now() - gVars.taskStartTime).seconds
             #gVars.logger.info("Time left is " + str(secLeft) +" seconds.")
             turning = 0
