@@ -27,6 +27,7 @@ class PointToPoint(sailingtask.SailingTask):
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
     # Output: Nothing
     def run(self, Dest, initialTack = None, ACCEPTANCE_DISTANCE = sVars.ACCEPTANCE_DISTANCE_DEFAULT):
+        time.sleep(0.5)
         sheetList = parsing.parse(path.join(path.dirname(__file__), 'apparentSheetSetting'))
         tackSailing = 0
         newTackSailing = 0
@@ -179,7 +180,7 @@ class PointToPoint(sailingtask.SailingTask):
                 self.end_flag = 1
                 gVars.logger.info("Finished Point to Point")
                 
-            if(gVars.kill_flagPTP == 1):
+        if(gVars.kill_flagPTP == 1):
                 gVars.logger.info("PointToPoint is killed")
         
         return 0
