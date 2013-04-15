@@ -133,8 +133,8 @@ def angleBetweenTwoCoords(sourceCoord, destCoord):
     distBtwnCoords = distBetweenTwoCoords(sourceCoord, destCoord)
     distSin = distBetweenTwoCoords(destCoord, GPSCoord)
     
-    gVars.logger.info("source: "+ str(sourceCoord) + " dest: " + str(destCoord) + " GPS: " + str(GPSCoord))
-    gVars.logger.info("distSin: "+ str(distSin) + " distBtwnCoords: " + str(distBtwnCoords))
+    #gVars.logger.info("source: "+ str(sourceCoord) + " dest: " + str(destCoord) + " GPS: " + str(GPSCoord))
+    #SgVars.logger.info("distSin: "+ str(distSin) + " distBtwnCoords: " + str(distBtwnCoords))
     
     angle = math.asin(distSin/distBtwnCoords)*180/math.pi
     
