@@ -11,7 +11,7 @@ function MapWidget(listener){
     this.waypointsLayer; // Layer for the waypoints of the the class
     this.boundariesLayer; // Layer for the boundaries of the class
     this.listener = listener || null;
-  
+  var boatIcon = new OpenLayers.Icon("static/img/map/boat-icon.png");
     //Initialise the 'map' object
    var map = new OpenLayers.Map("map", {
         controls: [
@@ -86,13 +86,9 @@ function MapWidget(listener){
 	        lat = lat || this.default_lat;
 	        lon = lon || this.default_lon;
 	        
-	      	boatLayer.clearMarkers();
+	      	boatLayer.clearMarkers();	        
 	
-	        var size = new OpenLayers.Size(21, 25);
-	        var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
-	        var icon = new OpenLayers.Icon("static/img/map/boat-icon.png", size, offset);
-	
-	        var markerBoat = new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
+	        var markerBoat = new OpenLayers.Marker(new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), boatIcon);
 	        boatLayer.addMarker(markerBoat);  
 	     } catch (err) { }     
     }
