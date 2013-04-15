@@ -51,14 +51,12 @@ class PointToPoint(sailingtask.SailingTask):
             printedTack = 0        
             
             if(standardcalc.distBetweenTwoCoords(GPSCoord, Dest) > ACCEPTANCE_DISTANCE):
-                gVars.logger.info("Boat not at point, continuing code")
                 #This if statement determines the sailing method we are going to use based on apparent wind angle
                 standardcalc.getWeatherSetting(newappWindAng,sog)
                     #print ("Hit else statement")
                     #print ("TWA is: " + str(gVars.TrueWindAngle))
                                     
                 if(standardcalc.isWPNoGoAWA(newappWindAng,hog,Dest,sog,GPSCoord)):
-                    gVars.logger.info("Point cannot be reached directly")
                     printedStraight = 0
                     #Trying to determine whether 45 degrees clockwise or counter clockwise of TWA wrt North is closer to current heading
                     #This means we are trying to determine whether hog-TWA-45 or hog-TWA+45 (both using TWA wrt North) is closer to our current heading.
