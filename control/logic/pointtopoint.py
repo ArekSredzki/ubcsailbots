@@ -15,6 +15,7 @@ import time
 class PointToPoint(sailingtask.SailingTask):
     
     def __init__(self):
+        gVars.logger.info("New Point to Point object")
         self.COMPASS_METHOD = 0
         self.COG_METHOD = 1
         self.AWA_METHOD = 2
