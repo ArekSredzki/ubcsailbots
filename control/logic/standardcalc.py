@@ -224,14 +224,14 @@ def getTrueWindAngle(awa, sog):
 
 def getWeatherSetting(awa, sog):
     minIndex = 0
-    min = 500
+    minNum = 500
     SOGList = parsing.parse(path.join(path.dirname(__file__), 'SOGarray'))
     SOGrow = SOGList[abs(int(awa))]
     
     for i in range(len(SOGrow)):
-        if(abs(SOGrow[i]-sog)<min):
+        if(abs(SOGrow[i]-sog)<minNum):
             minIndex = i
-            min = abs(SOGrow[i]-sog)
+            minNum = abs(SOGrow[i]-sog)
             
     gVars.currentColumn = minIndex
         
@@ -299,10 +299,10 @@ def vectorToDegrees(x, y):
     else:
         return 90 + math.tan(x/y)*180/3.14159
     
-def findCosLawAngle(a, b, c):  #cos law: c^2 = a^2 + b^2 - 2*a*b*cos(theta):
+def findCosLawAngle(a, b, c):  #cos law: c^2 = a^2 + b^2 - 2*a*b*cos(theta), returns in RADIANS:
     if ((a < 1) or (b < 1) or (c < 1)):
         return 0
-    return math.degrees(math.acos((math.pow(a, 2) + math.pow(b, 2) - math.pow(c, 2)) / (2*a*b)))
+    return math.acos((math.pow(a, 2) + math.pow(b, 2) - math.pow(c, 2)) / (2*a*b))
 
 # Bounds angle to -180 to 180
 def boundTo180(angle):

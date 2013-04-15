@@ -118,10 +118,11 @@ class StationKeeping(sailingtask.SailingTask):
         botRightAngle = standardcalc.findCosLawAngle(BR2BL, BR2Boat, BL2Boat)
         botLeftAngle = standardcalc.findCosLawAngle(BL2TL, BL2Boat, TL2Boat)
         
-        boxDistList.append( math.fabs(TL2Boat * math.sin(topLeftAngle)) )  #top dist
-        boxDistList.append( math.fabs(TR2Boat * math.sin(topRightAngle)) )  #right dist
-        boxDistList.append( math.fabs(BR2Boat * math.sin(botRightAngle)) ) #bottom dist
-        boxDistList.append( math.fabs(BL2Boat * math.sin(botLeftAngle)) ) #left dist
+        boxDistList.append( abs(TL2Boat * math.sin(topLeftAngle)) )  #top dist
+        boxDistList.append( abs(TR2Boat * math.sin(topRightAngle)) )  #right dist
+        boxDistList.append( abs(BR2Boat * math.sin(botRightAngle)) ) #bottom dist
+        boxDistList.append( abs(BL2Boat * math.sin(botLeftAngle)) ) #left dist
+        #gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
         return boxDistList
     
     def run(self, topLeftWaypnt, topRightWaypnt, botLeftWaypnt, botRightWaypnt):
@@ -131,6 +132,7 @@ class StationKeeping(sailingtask.SailingTask):
         botRightCoord = botRightWaypnt.coordinate
         boxCoords = standardcalc.setBoxCoords(topLeftCoord, topRightCoord, botLeftCoord, botRightCoord)   #boxCoords[0] = TL, boxCoords[1] = TR, boxCoords[2] = BR, boxCoords[3] = BL
         wayPtCoords = self.setWayPtCoords(boxCoords)  #top, right, bottom, left
+        gVars.logger.info("North waypoint: " + str(wayPtCoords[0]) + " East waypoint: " + str(wayPtCoords[1]) +" South waypoint: " + str(wayPtCoords[2]) + " West waypoint: " + str(wayPtCoords[3]) )
         spdList = [0.75]*10
         boxDistList = self.getBoxDist(boxCoords)  #top, right, bottom, left
         meanSpd = 0.75   #from old arduino code
@@ -143,11 +145,12 @@ class StationKeeping(sailingtask.SailingTask):
         
     def skrun(self, boxCoords, wayPtCoords, spdList, meanSpd):
         exiting = 0
+        inTurnZone = 0
+        turning = 0
         while (((datetime.now() - gVars.taskStartTime).seconds < 300) and (gVars.kill_flagSK == 0)):
             time.sleep(.1)
             secLeft = 300 - (datetime.now() - gVars.taskStartTime).seconds
             #gVars.logger.info("Time left is " + str(secLeft) +" seconds.")
-            turning = 0
             self.SKTimer()
             boxDistList = self.getBoxDist(boxCoords)
             if (exiting == 0):
@@ -159,7 +162,7 @@ class StationKeeping(sailingtask.SailingTask):
                     gVars.kill_flagPTP = 1
                     thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], ))
                     turning = 1
-                if (boxDistList[gVars.SKCurrentWaypnt] < 10):
+                if (((boxDistList[0] < 10) or (boxDistList[1] < 10) or (boxDistList[2] < 10) or (boxDistList[3] < 10)) and (inTurnZone == 0)):
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
                     gVars.logger.info("The boat is too close to an edge. Changing current waypoint.")
                     gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 2) % 4
@@ -171,7 +174,11 @@ class StationKeeping(sailingtask.SailingTask):
                     else:
                         gVars.arduino.gybe(0)
                     thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], ))
+                    inTurnZone = 1
                     turning = 1
+                elif ((boxDistList[(gVars.SKCurrentWaypnt+2)%4] > 10) and (inTurnZone == 1)):
+                    inTurnZone = 0
+                    turning = 0
                 if (turning == 0):
                     spdList = standardcalc.changeSpdList(spdList)
                     meanSpd = standardcalc.meanOfList(spdList)
