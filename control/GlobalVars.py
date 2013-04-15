@@ -14,7 +14,7 @@ Global Variables for the control logic
 instructions = None
 # Array for all current data from arduino
 #    Format: [HOG, COG, SOG, AWA, GPS, SHT, SAT, ACC, AUT, RUD]
-currentData = []
+currentData = None
 functionQueue = []
 queueParameters = []
 boundaries = []

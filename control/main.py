@@ -13,7 +13,8 @@ from os import path
 from challenge import longdistance
 from challenge import navigation
 from challenge import stationkeeping
-from logic import coresailinglogic
+from logic import roundbuoy
+from logic import pointtopoint
 from control import sailbotlogger
 from datatype import datatypes
 import control.GlobalVars as gVars
@@ -25,7 +26,7 @@ import traceback
 # Mock:
     #   - If true, mock will run from a mock arduino class which simulates boat and wind conditions (see readme)
     #   - If false, mock will run off of an actual arduino through dev/tty ports     
-mock = True
+mock = False
 
 # Main - pass challenge or logic function name as argument
 def run(argv=None):
@@ -34,7 +35,7 @@ def run(argv=None):
     gVars.logger = sailbotlogger.logger()
     gVars.logger.info("Start")
     
-    print("Mock Enabled: " + str(mock))
+    gVars.logger.info("Mock Enabled: " + str(mock))
     if (mock == False):        
         arduino = piardio.arduino.arduino()
     else:
@@ -48,62 +49,55 @@ def run(argv=None):
     while (gVars.run):
         # When the function queue has waiting calls, and there is no currently running process,
         # switch processes to the next function in the queue (FIFO)
-            
-        if (len(gVars.functionQueue) > 0 and gVars.currentProcess is None and gVars.currentData[sVars.AUT_INDEX] == 1):
+        
+        #TODO build function calling wrapper like getattr(coresailinglogic, gVars.currentProcess)(*gVars.currentParams)
+        if (len(gVars.functionQueue) > 0 and gVars.currentProcess is None and gVars.currentData.auto == 1):
             killAllFunctions()
             time.sleep(.5)
             unkillAllFunctions()
             gVars.currentProcess = gVars.functionQueue.pop(0)
             gVars.currentParams = gVars.queueParameters.pop(0)
-            if (gVars.currentProcess == sVars.GO_AROUND_PORT or gVars.currentProcess == sVars.GO_AROUND_STBD or gVars.currentProcess == sVars.GO_TO):
-                gVars.taskStartTime = datetime.now()
-                try:
-                    getattr(coresailinglogic, gVars.currentProcess)(*gVars.currentParams)
-                except Exception, errtext:
-                    exc_type, exc_value, exc_traceback = sys.exc_info()
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
-            elif (gVars.currentProcess == sVars.NAVIGATION_CHALLENGE):
-                gVars.taskStartTime = datetime.now()
-                try:
-                    navigation.run(*gVars.currentParams)
-                except Exception, errtext:
-                    exc_type, exc_value, exc_traceback = sys.exc_info()
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
-            elif (gVars.currentProcess == sVars.STATION_KEEPING_CHALLENGE):
-                gVars.taskStartTime = datetime.now()
-                try:
-                    stationkeeping.run(*gVars.currentParams)
-                except Exception, errtext:
-                    exc_type, exc_value, exc_traceback = sys.exc_info()
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
-            elif (gVars.currentProcess == sVars.LONG_DISTANCE_CHALLENGE):
-                gVars.taskStartTime = datetime.now()
-                try:
-                    longdistance.run(*gVars.currentParams)
-                except Exception, errtext:
-                    exc_type, exc_value, exc_traceback = sys.exc_info()
-                    gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
-            else:
-                gVars.logger.warning("No instruction task named " + str(gVars.currentProcess))
+            task = getTaskObject(gVars.currentProcess)
+            
+            gVars.taskStartTime = datetime.now()
+            
+            try:
+                task.run(*gVars.currentParams)
+            except Exception, errtext:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
+            
             gVars.currentProcess = None
             gVars.currentParams = None
                 
         time.sleep(.5)
         
-
+def getTaskObject(process):
+    if (process == sVars.GO_AROUND_PORT):
+        return roundbuoy.RoundBuoy()
+    elif (process == sVars.GO_AROUND_STBD):
+        return roundbuoy.RoundBuoy()
+    elif (process == sVars.GO_TO):
+        return pointtopoint.PointToPoint()
+    elif (process == sVars.NAVIGATION_CHALLENGE):
+        return navigation.Navigation()
+    elif (process == sVars.STATION_KEEPING_CHALLENGE):
+        return stationkeeping.StationKeeping()
+    elif (process == sVars.LONG_DISTANCE_CHALLENGE):
+        return longdistance.LongDistance()
+    else:
+        gVars.logger.warning("No instruction task named " + str(process))
+    
 def setGlobVar(sc):
     if gVars.currentProcess == None:
         killAllFunctions()
     gVars.currentData = gVars.arduino.getFromArduino()
-    printArdArray(gVars.currentData)
+    print gVars.currentData
     if (mock):
         sc.enter(1, 1, setGlobVar, (sc,))
     else:
         sc.enter(1, 1, setGlobVar, (sc,))
-    
-def printArdArray(arr):
-    print("Heading: " + str(arr[sVars.HOG_INDEX]) + ", COG: " + str(arr[sVars.COG_INDEX]) + ", SOG: " + str(arr[sVars.SOG_INDEX]) + ", AWA: " + str(arr[sVars.AWA_INDEX]) + ", GPS[" + str(arr[sVars.GPS_INDEX]) + "]" + ", Sheet Percent: " + str(arr[sVars.SHT_INDEX]) + ", Num of Satellites: " + str(arr[sVars.SAT_INDEX]) + ", Accuracy: " + str(arr[sVars.ACC_INDEX]) + ", Rudder: " + str(arr[sVars.RUD_INDEX]))
-    
+        
 def unkillAllFunctions():
     # All current kill flags must be added here.
     gVars.kill_flagPTP = 0
@@ -124,4 +118,4 @@ if __name__ == '__main__':
     try:
         sys.exit(run())
     except KeyboardInterrupt:
-        print ("\n Exit - Keyboard Interrupt")
+        gVars.logger.info("\n Exit - Keyboard Interrupt")

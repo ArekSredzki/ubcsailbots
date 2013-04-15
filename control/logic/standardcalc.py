@@ -241,7 +241,7 @@ def changeSpdList(spdList):
     if (len(spdList) == 0):
         return -1
     del spdList[0]
-    spdList.append(gVars.currentData[sVars.SOG_INDEX])
+    spdList.append(gVars.currentData.sog)
     return spdList
 
 def meanOfList(numberList):
@@ -312,27 +312,3 @@ def boundTo180(angle):
         return angle-360
     else:
         return angle
-    
-def starboardTackWanted(AWA,initialTack):
-    if( (abs(-AWA-43)<abs(-AWA+43) and initialTack is None) or initialTack == 1 ):
-        return 1
-    else:
-        return 0
-        
-def portTackWanted(AWA,initialTack):
-    if( (abs(-AWA-43)>=abs(-AWA+43) and initialTack is None) or initialTack == 0 ):
-        return 1
-    else:
-        return 0
-
-def doWeStillWantToTack(hog,GPSCoord,Dest):
-    if(abs(hog-angleBetweenTwoCoords(GPSCoord, Dest))<80 and gVars.kill_flagPTP ==0):
-        return 1
-    else:
-        return 0
-    
-def isThereChangeToAWAorWeatherOrMode(AWA,newAWA,oldColumn,tackSailing,newTackSailing):
-    if(AWA != newAWA or oldColumn != gVars.currentColumn or tackSailing != newTackSailing):
-        return 1
-    else:
-        return 0

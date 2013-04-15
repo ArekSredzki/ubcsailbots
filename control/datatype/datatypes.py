@@ -24,7 +24,7 @@ class GPSCoordinate:
 		self.long = longitude
 		
 	def __repr__(self):
-		return str("{lat}, {long}".format(lat=self.lat, long=self.long))
+		return str("GPSCoordinate(latitude={lat}, longitude={long})".format(lat=self.lat, long=self.long))
 	
 	def __str__(self):
 		return str("{lat}, {long}".format(lat=self.lat, long=self.long))
@@ -166,6 +166,8 @@ class Waypoint:
 		self.coordinate = coordinate
 		self.wtype = wtype
 	
+	def __repr__(self):
+		return "Waypoint(coordinate=%r,wtype=%r)" % (self.coordinate,self.wtype)
 	def __eq__(self, other):
 		return (self.coordinate == other.coordinate and self.wtype == other.wtype)
 
@@ -175,6 +177,8 @@ class Boundary:
 	def __init__(self, coordinate, radius=0):
 		self.coordinate = coordinate
 		self.radius = radius
+	def __repr__(self):
+		return "Boundary(coordinate=%r,radius=%r)" % (self.coordinate,self.radius)
 
 # Instructions which contain all instructions passed from a GUI to the control logic
 class Instructions:
@@ -182,6 +186,27 @@ class Instructions:
 		self.challenge = challenge
 		self.waypoints = waypoints
 		self.boundaries = boundaries
+	def __repr__(self):
+		return "Instructions(challenge=%r,waypoints=%r,boundaries=%r)" % (self.challenge,self.waypoints,self.boundaries)
+
+class ArduinoData:
+	def __init__(self, hog=0, cog=0, sog=0, awa=0, gps_coord=GPSCoordinate(0, 0), sheet_percent=0, num_sat=0, gps_accuracy=0, auto=0, rudder=0):
+		self.hog = hog
+		self.cog = cog
+		self.sog = sog
+		self.awa = awa
+		self.gps_coord = gps_coord
+		self.sheet_percent = sheet_percent
+		self.num_sat = num_sat
+		self.gps_accuracy = gps_accuracy
+		self.auto = auto
+		self.rudder = rudder
+		
+	def __repr__(self):
+		return "ArduinoData(hog=%r,cog=%r,sog=%r,awa=%r,gps_coord=%r,sheet_percent=%r,num_sat=%r,gps_accuracy=%r,auto=%r,rudder=%r)" % (self.hog, self.cog, self.sog, self.gps_coord, self.sheet_percent, self.num_sat, self.gps_accuracy, self.auto, self.rudder)
+	
+	def __str__(self):
+		return "Heading: " + str(self.hog) + ", COG: " + str(self.cog) + ", SOG: " + str(self.sog) + ", AWA: " + str(self.awa) + ", GPS[" + str(self.gps_coord) + "]" + ", Sheet Percent: " + str(self.sheet_percent) + ", Num of Satellites: " + str(self.num_sat) + ", Accuracy: " + str(self.gps_accuracy) + ", Rudder: " + str(self.rudder)
 
 if (__name__ == "__main__"):
 	print "DataTypes.py"

@@ -31,13 +31,13 @@ class testGetFromArduino(unittest.TestCase):
         self.ser = serial.Serial()
         serial.Serial = MagicMock(return_value=self.ser)
         self.ser.read = MagicMock(return_value=self.returnstr)
-        self.assertEqual(self.ard.getFromArduino()[0], self.returnarr[4])
+        self.assertEqual(self.ard.getFromArduino().hog, self.returnarr[4])
                 
     def testWithReturnNoSpace(self):
         self.ser = serial.Serial()
         serial.Serial = MagicMock(return_value=self.ser)
         self.ser.read = MagicMock(return_value=self.returnstrnospace)
-        self.assertEqual(self.ard.getFromArduino()[0], self.returnarr[4])
+        self.assertEqual(self.ard.getFromArduino().hog, self.returnarr[4])
         
 if __name__ == '__main__':
     unittest.main()
