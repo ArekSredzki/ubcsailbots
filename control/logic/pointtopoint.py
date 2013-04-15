@@ -36,6 +36,7 @@ class PointToPoint(sailingtask.SailingTask):
         oldColumn = 0
         oldAngleBetweenCoords = 0
         tackDirection = 0
+        printed = 0
         gVars.logger.info("Started point to pointAWA")
         
         while(self.end_flag == 0 and gVars.kill_flagPTP == 0):
@@ -45,7 +46,8 @@ class PointToPoint(sailingtask.SailingTask):
             cog = gVars.currentData.cog
             hog = gVars.currentData.hog
             sog = gVars.currentData.sog * 100
-            angleBetweenCoords = standardcalc.angleBetweenTwoCoords(GPSCoord,Dest)        
+            angleBetweenCoords = standardcalc.angleBetweenTwoCoords(GPSCoord,Dest)
+            printed = 0        
             
             if(standardcalc.distBetweenTwoCoords(GPSCoord, Dest) > ACCEPTANCE_DISTANCE):
                 gVars.logger.info("Boat not at point, continuing code")
@@ -67,7 +69,9 @@ class PointToPoint(sailingtask.SailingTask):
                         initialTack = None
                         gVars.tacked_flag = 0
                         while(self.doWeStillWantToTack(hog,GPSCoord,Dest)):
-                            gVars.logger.info("On starboard tack")
+                            if(printed == 0):
+                                gVars.logger.info("On starboard tack")
+                                printed = 1
                             
                             gVars.tacked_flag = 0
                             GPSCoord = gVars.currentData.gps_coord
@@ -100,7 +104,7 @@ class PointToPoint(sailingtask.SailingTask):
                                         break
                             if(gVars.tacked_flag):
                                 break
-                            
+                         
                         if(gVars.tacked_flag == 0):                                                                
                             arduino.tack(gVars.currentColumn,tackDirection)
                         gVars.logger.info("Tacked from 80 degrees")
@@ -110,7 +114,9 @@ class PointToPoint(sailingtask.SailingTask):
                         initialTack = None
                         gVars.tacked_flag = 0
                         while(self.doWeStillWantToTack(hog,GPSCoord,Dest)):
-                            gVars.logger.info("On port tack")
+                            if(printed == 0):
+                                gVars.logger.info("On port tack")
+                                printed = 1
                             gVars.tacked_flag = 0
                             GPSCoord = gVars.currentData.gps_coord
                             newappWindAng = gVars.currentData.awa
@@ -145,7 +151,7 @@ class PointToPoint(sailingtask.SailingTask):
                             
                             if(gVars.tacked_flag):
                                 break
-                            
+                        
                         if(gVars.tacked_flag == 0):                                                                
                             arduino.tack(gVars.currentColumn,tackDirection)
                         gVars.logger.info("Tacked from 80 degrees")
