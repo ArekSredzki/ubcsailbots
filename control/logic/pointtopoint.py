@@ -27,7 +27,6 @@ class PointToPoint(sailingtask.SailingTask):
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
     # Output: Nothing
     def run(self, Dest, initialTack = None, ACCEPTANCE_DISTANCE = sVars.ACCEPTANCE_DISTANCE_DEFAULT):
-        time.sleep(.3)
         sheetList = parsing.parse(path.join(path.dirname(__file__), 'apparentSheetSetting'))
         tackSailing = 0
         newTackSailing = 0
@@ -42,6 +41,7 @@ class PointToPoint(sailingtask.SailingTask):
         gVars.logger.info("Started point to pointAWA")
         
         while(self.end_flag == 0 and gVars.kill_flagPTP == 0):
+            time.sleep(.1)
             gVars.logger.info("End flag and kill flag OK")
             GPSCoord = gVars.currentData.gps_coord
             newappWindAng = gVars.currentData.awa
@@ -72,7 +72,7 @@ class PointToPoint(sailingtask.SailingTask):
                         initialTack = None
                         gVars.tacked_flag = 0
                         while(self.doWeStillWantToTack(hog,GPSCoord,Dest)):
-                            time.sleep(.3)
+                            time.sleep(.1)
                             
                             if(printedTack == 0):
                                 gVars.logger.info("On starboard tack")
@@ -119,7 +119,7 @@ class PointToPoint(sailingtask.SailingTask):
                         initialTack = None
                         gVars.tacked_flag = 0
                         while(self.doWeStillWantToTack(hog,GPSCoord,Dest)):
-                            time.sleep(.3)
+                            time.sleep(.1)
                             
                             if(printedTack == 0):
                                 gVars.logger.info("On port tack")
