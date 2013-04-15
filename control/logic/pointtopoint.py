@@ -179,6 +179,9 @@ class PointToPoint(sailingtask.SailingTask):
             else:
                 self.end_flag = 1
                 gVars.logger.info("Finished Point to Point")
+                
+            if(gVars.kill_flagPTP == 1):
+                gVars.logger.info("PointToPoint is killed")
         
         return 0
     
