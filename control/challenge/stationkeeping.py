@@ -134,7 +134,7 @@ class StationKeeping(sailingtask.SailingTask):
         boxDistList = self.getBoxDist(boxCoords)  #top, right, bottom, left
         meanSpd = 0.75   #from old arduino code
         gVars.SKCurrentWaypnt = boxDistList.index(min(boxDistList))
-        thread.start_new_thread(self.pointToPoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], ))
+        thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], ))
         gVars.logger.info("The current waypoint is " + str(gVars.SKCurrentWaypnt) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
         gVars.logger.info("Station Keeping Initialization finished. Now running Station Keeping Challenge")
         self.skrun(boxCoords, wayPtCoords, spdList, meanSpd)
@@ -189,7 +189,7 @@ class StationKeeping(sailingtask.SailingTask):
                         gVars.arduino.gybe(1)
                     else:
                         gVars.arduino.gybe(0)
-                    thread.start_new_thread(self.pointToPoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], ))
+                    thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], ))
                     exiting = 1
         if (gVars.kill_flagSK == 1):
             gVars.logger.info("Station Keeping Kill Flag initialized. Station Keeping Challenge has been stopped.")
