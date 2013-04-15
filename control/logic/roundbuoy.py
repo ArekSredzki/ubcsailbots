@@ -12,6 +12,9 @@ from control.datatype import datatypes
 from control import sailingtask
 
 class RoundBuoy(sailingtask.SailingTask):
+    def __init__(self):
+        self.pointtopoint = pointtopoint.PointToPoint
+        
     def run(self, BuoyLoc, FinalLoc=None, port=True):
         GPSCoord = gVars.currentData.gps_coord
         if FinalLoc == None:
@@ -42,7 +45,7 @@ class RoundBuoy(sailingtask.SailingTask):
     
         if (GPSCoord.long >= standardcalc.GPSDistAway(destination, 10, 0).long): 
             gVars.logger.info("Going to first point")
-            pointtopoint.run(datatypes.GPSCoordinate(destination.lat, destination.long),1)
+            self.pointtopoint.run(datatypes.GPSCoordinate(destination.lat, destination.long),1)
             
             
         # Checks if the boat needs to round the buoy or just pass it
@@ -51,7 +54,7 @@ class RoundBuoy(sailingtask.SailingTask):
         
         if angleToTarget < standardcalc.boundTo180(angleToBuoy + 15) and angleToTarget > standardcalc.boundTo180(angleToBuoy - 15): 
             destination = standardcalc.GPSDistAway(GPSCoord, moveLong2, moveLat2)
-            pointtopoint.run(datatypes.GPSCoordinate(destination.lat, destination.long),1)
+            self.pointtopoint.run(datatypes.GPSCoordinate(destination.lat, destination.long),1)
             
         return 0
     
