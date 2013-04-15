@@ -10,6 +10,7 @@ from control.logic import standardcalc
 from control import StaticVars as sVars
 from control import GlobalVars as gVars
 from control import sailingtask
+import time
 
 class PointToPoint(sailingtask.SailingTask):
     
@@ -26,6 +27,7 @@ class PointToPoint(sailingtask.SailingTask):
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
     # Output: Nothing
     def run(self, Dest, initialTack = None, ACCEPTANCE_DISTANCE = sVars.ACCEPTANCE_DISTANCE_DEFAULT):
+        time.sleep(.3)
         sheetList = parsing.parse(path.join(path.dirname(__file__), 'apparentSheetSetting'))
         tackSailing = 0
         newTackSailing = 0
@@ -69,6 +71,8 @@ class PointToPoint(sailingtask.SailingTask):
                         initialTack = None
                         gVars.tacked_flag = 0
                         while(self.doWeStillWantToTack(hog,GPSCoord,Dest)):
+                            time.sleep(.3)
+                            
                             if(printed == 0):
                                 gVars.logger.info("On starboard tack")
                                 printed = 1
@@ -114,9 +118,12 @@ class PointToPoint(sailingtask.SailingTask):
                         initialTack = None
                         gVars.tacked_flag = 0
                         while(self.doWeStillWantToTack(hog,GPSCoord,Dest)):
+                            time.sleep(.3)
+                            
                             if(printed == 0):
                                 gVars.logger.info("On port tack")
                                 printed = 1
+
                             gVars.tacked_flag = 0
                             GPSCoord = gVars.currentData.gps_coord
                             newappWindAng = gVars.currentData.awa
