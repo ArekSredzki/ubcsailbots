@@ -10,6 +10,7 @@ from control.logic import standardcalc
 from control import StaticVars as sVars
 from control import GlobalVars as gVars
 from control import sailingtask
+import math
 import time
 
 class PointToPoint(sailingtask.SailingTask):
@@ -28,7 +29,7 @@ class PointToPoint(sailingtask.SailingTask):
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
     # Output: Nothing
     def run(self, Dest, initialTack = None, ACCEPTANCE_DISTANCE = sVars.ACCEPTANCE_DISTANCE_DEFAULT):
-        time.sleep(0.5)
+        time.sleep(1.0)
         sheetList = parsing.parse(path.join(path.dirname(__file__), 'apparentSheetSetting'))
         tackSailing = 0
         newTackSailing = 0
@@ -53,6 +54,9 @@ class PointToPoint(sailingtask.SailingTask):
             printedTack = 0        
             
             if(standardcalc.distBetweenTwoCoords(GPSCoord, Dest) > ACCEPTANCE_DISTANCE):
+                if(gVars.kill_flagPTP == 1):
+                    gVars.logger.info("PointToPoint is killed")
+                    return 0
                 #This if statement determines the sailing method we are going to use based on apparent wind angle
                 standardcalc.getWeatherSetting(newappWindAng,sog)
                     #print ("Hit else statement")
@@ -71,6 +75,10 @@ class PointToPoint(sailingtask.SailingTask):
                         initialTack = None
                         gVars.tacked_flag = 0
                         while(self.doWeStillWantToTack(hog,GPSCoord,Dest)):
+                            if(gVars.kill_flagPTP == 1):
+                                gVars.logger.info("PointToPoint is killed")
+                                return 0
+                            
                             time.sleep(.1)
                             
                             if(printedTack == 0):
@@ -89,7 +97,7 @@ class PointToPoint(sailingtask.SailingTask):
                             if(self.isThereChangeToAWAorWeatherOrMode(appWindAng,newappWindAng,oldColumn,tackSailing,newTackSailing) ):
                                 gVars.logger.info("Changing sheets and rudder")
                                 arduino.adjust_sheets(sheetList[abs(int(newappWindAng))][gVars.currentColumn])
-                                arduino.steer(self.AWA_METHOD,hog-newappWindAng-self.TACKING_ANGLE)
+                                arduino.steer(self.AWA_METHOD,-self.TACKING_ANGLE)
                                 appWindAng = newappWindAng
                                 oldColumn = gVars.currentColumn
                                 tackSailing = newTackSailing
@@ -118,6 +126,10 @@ class PointToPoint(sailingtask.SailingTask):
                         initialTack = None
                         gVars.tacked_flag = 0
                         while(self.doWeStillWantToTack(hog,GPSCoord,Dest)):
+                            if(gVars.kill_flagPTP == 1):
+                                gVars.logger.info("PointToPoint is killed")
+                                return 0
+                            
                             time.sleep(.1)
                             
                             if(printedTack == 0):
@@ -138,7 +150,7 @@ class PointToPoint(sailingtask.SailingTask):
                             if(self.isThereChangeToAWAorWeatherOrMode(appWindAng,newappWindAng,oldColumn,tackSailing,newTackSailing)):
                                 gVars.logger.info("Changing sheets and rudder")
                                 arduino.adjust_sheets(sheetList[abs(int(newappWindAng))][gVars.currentColumn])
-                                arduino.steer(self.AWA_METHOD,hog-newappWindAng+self.TACKING_ANGLE)
+                                arduino.steer(self.AWA_METHOD,self.TACKING_ANGLE)
                                 appWindAng = newappWindAng
                                 oldColumn = gVars.currentColumn
                                 tackSailing = newTackSailing
@@ -164,7 +176,11 @@ class PointToPoint(sailingtask.SailingTask):
                             arduino.tack(gVars.currentColumn,tackDirection)
                         gVars.logger.info("Tacked from 80 degrees")
                         
-                else:
+                else:                    
+                    if(gVars.kill_flagPTP == 1):
+                        gVars.logger.info("PointToPoint is killed")
+                        return 0
+                            
                     if(printedStraight == 0):
                         gVars.logger.info("Sailing straight to point")
                         printedStraight = 1
@@ -228,5 +244,15 @@ class PointToPoint(sailingtask.SailingTask):
         
     def sailFromBoundary(self, boundaryNumber):
         boundary = gVars.boundaries[boundaryNumber]
-        #x_value = 
+        sinAngle = standardcalc.angleBetweenTwoCoords(gVars.currentData.gps_coord,boundary.coordinate)
+        sinAngle = abs(sinAngle)
+        
+        dist_to_boundary = standardcalc.distBetweenTwoCoords(gVars.currentData.gps_coord, boundary.coordinate)
+        x_dist = dist_to_boundary * math.sin(math.radians(sinAngle))
+        
+        if(gVars.currentData.gps_coord.long < boundary.coordinate.long):
+            x_dist=-x_dist
+            
+        
+            
         return 0
