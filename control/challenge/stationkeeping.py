@@ -44,7 +44,7 @@ class StationKeeping(sailingtask.SailingTask):
             midDist5 = (standardcalc.distBetweenTwoCoords(boxCoords[2], boxCoords[3])/2.0)*math.sin(math.radians(cAngle3)) #gets x distance to middle point between BR and BL
             midDist6 = (standardcalc.distBetweenTwoCoords(boxCoords[2], boxCoords[3])/2.0)*math.cos(math.radians(cAngle3)) #gets y distance to middle point between BR and BL
             
-            cAngle4 = 90 - standardcalc.angleBetweenTwoCoords(boxCoords[3],boxCoords[0])
+            cAngle4 = 90 - abs(standardcalc.angleBetweenTwoCoords(boxCoords[3],boxCoords[0]))
             wayPntDist7 = 100.0*math.cos(math.radians(90 - cAngle4))
             wayPntDist8 = 100.0*math.sin(math.radians(90 - cAngle4))
             midDist7 = (standardcalc.distBetweenTwoCoords(boxCoords[3], boxCoords[0])/2.0)*math.cos(math.radians(cAngle4)) #gets x distance to middle point between BL and TL
@@ -65,13 +65,13 @@ class StationKeeping(sailingtask.SailingTask):
             midDist1 = (standardcalc.distBetweenTwoCoords(boxCoords[0], boxCoords[1])/2.0)*math.cos(math.radians(cAngle1)) #gets x distance to middle point between TL and TR
             midDist2 = (standardcalc.distBetweenTwoCoords(boxCoords[0], boxCoords[1])/2.0)*math.sin(math.radians(cAngle1)) #gets y distance to middle point between TL and TR
             
-            cAngle2 = 180 - standardcalc.angleBetweenTwoCoords(boxCoords[1],boxCoords[2])
+            cAngle2 = 180 - abs(standardcalc.angleBetweenTwoCoords(boxCoords[1],boxCoords[2]))
             wayPntDist3 = 100.0*math.sin(math.radians(90 - cAngle2)) #x
             wayPntDist4 = 100.0*math.cos(math.radians(90 - cAngle2)) #y
             midDist3 = (standardcalc.distBetweenTwoCoords(boxCoords[1], boxCoords[2])/2.0)*math.sin(math.radians(cAngle2)) #gets x distance to middle point between TR and BR
             midDist4 = (standardcalc.distBetweenTwoCoords(boxCoords[1], boxCoords[2])/2.0)*math.cos(math.radians(cAngle2)) #gets y distance to middle point between TT and BR
             
-            cAngle3 = 90 - math.fabs(standardcalc.angleBetweenTwoCoords(boxCoords[2],boxCoords[3]))
+            cAngle3 = 90 - abs(math.fabs(standardcalc.angleBetweenTwoCoords(boxCoords[2],boxCoords[3])))
             wayPntDist5 = 100.0*math.cos(math.radians(90 - cAngle3)) #x
             wayPntDist6 = 100.0*math.sin(math.radians(90 - cAngle3)) #y
             midDist5 = (standardcalc.distBetweenTwoCoords(boxCoords[2], boxCoords[3])/2.0)*math.cos(math.radians(cAngle3)) #gets x distance to middle point between BR and BL
@@ -88,12 +88,11 @@ class StationKeeping(sailingtask.SailingTask):
             botMidpnt = standardcalc.GPSDistAway(boxCoords[2], -midDist1, midDist2)
             leftMidpnt = standardcalc.GPSDistAway(boxCoords[3], midDist2, midDist1)
             
-            gVars.logger.info("Midpoint1: " + str(topMidpnt) + " Midpoint2: " + str(rightMidpnt) + " Midpoint3: " + str(botMidpnt) + " Midpoint4: " + str(leftMidpnt))
             wayPtCoords.append(standardcalc.GPSDistAway(topMidpnt, wayPntDist1, wayPntDist2))
             wayPtCoords.append(standardcalc.GPSDistAway(rightMidpnt, wayPntDist2, -wayPntDist1))
             wayPtCoords.append(standardcalc.GPSDistAway(botMidpnt, -wayPntDist1, -wayPntDist2))
             wayPtCoords.append(standardcalc.GPSDistAway(leftMidpnt, -wayPntDist2, wayPntDist1))
-            
+        gVars.logger.info("cAngle4: " + str(cAngle4) + "Midpoint1: " + str(topMidpnt) + " Midpoint2: " + str(rightMidpnt) + " Midpoint3: " + str(botMidpnt) + " Midpoint4: " + str(leftMidpnt))
         return wayPtCoords
     
     
@@ -157,19 +156,12 @@ class StationKeeping(sailingtask.SailingTask):
             boxDistList = self.getBoxDist(boxCoords)
             if (exiting == 0):
                 #gVars.logger.info("WPNSTUFF. Current waypoint lat: " + str(wayPtCoords[gVars.SKCurrentWaypnt].lat) + ". Current waypoint long: " + str(wayPtCoords[gVars.SKCurrentWaypnt].long) + ". current GPS lat: " + str(gVars.currentData.gps_coord.lat) + ". current GPS long: " + str(gVars.currentData.gps_coord.long))
-                if (((boxDistList[gVars.SKCurrentWaypnt] > 10) or (boxDistList[(gVars.SKCurrentWaypnt+2)%4] > 10)) and standardcalc.isWPNoGoAWA(gVars.currentData.awa,gVars.currentData.hog, wayPtCoords[gVars.SKCurrentWaypnt], gVars.currentData.sog, gVars.currentData.gps_coord)):
-                    gVars.logger.info("The boat is sailing upwind. Changing current waypoint.")
-                    gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 1) % 4
-                    gVars.logger.info("The current waypoint is " + str(gVars.SKCurrentWaypnt) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
-                    gVars.kill_flagPTP = 1
-                    thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], ))
-                    turning = 1
                 if (((boxDistList[gVars.SKCurrentWaypnt] < 10) or (boxDistList[(gVars.SKCurrentWaypnt+2)%4] < 10)) and (inTurnZone == 0)):
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
                     gVars.logger.info("The boat is too close to an edge. Changing current waypoint.")
                     gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 2) % 4
                     gVars.logger.info("The current waypoint is " + str(gVars.SKCurrentWaypnt) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
-                    gVars.kill_flagPTP = 1
+                    self.pointtopoint.killPointToPoint()
                     gVars.logger.info("Commencing gybe.")
                     if (gVars.currentData.awa < 0):
                         gVars.arduino.gybe(1)
@@ -178,6 +170,13 @@ class StationKeeping(sailingtask.SailingTask):
                     thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], ))
                     inTurnZone = 1
                     turning = 1
+                elif (((boxDistList[gVars.SKCurrentWaypnt] > 10) or (boxDistList[(gVars.SKCurrentWaypnt+2)%4] > 10)) and standardcalc.isWPNoGoAWA(gVars.currentData.awa,gVars.currentData.hog, wayPtCoords[gVars.SKCurrentWaypnt], gVars.currentData.sog, gVars.currentData.gps_coord)):
+                    gVars.logger.info("The boat is sailing upwind. Changing current waypoint.")
+                    gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 1) % 4
+                    gVars.logger.info("The current waypoint is " + str(gVars.SKCurrentWaypnt) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
+                    self.pointtopoint.killPointToPoint()
+                    thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], ))
+                    turning = 1
                 elif ((boxDistList[(gVars.SKCurrentWaypnt+2)%4] > 10) and (inTurnZone == 1)):
                     inTurnZone = 0
                     turning = 0
@@ -185,16 +184,16 @@ class StationKeeping(sailingtask.SailingTask):
                     spdList = standardcalc.changeSpdList(spdList)
                     meanSpd = standardcalc.meanOfList(spdList)
                     #gVars.logger.info("The mean speed of the boat is " + str(meanSpd) + " metres per second.")
-                if (boxDistList[gVars.SKCurrentWaypnt] >= meanSpd*(secLeft+2)):  #leeway of 2 seconds
+                if (boxDistList[gVars.SKCurrentWaypnt] >= meanSpd*(secLeft+1)):  #leeway of 1 seconds
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
                     gVars.logger.info("Distance left to travel 1:" + str(meanSpd*(secLeft+2)))
                     exiting = 1
                     gVars.logger.info("Station Keeping event is about to end. Exiting to current waypoint.")
-                elif (boxDistList[(gVars.SKCurrentWaypnt + 2) % 4] >= meanSpd*(secLeft+2+4) ): #leeway of 2 seconds, 4 seconds for gybe
+                elif (boxDistList[(gVars.SKCurrentWaypnt + 2) % 4] >= meanSpd*(secLeft+1+2) ): #leeway of 1 seconds, 2 seconds for gybe
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
-                    gVars.logger.info("Distance left to travel 2:" + str(meanSpd*(secLeft+2+4)))
+                    gVars.logger.info("Distance left to travel 2:" + str(meanSpd*(secLeft+2+2)))
                     gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 2) % 4
-                    gVars.kill_flagPTP = 1
+                    self.pointtopoint.killPointToPoint()
                     gVars.logger.info("Station Keeping event is about to end. Gybing and exiting to waypoint " + str(gVars.SKCurrentWaypnt))
                     if (gVars.currentData.awa < 0):
                         gVars.arduino.gybe(1)
@@ -210,5 +209,4 @@ class StationKeeping(sailingtask.SailingTask):
         gVars.SKMinLeft = 0
         gVars.SKSecLeft = 0
         gVars.SKMilliSecLeft = 0
-        gVars.kill_flagSK = 0
         gVars.SKCurrentWaypnt = None
