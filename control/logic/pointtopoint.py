@@ -42,7 +42,6 @@ class PointToPoint(sailingtask.SailingTask):
         
         while(self.end_flag == 0 and gVars.kill_flagPTP == 0):
             time.sleep(.1)
-            gVars.logger.info("End flag and kill flag OK")
             GPSCoord = gVars.currentData.gps_coord
             newappWindAng = gVars.currentData.awa
             cog = gVars.currentData.cog
