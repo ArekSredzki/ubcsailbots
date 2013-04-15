@@ -156,33 +156,17 @@ def angleBetweenTwoCoords(sourceCoord, destCoord):
         else:
             return 180
 
-#Determines whether the waypoint can be reached with our current coordinates
-#Returns 1 if waypoint can't be reached
-#Returns 0 if waypoint can be reached
-def isWPNoGo (AWA, hog, dest, sog, GPS):
-    if(sog < sVars.SPEED_AFFECTION_THRESHOLD):
-        if(hog-AWA-45 < angleBetweenTwoCoords(GPS,dest) and angleBetweenTwoCoords(GPS,dest) < hog-AWA+45):
-            return 1
-        else:
-            return 0
-    else:
-        TWA = getTrueWindAngle(AWA, sog)
-        if(hog-TWA-45 < angleBetweenTwoCoords(GPS,dest) and angleBetweenTwoCoords(GPS,dest) < hog-TWA+45):
-            return 1
-        else:
-            return 0
-
 #Determines whether the waypoint can be reached with our current coordinates using AWA
 #Returns 1 if waypoint can't be reached
 #Returns 0 if waypoint can be reached
 def isWPNoGoAWA (AWA, hog, dest, sog, GPS):
     if(sog < sVars.SPEED_AFFECTION_THRESHOLD):
-        if(hog-AWA-45 < angleBetweenTwoCoords(GPS,dest) and angleBetweenTwoCoords(GPS,dest) < hog-AWA+45):
+        if(boundTo180(hog-AWA-45) < angleBetweenTwoCoords(GPS,dest) and angleBetweenTwoCoords(GPS,dest) < boundTo180(hog-AWA+45)):
             return 1
         else:
             return 0
     else:
-        if(hog-AWA-34 < angleBetweenTwoCoords(GPS,dest) and angleBetweenTwoCoords(GPS,dest) < hog-AWA+34):
+        if(boundTo180(hog-AWA-34) < angleBetweenTwoCoords(GPS,dest) and angleBetweenTwoCoords(GPS,dest) < boundTo180(hog-AWA+34)):
             return 1
         else:
             return 0
