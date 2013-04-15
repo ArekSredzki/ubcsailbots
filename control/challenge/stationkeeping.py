@@ -27,28 +27,28 @@ class StationKeeping(sailingtask.SailingTask):
             wayPtCoords.append(standardcalc.GPSDistAway(boxCoords[3], -100.0, standardcalc.distBetweenTwoCoords(boxCoords[3], boxCoords[0])/2.0))
         elif (boxCoords[0].lat < boxCoords[1].lat):     #diamond or tilted left square
             cAngle1 = standardcalc.angleBetweenTwoCoords(boxCoords[0],boxCoords[1])
-            wayPntDist1 = 100.0*math.sin(90 - cAngle1) #x
-            wayPntDist2 = 100.0*math.cos(90 - cAngle1) #y
-            midDist1 = (standardcalc.distBetweenTwoCoords(boxCoords[0], boxCoords[1])/2.0)*math.sin(cAngle1) #gets x distance to middle point between TL and TR
-            midDist2 = (standardcalc.distBetweenTwoCoords(boxCoords[0], boxCoords[1])/2.0)*math.cos(cAngle1) #gets y distance to middle point between TL and TR
+            wayPntDist1 = 100.0*math.sin(math.radians(90 - cAngle1)) #x
+            wayPntDist2 = 100.0*math.cos(math.radians(90 - cAngle1)) #y
+            midDist1 = (standardcalc.distBetweenTwoCoords(boxCoords[0], boxCoords[1])/2.0)*math.sin(math.radians(cAngle1)) #gets x distance to middle point between TL and TR
+            midDist2 = (standardcalc.distBetweenTwoCoords(boxCoords[0], boxCoords[1])/2.0)*math.cos(math.radians(cAngle1)) #gets y distance to middle point between TL and TR
             
             cAngle2 = standardcalc.angleBetweenTwoCoords(boxCoords[1],boxCoords[2]) - 90
-            wayPntDist3 = 100.0*math.cos(90 - cAngle2) #x
-            wayPntDist4 = 100.0*math.sin(90 - cAngle2) #y
-            midDist3 = (standardcalc.distBetweenTwoCoords(boxCoords[1], boxCoords[2])/2.0)*math.cos(cAngle2) #gets x distance to middle point between TR and BR
-            midDist4 = (standardcalc.distBetweenTwoCoords(boxCoords[1], boxCoords[2])/2.0)*math.sin(cAngle2) #gets y distance to middle point between TT and BR
+            wayPntDist3 = 100.0*math.cos(math.radians(90 - cAngle2)) #x
+            wayPntDist4 = 100.0*math.sin(math.radians(90 - cAngle2)) #y
+            midDist3 = (standardcalc.distBetweenTwoCoords(boxCoords[1], boxCoords[2])/2.0)*math.cos(math.radians(cAngle2)) #gets x distance to middle point between TR and BR
+            midDist4 = (standardcalc.distBetweenTwoCoords(boxCoords[1], boxCoords[2])/2.0)*math.sin(math.radians(cAngle2)) #gets y distance to middle point between TT and BR
             
             cAngle3 = 180 - math.fabs(standardcalc.angleBetweenTwoCoords(boxCoords[2],boxCoords[3]))
-            wayPntDist5 = 100.0*math.sin(90 - cAngle3) #x
-            wayPntDist6 = 100.0*math.cos(90 - cAngle3) #y
-            midDist5 = (standardcalc.distBetweenTwoCoords(boxCoords[2], boxCoords[3])/2.0)*math.sin(cAngle3) #gets x distance to middle point between BR and BL
-            midDist6 = (standardcalc.distBetweenTwoCoords(boxCoords[2], boxCoords[3])/2.0)*math.cos(cAngle3) #gets y distance to middle point between BR and BL
+            wayPntDist5 = 100.0*math.sin(math.radians(90 - cAngle3)) #x
+            wayPntDist6 = 100.0*math.cos(math.radians(90 - cAngle3)) #y
+            midDist5 = (standardcalc.distBetweenTwoCoords(boxCoords[2], boxCoords[3])/2.0)*math.sin(math.radians(cAngle3)) #gets x distance to middle point between BR and BL
+            midDist6 = (standardcalc.distBetweenTwoCoords(boxCoords[2], boxCoords[3])/2.0)*math.cos(math.radians(cAngle3)) #gets y distance to middle point between BR and BL
             
             cAngle4 = 90 - standardcalc.angleBetweenTwoCoords(boxCoords[3],boxCoords[0])
-            wayPntDist7 = 100.0*math.cos(90 - cAngle4)
-            wayPntDist8 = 100.0*math.sin(90 - cAngle4)
-            midDist7 = (standardcalc.distBetweenTwoCoords(boxCoords[3], boxCoords[0])/2.0)*math.cos(cAngle4) #gets x distance to middle point between BL and TL
-            midDist8 = (standardcalc.distBetweenTwoCoords(boxCoords[3], boxCoords[0])/2.0)*math.sin(cAngle4) #gets y distance to middle point between BL and TL
+            wayPntDist7 = 100.0*math.cos(math.radians(90 - cAngle4))
+            wayPntDist8 = 100.0*math.sin(math.radians(90 - cAngle4))
+            midDist7 = (standardcalc.distBetweenTwoCoords(boxCoords[3], boxCoords[0])/2.0)*math.cos(math.radians(cAngle4)) #gets x distance to middle point between BL and TL
+            midDist8 = (standardcalc.distBetweenTwoCoords(boxCoords[3], boxCoords[0])/2.0)*math.sin(math.radians(cAngle4)) #gets y distance to middle point between BL and TL
             
             topMidpnt = standardcalc.GPSDistAway(boxCoords[0], midDist1, midDist2)
             rightMidpnt = standardcalc.GPSDistAway(boxCoords[1], midDist3, -midDist4)
@@ -60,33 +60,35 @@ class StationKeeping(sailingtask.SailingTask):
             wayPtCoords.append(standardcalc.GPSDistAway(leftMidpnt, -wayPntDist7, -wayPntDist8))
         else:    #right tilted square
             cAngle1 = standardcalc.angleBetweenTwoCoords(boxCoords[0],boxCoords[1]) - 90
-            wayPntDist1 = 100.0*math.cos(90 - cAngle1) #x
-            wayPntDist2 = 100.0*math.sin(90 - cAngle1) #y
-            midDist1 = (standardcalc.distBetweenTwoCoords(boxCoords[0], boxCoords[1])/2.0)*math.cos(cAngle1) #gets x distance to middle point between TL and TR
-            midDist2 = (standardcalc.distBetweenTwoCoords(boxCoords[0], boxCoords[1])/2.0)*math.sin(cAngle1) #gets y distance to middle point between TL and TR
+            wayPntDist1 = 100.0*math.cos(math.radians(90 - cAngle1)) #x
+            wayPntDist2 = 100.0*math.sin(math.radians(90 - cAngle1)) #y
+            midDist1 = (standardcalc.distBetweenTwoCoords(boxCoords[0], boxCoords[1])/2.0)*math.cos(math.radians(cAngle1)) #gets x distance to middle point between TL and TR
+            midDist2 = (standardcalc.distBetweenTwoCoords(boxCoords[0], boxCoords[1])/2.0)*math.sin(math.radians(cAngle1)) #gets y distance to middle point between TL and TR
             
             cAngle2 = 180 - standardcalc.angleBetweenTwoCoords(boxCoords[1],boxCoords[2])
-            wayPntDist3 = 100.0*math.sin(90 - cAngle2) #x
-            wayPntDist4 = 100.0*math.cos(90 - cAngle2) #y
-            midDist3 = (standardcalc.distBetweenTwoCoords(boxCoords[1], boxCoords[2])/2.0)*math.sin(cAngle2) #gets x distance to middle point between TR and BR
-            midDist4 = (standardcalc.distBetweenTwoCoords(boxCoords[1], boxCoords[2])/2.0)*math.cos(cAngle2) #gets y distance to middle point between TT and BR
+            wayPntDist3 = 100.0*math.sin(math.radians(90 - cAngle2)) #x
+            wayPntDist4 = 100.0*math.cos(math.radians(90 - cAngle2)) #y
+            midDist3 = (standardcalc.distBetweenTwoCoords(boxCoords[1], boxCoords[2])/2.0)*math.sin(math.radians(cAngle2)) #gets x distance to middle point between TR and BR
+            midDist4 = (standardcalc.distBetweenTwoCoords(boxCoords[1], boxCoords[2])/2.0)*math.cos(math.radians(cAngle2)) #gets y distance to middle point between TT and BR
             
             cAngle3 = 90 - math.fabs(standardcalc.angleBetweenTwoCoords(boxCoords[2],boxCoords[3]))
-            wayPntDist5 = 100.0*math.cos(90 - cAngle3) #x
-            wayPntDist6 = 100.0*math.sin(90 - cAngle3) #y
-            midDist5 = (standardcalc.distBetweenTwoCoords(boxCoords[2], boxCoords[3])/2.0)*math.cos(cAngle3) #gets x distance to middle point between BR and BL
-            midDist6 = (standardcalc.distBetweenTwoCoords(boxCoords[2], boxCoords[3])/2.0)*math.sin(cAngle3) #gets y distance to middle point between BR and BL
+            wayPntDist5 = 100.0*math.cos(math.radians(90 - cAngle3)) #x
+            wayPntDist6 = 100.0*math.sin(math.radians(90 - cAngle3)) #y
+            midDist5 = (standardcalc.distBetweenTwoCoords(boxCoords[2], boxCoords[3])/2.0)*math.cos(math.radians(cAngle3)) #gets x distance to middle point between BR and BL
+            midDist6 = (standardcalc.distBetweenTwoCoords(boxCoords[2], boxCoords[3])/2.0)*math.sin(math.radians(cAngle3)) #gets y distance to middle point between BR and BL
             
             cAngle4 = standardcalc.angleBetweenTwoCoords(boxCoords[3],boxCoords[0])
-            wayPntDist7 = 100.0*math.sin(90 - cAngle4)
-            wayPntDist8 = 100.0*math.cos(90 - cAngle4)
-            midDist7 = (standardcalc.distBetweenTwoCoords(boxCoords[3], boxCoords[0])/2.0)*math.sin(cAngle4) #gets x distance to middle point between BL and TL
-            midDist8 = (standardcalc.distBetweenTwoCoords(boxCoords[3], boxCoords[0])/2.0)*math.cos(cAngle4) #gets y distance to middle point between BL and TL
+            wayPntDist7 = 100.0*math.sin(math.radians(90 - cAngle4))
+            wayPntDist8 = 100.0*math.cos(math.radians(90 - cAngle4))
+            midDist7 = (standardcalc.distBetweenTwoCoords(boxCoords[3], boxCoords[0])/2.0)*math.sin(math.radians(cAngle4)) #gets x distance to middle point between BL and TL
+            midDist8 = (standardcalc.distBetweenTwoCoords(boxCoords[3], boxCoords[0])/2.0)*math.cos(math.radians(cAngle4)) #gets y distance to middle point between BL and TL
             
             topMidpnt = standardcalc.GPSDistAway(boxCoords[0], midDist1, -midDist2)
             rightMidpnt = standardcalc.GPSDistAway(boxCoords[1], -midDist2, -midDist1)
             botMidpnt = standardcalc.GPSDistAway(boxCoords[2], -midDist1, midDist2)
             leftMidpnt = standardcalc.GPSDistAway(boxCoords[3], midDist2, midDist1)
+            
+            gVars.logger.info("Midpoint1: " + str(topMidpnt) + " Midpoint2: " + str(rightMidpnt) + " Midpoint3: " + str(botMidpnt) + " Midpoint4: " + str(leftMidpnt))
             wayPtCoords.append(standardcalc.GPSDistAway(topMidpnt, wayPntDist1, wayPntDist2))
             wayPtCoords.append(standardcalc.GPSDistAway(rightMidpnt, wayPntDist2, -wayPntDist1))
             wayPtCoords.append(standardcalc.GPSDistAway(botMidpnt, -wayPntDist1, -wayPntDist2))

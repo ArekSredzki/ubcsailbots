@@ -64,7 +64,7 @@ def setBoxCoords(tL, tR, bL, bR): #sets coords of box so that topleft is most we
             else:
                 coordList.append(secondCoordHalf[1])
                 coordList.append(firstCoordHalf[1])
-    
+    #gVars.logger.info("Mergesort: " + str(coordList[0]) + " , " + str(coordList[1]) + " , " + str(coordList[2]) + " , " + str(coordList[3]) )
     if (coordList[0].lat == coordList[1].lat):      #square
         if (coordList[0].long < coordList[1].long):
             finalCoordList.append(coordList[0])
@@ -94,6 +94,7 @@ def setBoxCoords(tL, tR, bL, bR): #sets coords of box so that topleft is most we
         finalCoordList.append(coordList[1])
         finalCoordList.append(coordList[3])
         finalCoordList.append(coordList[2])
+    #gVars.logger.info("TL: " + str(finalCoordList[0]) + " TR: " + str(finalCoordList[1]) + " BR: " + str(finalCoordList[2]) + " BL: " + str(finalCoordList[3]) )
     return finalCoordList
 
 
