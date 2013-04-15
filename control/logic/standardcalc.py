@@ -290,14 +290,14 @@ def findCosLawAngle(a, b, c):  #cos law: c^2 = a^2 + b^2 - 2*a*b*cos(theta), ret
 
 # Bounds angle to -180 to 180
 def boundTo180(angle):
-    if (angle < -180):
+    if (angle <= -180):
         return angle+360
     elif (angle > 180):
         return angle-360
     else:
         return angle
     
-def SquareRT(a,posFlag=0):
+def SquareRT(a,posFlag):
     if(posFlag==0):
         return -math.sqrt(a)
     else:
@@ -311,7 +311,7 @@ def isAngleBetween(firstAngle, middleAngle, secondAngle):
     if(secondAngle < firstAngle):
         secondAngle = secondAngle + 360
     
-    while(middleAngle < firstAngle):
+    if(middleAngle < firstAngle):
         middleAngle = middleAngle + 360
         
     if(middleAngle > secondAngle):
