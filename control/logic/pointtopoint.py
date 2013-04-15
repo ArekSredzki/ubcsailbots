@@ -100,7 +100,7 @@ class PointToPoint(sailingtask.SailingTask):
                             
                             if( len(gVars.boundaries) > 0 ):
                                 for boundary in gVars.boundaries:
-                                    if(standardcalc.distBetweenTwoCoords(boundary, GPSCoord) <= boundary.radius):
+                                    if(standardcalc.distBetweenTwoCoords(boundary.coordinate, GPSCoord) <= boundary.radius):
                                         gVars.logger.info("Tacked from boundary")
                                         arduino.tack(gVars.currentColumn,tackDirection)
                                         gVars.tacked_flag = 1
@@ -149,7 +149,7 @@ class PointToPoint(sailingtask.SailingTask):
                                 
                             if( len(gVars.boundaries) > 0 ):
                                 for boundary in gVars.boundaries:
-                                    if(standardcalc.distBetweenTwoCoords(boundary, GPSCoord) <= boundary.radius):
+                                    if(standardcalc.distBetweenTwoCoords(boundary.coordinate, GPSCoord) <= boundary.radius):
                                         self.sailFromBoundary(gVars.boundaries.index(boundary))
                                         gVars.logger.info("Tacked from boundary")
                                         arduino.tack(gVars.currentColumn,tackDirection)
@@ -176,6 +176,12 @@ class PointToPoint(sailingtask.SailingTask):
                         oldColumn = gVars.currentColumn
                         tackSailing = newTackSailing
                         oldAngleBetweenCoords = angleBetweenCoords
+                        
+                    if( len(gVars.boundaries) > 0 ):
+                        for boundary in gVars.boundaries:
+                            if(standardcalc.distBetweenTwoCoords(boundary.coordinate, GPSCoord) <= boundary.radius):
+                                gVars.logger.info("Tacked from boundary")
+                                arduino.tack(gVars.currentColumn,tackDirection)
                 
             else:
                 self.end_flag = 1
@@ -220,4 +226,7 @@ class PointToPoint(sailingtask.SailingTask):
             return 0
         
     def sailFromBoundary(self, boundaryNumber):
+        boundary = gVars.boundaries[boundaryNumber]
+        if(gVars.currentData.gps_coord.lat > boundary.coordinate):
+            pass
         return 0

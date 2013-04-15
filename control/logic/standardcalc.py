@@ -175,14 +175,14 @@ def isWPNoGo (AWA, hog, dest, sog, GPS):
 #Determines whether the waypoint can be reached with our current coordinates using AWA
 #Returns 1 if waypoint can't be reached
 #Returns 0 if waypoint can be reached
-def isWPNoGoAWA (AWA, hog, dest, sog, GPS):
+def isWPNoGoAWA (AWA, hog, dest, sog, GPS):    
     if(sog < sVars.SPEED_AFFECTION_THRESHOLD):
-        if(hog-AWA-45 < angleBetweenTwoCoords(GPS,dest) and angleBetweenTwoCoords(GPS,dest) < hog-AWA+45):
+        if(isAngleBetween(hog-AWA-45,angleBetweenTwoCoords(GPS,dest),hog-AWA+45)):
             return 1
         else:
             return 0
     else:
-        if(hog-AWA-34 < angleBetweenTwoCoords(GPS,dest) and angleBetweenTwoCoords(GPS,dest) < hog-AWA+34):
+        if(isAngleBetween(hog-AWA-34,angleBetweenTwoCoords(GPS,dest),hog-AWA+34)):
             return 1
         else:
             return 0
@@ -318,3 +318,19 @@ def SquareRT(a,posFlag=0):
         return -math.sqrt(a)
     else:
         return math.sqrt(a)
+    
+def isAngleBetween(firstAngle, middleAngle, secondAngle):
+    firstAngle = boundTo180(firstAngle)
+    middleAngle = boundTo180(middleAngle)
+    secondAngle = boundTo180(secondAngle)
+    
+    if(secondAngle < firstAngle):
+        secondAngle = secondAngle + 360
+    
+    while(middleAngle < firstAngle):
+        middleAngle = middleAngle + 360
+        
+    if(middleAngle > secondAngle):
+        return 0
+    else:
+        return 1
