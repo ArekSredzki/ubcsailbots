@@ -130,7 +130,7 @@ class arduino:
         if self.previousx is None:
             self.previousx = x
         
-        awa = math.atan(y/x)
+        '''awa = math.atan(y/x)
 
         if(math.copysign(self.previousx, x) != self.previousx or self.flipflag): 
             if (not self.flipflag):
@@ -152,8 +152,8 @@ class arduino:
             awa -= 360
         elif (awa < -180):
             awa += 360
-        
-        self.ardArray[sVars.AWA_INDEX] = awa
+        '''
+        self.ardArray[sVars.AWA_INDEX] = 45
         self.previousx = x
         
         # Calculation for change in GPS Coordinate

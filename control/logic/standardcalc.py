@@ -110,7 +110,7 @@ def distBetweenTwoCoords(coord1, coord2):
 
 #Returns the angle in degrees
 def angleBetweenTwoCoords(sourceCoord, destCoord):
-    GPSCoord = datatypes.GPSCoordinate
+    GPSCoord = datatypes.GPSCoordinate()
     
     if(sourceCoord.lat > destCoord.lat):
         GPSCoord.lat = sourceCoord.lat
@@ -132,6 +132,9 @@ def angleBetweenTwoCoords(sourceCoord, destCoord):
     
     distBtwnCoords = distBetweenTwoCoords(sourceCoord, destCoord)
     distSin = distBetweenTwoCoords(destCoord, GPSCoord)
+    
+    gVars.logger.info("source: "+ str(sourceCoord) + " dest: " + str(destCoord) + " GPS: " + str(GPSCoord))
+    gVars.logger.info("distSin: "+ str(distSin) + " distBtwnCoords: " + str(distBtwnCoords))
     
     angle = math.asin(distSin/distBtwnCoords)*180/math.pi
     
@@ -299,7 +302,7 @@ def vectorToDegrees(x, y):
 def findCosLawAngle(a, b, c):  #cos law: c^2 = a^2 + b^2 - 2*a*b*cos(theta):
     if ((a < 1) or (b < 1) or (c < 1)):
         return 0
-    return math.acos((math.pow(a, 2) + math.pow(b, 2) - math.pow(c, 2)) / (2*a*b))
+    return math.degrees(math.acos((math.pow(a, 2) + math.pow(b, 2) - math.pow(c, 2)) / (2*a*b)))
 
 # Bounds angle to -180 to 180
 def boundTo180(angle):
