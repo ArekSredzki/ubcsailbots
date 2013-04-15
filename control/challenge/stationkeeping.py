@@ -111,17 +111,17 @@ class StationKeeping(sailingtask.SailingTask):
         BR2BL = standardcalc.distBetweenTwoCoords(boxCoords[2], boxCoords[3]) #bottom right to bottom left
         BL2TL = standardcalc.distBetweenTwoCoords(boxCoords[3], boxCoords[0]) #bottom left to top left
             
-        gVars.logger.info("TL2Boat: " + str(TL2Boat)+ " TR2Boat: " + str(TR2Boat)+ " BR2Boat: " + str(BR2Boat)+ " BL2Boat: " + str(BL2Boat)+ " TL2TR: " + str(TL2TR)+ " TR2BR: " + str(TR2BR)+ " BR2BL: " + str(BR2BL)+ " BL2TL: " + str(BL2TL))
+        #gVars.logger.info("TL2Boat: " + str(TL2Boat)+ " TR2Boat: " + str(TR2Boat)+ " BR2Boat: " + str(BR2Boat)+ " BL2Boat: " + str(BL2Boat)+ " TL2TR: " + str(TL2TR)+ " TR2BR: " + str(TR2BR)+ " BR2BL: " + str(BR2BL)+ " BL2TL: " + str(BL2TL))
             
         topLeftAngle = standardcalc.findCosLawAngle(TL2TR, TL2Boat, TR2Boat)
         topRightAngle = standardcalc.findCosLawAngle(TR2BR, TR2Boat, BR2Boat)
         botRightAngle = standardcalc.findCosLawAngle(BR2BL, BR2Boat, BL2Boat)
         botLeftAngle = standardcalc.findCosLawAngle(BL2TL, BL2Boat, TL2Boat)
-            
-        boxDistList.append( TL2Boat * math.sin(topLeftAngle) )  #top dist
-        boxDistList.append( TR2Boat * math.sin(topRightAngle) )  #right dist
-        boxDistList.append( BR2Boat * math.sin(botRightAngle) ) #bottom dist
-        boxDistList.append( BL2Boat * math.sin(botLeftAngle) ) #left dist
+        
+        boxDistList.append( math.fabs(TL2Boat * math.sin(topLeftAngle)) )  #top dist
+        boxDistList.append( math.fabs(TR2Boat * math.sin(topRightAngle)) )  #right dist
+        boxDistList.append( math.fabs(BR2Boat * math.sin(botRightAngle)) ) #bottom dist
+        boxDistList.append( math.fabs(BL2Boat * math.sin(botLeftAngle)) ) #left dist
         return boxDistList
     
     def run(self, topLeftWaypnt, topRightWaypnt, botLeftWaypnt, botRightWaypnt):
@@ -151,7 +151,7 @@ class StationKeeping(sailingtask.SailingTask):
             self.SKTimer()
             boxDistList = self.getBoxDist(boxCoords)
             if (exiting == 0):
-                gVars.logger.info("WPNSTUFF. Current waypoint lat: " + str(wayPtCoords[gVars.SKCurrentWaypnt].lat) + ". Current waypoint long: " + str(wayPtCoords[gVars.SKCurrentWaypnt].long) + ". current GPS lat: " + str(gVars.currentData.gps_coord.lat) + ". current GPS long: " + str(gVars.currentData.gps_coord.long))
+                #gVars.logger.info("WPNSTUFF. Current waypoint lat: " + str(wayPtCoords[gVars.SKCurrentWaypnt].lat) + ". Current waypoint long: " + str(wayPtCoords[gVars.SKCurrentWaypnt].long) + ". current GPS lat: " + str(gVars.currentData.gps_coord.lat) + ". current GPS long: " + str(gVars.currentData.gps_coord.long))
                 if (standardcalc.isWPNoGoAWA(gVars.currentData.awa,gVars.currentData.hog, wayPtCoords[gVars.SKCurrentWaypnt], gVars.currentData.sog, gVars.currentData.gps_coord)):
                     gVars.logger.info("The boat is sailing upwind. Changing current waypoint.")
                     gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 1) % 4
@@ -175,7 +175,7 @@ class StationKeeping(sailingtask.SailingTask):
                 if (turning == 0):
                     spdList = standardcalc.changeSpdList(spdList)
                     meanSpd = standardcalc.meanOfList(spdList)
-                    gVars.logger.info("The mean speed of the boat is " + str(meanSpd) + " metres per second.")
+                    #gVars.logger.info("The mean speed of the boat is " + str(meanSpd) + " metres per second.")
                 if (boxDistList[gVars.SKCurrentWaypnt] >= meanSpd*(secLeft+2)):  #leeway of 2 seconds
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
                     gVars.logger.info("Distance left to travel 1:" + str(meanSpd*(secLeft+2)))
