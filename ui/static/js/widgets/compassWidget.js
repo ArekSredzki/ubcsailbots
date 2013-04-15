@@ -203,7 +203,7 @@ function CompassWidget() {
 	    this.setWindDirection(windHeading);
 	    
 	    // Update boat heading on text display
-	    textBoatHeading.setText('Boat Heading: ' + boatHeading + ' degrees');
+	    textBoatHeading.setText('Boat Heading: ' + boatHeading.toFixed(0) + ' degrees');
 	    textLayer.draw();
 	}
 	
