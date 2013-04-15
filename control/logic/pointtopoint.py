@@ -38,7 +38,7 @@ class PointToPoint(sailingtask.SailingTask):
         oldColumn = 0
         oldAngleBetweenCoords = 0
         tackDirection = 0
-        printed = 0
+        printedStraight = 0
         gVars.logger.info("Started point to pointAWA")
         
         while(self.end_flag == 0 and gVars.kill_flagPTP == 0):
@@ -49,7 +49,7 @@ class PointToPoint(sailingtask.SailingTask):
             hog = gVars.currentData.hog
             sog = gVars.currentData.sog * 100
             angleBetweenCoords = standardcalc.angleBetweenTwoCoords(GPSCoord,Dest)
-            printed = 0        
+            printedTack = 0        
             
             if(standardcalc.distBetweenTwoCoords(GPSCoord, Dest) > ACCEPTANCE_DISTANCE):
                 gVars.logger.info("Boat not at point, continuing code")
@@ -60,6 +60,7 @@ class PointToPoint(sailingtask.SailingTask):
                                     
                 if(standardcalc.isWPNoGoAWA(newappWindAng,hog,Dest,sog,GPSCoord)):
                     gVars.logger.info("Point cannot be reached directly")
+                    printedStraight = 0
                     #Trying to determine whether 45 degrees clockwise or counter clockwise of TWA wrt North is closer to current heading
                     #This means we are trying to determine whether hog-TWA-45 or hog-TWA+45 (both using TWA wrt North) is closer to our current heading.
                     #Since those values give us TWA wrt to north, we need to subtract hog from them to get TWA wrt to our heading and figure out which one has a smaller value.
@@ -73,9 +74,9 @@ class PointToPoint(sailingtask.SailingTask):
                         while(self.doWeStillWantToTack(hog,GPSCoord,Dest)):
                             time.sleep(.3)
                             
-                            if(printed == 0):
+                            if(printedTack == 0):
                                 gVars.logger.info("On starboard tack")
-                                printed = 1
+                                printedTack = 1
                             
                             gVars.tacked_flag = 0
                             GPSCoord = gVars.currentData.gps_coord
@@ -120,9 +121,9 @@ class PointToPoint(sailingtask.SailingTask):
                         while(self.doWeStillWantToTack(hog,GPSCoord,Dest)):
                             time.sleep(.3)
                             
-                            if(printed == 0):
+                            if(printedTack == 0):
                                 gVars.logger.info("On port tack")
-                                printed = 1
+                                printedTack = 1
 
                             gVars.tacked_flag = 0
                             GPSCoord = gVars.currentData.gps_coord
@@ -164,7 +165,9 @@ class PointToPoint(sailingtask.SailingTask):
                         gVars.logger.info("Tacked from 80 degrees")
                         
                 else:
-                    gVars.logger.info("Sailing straight to point")
+                    if(printedStraight == 0):
+                        gVars.logger.info("Sailing straight to point")
+                        printedStraight = 1
                     newTackSailing = 3
                     if(self.isThereChangeToAWAorWeatherOrModeOrAngle(appWindAng,newappWindAng,oldColumn,tackSailing,newTackSailing,oldAngleBetweenCoords, angleBetweenCoords)):
                         gVars.logger.info("Changing sheets and rudder")
