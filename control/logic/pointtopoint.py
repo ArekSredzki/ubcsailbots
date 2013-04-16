@@ -119,7 +119,7 @@ class PointToPoint(sailingtask.SailingTask):
                          
                         if(gVars.tacked_flag == 0):                                                                
                             arduino.tack(gVars.currentColumn,tackDirection)
-                        gVars.logger.info("Tacked from 80 degrees")
+                            gVars.logger.info("Tacked from 80 degrees")
                         
                     elif(self.portTackWanted(newappWindAng,initialTack)):
                         newTackSailing = 2
@@ -174,7 +174,7 @@ class PointToPoint(sailingtask.SailingTask):
                         
                         if(gVars.tacked_flag == 0):                                                                
                             arduino.tack(gVars.currentColumn,tackDirection)
-                        gVars.logger.info("Tacked from 80 degrees")
+                            gVars.logger.info("Tacked from 80 degrees")
                         
                 else:                    
                     if(gVars.kill_flagPTP == 1):
