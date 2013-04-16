@@ -81,7 +81,7 @@ class arduino:
         wr = "TACK,{w},{t}".format(w=weather, t=tack)
         print wr
         self.ser.write(wr)
-        time.sleep(.1)
+        time.sleep(1)
      
     # Calls gybe on the arduino
     def gybe(self, tack):
