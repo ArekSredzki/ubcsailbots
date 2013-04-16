@@ -211,7 +211,8 @@ def getWeatherSetting(awa, sog):
     minIndex = 0
     minNum = 500
     SOGList = parsing.parse(path.join(path.dirname(__file__), 'SOGarray'))
-    SOGrow = SOGList[abs(int(awa))]
+    index = boundTo180(awa)
+    SOGrow = SOGList[abs(int(index))]
     
     for i in range(len(SOGrow)):
         if(abs(SOGrow[i]-sog)<minNum):

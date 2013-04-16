@@ -95,7 +95,7 @@ class PointToPoint(sailingtask.SailingTask):
                             standardcalc.getWeatherSetting(newappWindAng, sog)                            
                             
                             if(self.isThereChangeToAWAorWeatherOrMode(appWindAng,newappWindAng,oldColumn,tackSailing,newTackSailing) ):
-                                gVars.logger.info("Changing sheets and rudder")
+                                #gVars.logger.info("Changing sheets and rudder")
                                 arduino.adjust_sheets(sheetList[abs(int(newappWindAng))][gVars.currentColumn])
                                 arduino.steer(self.AWA_METHOD,-self.TACKING_ANGLE)
                                 appWindAng = newappWindAng
@@ -148,7 +148,7 @@ class PointToPoint(sailingtask.SailingTask):
                             #print ("TWA is: " + str(newTWA))
                             
                             if(self.isThereChangeToAWAorWeatherOrMode(appWindAng,newappWindAng,oldColumn,tackSailing,newTackSailing)):
-                                gVars.logger.info("Changing sheets and rudder")
+                                #gVars.logger.info("Changing sheets and rudder")
                                 arduino.adjust_sheets(sheetList[abs(int(newappWindAng))][gVars.currentColumn])
                                 arduino.steer(self.AWA_METHOD,self.TACKING_ANGLE)
                                 appWindAng = newappWindAng
@@ -186,7 +186,7 @@ class PointToPoint(sailingtask.SailingTask):
                         printedStraight = 1
                     newTackSailing = 3
                     if(self.isThereChangeToAWAorWeatherOrModeOrAngle(appWindAng,newappWindAng,oldColumn,tackSailing,newTackSailing,oldAngleBetweenCoords, angleBetweenCoords)):
-                        gVars.logger.info("Changing sheets and rudder")
+                        #gVars.logger.info("Changing sheets and rudder")
                         arduino.adjust_sheets(sheetList[abs(int(newappWindAng))][gVars.currentColumn])
                         arduino.steer(self.COMPASS_METHOD,standardcalc.angleBetweenTwoCoords(GPSCoord,Dest))
                         appWindAng = newappWindAng
