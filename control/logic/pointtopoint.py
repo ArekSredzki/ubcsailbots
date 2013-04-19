@@ -34,7 +34,6 @@ class PointToPoint(sailingtask.SailingTask):
         tackSailing = 0
         newTackSailing = 0
         gVars.kill_flagPTP = 0
-        self.end_flag = 0
         arduino = gVars.arduino
         appWindAng = 0
         oldColumn = 0
@@ -43,7 +42,7 @@ class PointToPoint(sailingtask.SailingTask):
         printedStraight = 0
         gVars.logger.info("Started point to pointAWA")
         
-        while(self.end_flag == 0 and gVars.kill_flagPTP == 0):
+        while(gVars.kill_flagPTP == 0):
             time.sleep(.1)
             GPSCoord = gVars.currentData.gps_coord
             newappWindAng = gVars.currentData.awa
@@ -53,10 +52,9 @@ class PointToPoint(sailingtask.SailingTask):
             angleBetweenCoords = standardcalc.angleBetweenTwoCoords(GPSCoord,Dest)
             printedTack = 0        
             
-            if(standardcalc.distBetweenTwoCoords(GPSCoord, Dest) > ACCEPTANCE_DISTANCE):
-                if(gVars.kill_flagPTP == 1):
-                    gVars.logger.info("PointToPoint is killed")
-                    return 0
+            if(standardcalc.distBetweenTwoCoords(GPSCoord, Dest) < ACCEPTANCE_DISTANCE):
+              break
+            else:
                 #This if statement determines the sailing method we are going to use based on apparent wind angle
                 standardcalc.getWeatherSetting(newappWindAng,sog)
                     #print ("Hit else statement")
@@ -76,8 +74,7 @@ class PointToPoint(sailingtask.SailingTask):
                         gVars.tacked_flag = 0
                         while(self.doWeStillWantToTack(hog,GPSCoord,Dest)):
                             if(gVars.kill_flagPTP == 1):
-                                gVars.logger.info("PointToPoint is killed")
-                                return 0
+                              break
                             
                             time.sleep(.1)
                             
@@ -127,8 +124,7 @@ class PointToPoint(sailingtask.SailingTask):
                         gVars.tacked_flag = 0
                         while(self.doWeStillWantToTack(hog,GPSCoord,Dest)):
                             if(gVars.kill_flagPTP == 1):
-                                gVars.logger.info("PointToPoint is killed")
-                                return 0
+                              break
                             
                             time.sleep(.1)
                             
@@ -177,10 +173,6 @@ class PointToPoint(sailingtask.SailingTask):
                             gVars.logger.info("Tacked from 80 degrees")
                         
                 else:                    
-                    if(gVars.kill_flagPTP == 1):
-                        gVars.logger.info("PointToPoint is killed")
-                        return 0
-                            
                     if(printedStraight == 0):
                         gVars.logger.info("Sailing straight to point")
                         printedStraight = 1
@@ -199,14 +191,12 @@ class PointToPoint(sailingtask.SailingTask):
                             if(standardcalc.distBetweenTwoCoords(boundary.coordinate, GPSCoord) <= boundary.radius):
                                 gVars.logger.info("Tacked from boundary")
                                 arduino.tack(gVars.currentColumn,tackDirection)
-                
-            else:
-                self.end_flag = 1
-                gVars.logger.info("Finished Point to Point")
-                
+
         if(gVars.kill_flagPTP == 1):
-                gVars.logger.info("PointToPoint is killed")
-        
+          gVars.logger.info("PointToPoint is killed")
+        else:
+          gVars.logger.info("Finished Point to Point")
+
         return 0
     
     def killPointToPoint(self):
