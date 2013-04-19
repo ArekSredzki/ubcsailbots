@@ -44,7 +44,7 @@ class PointToPoint(sailingtask.SailingTask):
         self.Dest = Dest
         self.updateData()
         
-        while(self.distanceToWaypoint < ACCEPTANCE_DISTANCE) and gVars.kill_flagPTP == 0:
+        while(self.distanceToWaypoint > ACCEPTANCE_DISTANCE) and gVars.kill_flagPTP == 0:
             time.sleep(.1)
             self.updateData()
 
@@ -67,7 +67,7 @@ class PointToPoint(sailingtask.SailingTask):
                     gVars.tacked_flag = 0
                     gVars.logger.info("On starboard tack")
 
-                    while(self.doWeStillWantToTack(self.Dest)):
+                    while(self.doWeStillWantToTack()):
                         if(gVars.kill_flagPTP == 1):
                           break
                         
@@ -76,7 +76,7 @@ class PointToPoint(sailingtask.SailingTask):
                         self.updateData()
 
                                                
-                        standardcalc.getWeatherSetting(self.sog)                            
+                        standardcalc.getWeatherSetting(self.newAWA,self.sog)                            
                         
                         if(self.isThereChangeToAWAorWeatherOrMode() ):
                             #gVars.logger.info("Changing sheets and rudder")
@@ -105,7 +105,7 @@ class PointToPoint(sailingtask.SailingTask):
                     gVars.tacked_flag = 0
                     gVars.logger.info("On port tack")
 
-                    while(self.doWeStillWantToTack(self.Dest)):
+                    while(self.doWeStillWantToTack()):
                         if(gVars.kill_flagPTP == 1):
                           break
                         
@@ -208,7 +208,6 @@ class PointToPoint(sailingtask.SailingTask):
           
     def checkBoundaries(self):
       for boundary in gVars.boundaries:
-        gVars.logger.info("wow")
         if(standardcalc.distBetweenTwoCoords(boundary.coordinate, self.GPSCoord) <= boundary.radius):
           self.sailFromBoundary(boundary)
           break
