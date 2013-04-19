@@ -13,17 +13,18 @@ from control import sailingtask
 import math
 import time
 
+
 class PointToPoint(sailingtask.SailingTask):
-    
+    #constants
+    COMPASS_METHOD = 0
+    COG_METHOD = 1
+    AWA_METHOD = 2
+    TACKING_ANGLE = 34
+    ANGLE_CHANGE_THRESHOLD = 5
+
     def __init__(self):
         gVars.logger.info("New Point to Point object")
-        self.COMPASS_METHOD = 0
-        self.COG_METHOD = 1
-        self.AWA_METHOD = 2
-    
-        self.TACKING_ANGLE = 34
-        
-        self.ANGLE_CHANGE_THRESHOLD = 5
+
         
     # --- Point to Point ---
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
