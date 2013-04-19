@@ -173,7 +173,7 @@ class PointToPoint(sailingtask.SailingTask):
             return 0
             
     def portTackWanted(self,initialTack):
-        if( (abs(self.newAWA-self.TACKING_ANGLE)>=abs(-self.newAWA+self.TACKING_ANGLE) and initialTack is None) or initialTack == 0 ):
+        if( (abs(-self.AWA-self.TACKING_ANGLE)>=abs(-self.AWA+self.TACKING_ANGLE) and initialTack is None) or initialTack == 0 ):
             return 1
         else:
             return 0
