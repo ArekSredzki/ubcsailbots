@@ -47,11 +47,6 @@ class PointToPoint(sailingtask.SailingTask):
         while(self.distanceToWaypoint > ACCEPTANCE_DISTANCE) and gVars.kill_flagPTP == 0:
             time.sleep(.1)
             self.updateData()
-
-            #This if statement determines the sailing method we are going to use based on apparent wind angle
-            standardcalc.getWeatherSetting(self.newAWA,self.sog)
-                #print ("Hit else statement")
-                #print ("TWA is: " + str(gVars.TrueWindAngle))
    
             if(standardcalc.isWPNoGoAWA(self.AWA, self.hog, self.Dest,self.sog,self.GPSCoord)):
                 self.printedStraight = 0
@@ -74,10 +69,7 @@ class PointToPoint(sailingtask.SailingTask):
                         time.sleep(.1)
                         gVars.tacked_flag = 0
                         self.updateData()
-
-                                               
-                        standardcalc.getWeatherSetting(self.newAWA,self.sog)                            
-                        
+                                                   
                         if(self.isThereChangeToAWAorWeatherOrMode() ):
                             #gVars.logger.info("Changing sheets and rudder")
                             gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.newAWA))][gVars.currentColumn])
@@ -113,10 +105,6 @@ class PointToPoint(sailingtask.SailingTask):
                         
                         gVars.tacked_flag = 0
                         self.updateData()
-
-                        standardcalc.getWeatherSetting(self.newAWA,self.sog)
-                        #TWA = abs(int(TWA))
-                        #print ("TWA is: " + str(newTWA))
                         
                         if(self.isThereChangeToAWAorWeatherOrMode()):
                             #gVars.logger.info("Changing sheets and rudder")
@@ -172,6 +160,8 @@ class PointToPoint(sailingtask.SailingTask):
         self.hog = gVars.currentData.hog
         self.sog = gVars.currentData.sog * 100
         self.angleBetweenCoords = standardcalc.angleBetweenTwoCoords(self.GPSCoord,self.Dest)
+        standardcalc.getWeatherSetting(self.newAWA,self.sog)
+
             
     def killPointToPoint(self):
         gVars.kill_flagPTP = 1
