@@ -63,9 +63,6 @@ class PointToPoint(sailingtask.SailingTask):
                     gVars.logger.info("On starboard tack")
 
                     while(self.doWeStillWantToTack()):
-                        if(gVars.kill_flagPTP == 1):
-                          break
-                        
                         time.sleep(.1)
                         gVars.tacked_flag = 0
                         self.updateData()
@@ -97,12 +94,8 @@ class PointToPoint(sailingtask.SailingTask):
                     gVars.tacked_flag = 0
                     gVars.logger.info("On port tack")
 
-                    while(self.doWeStillWantToTack()):
-                        if(gVars.kill_flagPTP == 1):
-                          break
-                        
-                        time.sleep(.1)
-                        
+                    while(self.doWeStillWantToTack()):               
+                        time.sleep(.1)               
                         gVars.tacked_flag = 0
                         self.updateData()
                         

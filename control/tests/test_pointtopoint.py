@@ -37,3 +37,6 @@ class TestPointToPoint(unittest.TestCase):
     self.assertTrue(self.p2p.portTackWanted(initialTack))
     self.p2p.AWA = 0
     self.assertTrue(self.p2p.portTackWanted(initialTack))
+
+  def testdoWeStillWantToTack(self):
+    
