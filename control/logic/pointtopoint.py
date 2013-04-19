@@ -46,7 +46,6 @@ class PointToPoint(sailingtask.SailingTask):
         while(gVars.kill_flagPTP == 0):
             time.sleep(.1)
             self.updateData()
-            printedTack = 0        
             
             if(standardcalc.distBetweenTwoCoords(self.GPSCoord, self.Dest) < ACCEPTANCE_DISTANCE):
               break
@@ -68,16 +67,13 @@ class PointToPoint(sailingtask.SailingTask):
                         self.newTackSailing = 1
                         initialTack = None
                         gVars.tacked_flag = 0
+                        gVars.logger.info("On starboard tack")
+
                         while(self.doWeStillWantToTack(self.Dest)):
                             if(gVars.kill_flagPTP == 1):
                               break
                             
                             time.sleep(.1)
-                            
-                            if(printedTack == 0):
-                                gVars.logger.info("On starboard tack")
-                                printedTack = 1
-                            
                             gVars.tacked_flag = 0
                             self.updateData()
 
@@ -109,16 +105,14 @@ class PointToPoint(sailingtask.SailingTask):
                         self.newTackSailing = 2
                         initialTack = None
                         gVars.tacked_flag = 0
+                        gVars.logger.info("On port tack")
+
                         while(self.doWeStillWantToTack(self.Dest)):
                             if(gVars.kill_flagPTP == 1):
                               break
                             
                             time.sleep(.1)
                             
-                            if(printedTack == 0):
-                                gVars.logger.info("On port tack")
-                                printedTack = 1
-
                             gVars.tacked_flag = 0
                             self.updateData()
 
