@@ -54,3 +54,22 @@ class TestPointToPoint(unittest.TestCase):
     self.p2p.hog = -90 # NW
     self.assertFalse(self.p2p.doWeStillWantToTack())
     
+  def testCheckHitBoundaries(self):
+    self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
+    GlobalVars.boundaries=[]
+    coordinate = datatypes.GPSCoordinate(49,-123) #same coordinate
+    radius = 50
+    boundary = datatypes.Boundary(coordinate,radius)
+    GlobalVars.boundaries.append(boundary)
+    
+    self.assertEqual(self.p2p.checkBoundaryInterception(), boundary)
+    
+  def testOutsideHitBoundaries(self):
+    self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
+    GlobalVars.boundaries=[]
+    coordinate = datatypes.GPSCoordinate(49,-123.1) #11ish km west
+    radius = 50
+    boundary = datatypes.Boundary(coordinate,radius)
+    GlobalVars.boundaries.append(boundary)
+    
+    self.assertEqual(self.p2p.checkBoundaryInterception(), None)

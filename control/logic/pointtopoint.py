@@ -80,7 +80,7 @@ class PointToPoint(sailingtask.SailingTask):
                         else:
                             self.tackDirection = 0
                         
-                        self.checkBoundaries()
+                        self.handleBoundaries()
                         if(gVars.tacked_flag):
                             break
                      
@@ -112,7 +112,7 @@ class PointToPoint(sailingtask.SailingTask):
                         else:
                             self.tackDirection = 0
                             
-                        self.checkBoundaries()
+                        self.handleBoundaries()
                         if(gVars.tacked_flag):
                             break
                     
@@ -134,7 +134,7 @@ class PointToPoint(sailingtask.SailingTask):
                     self.tackSailing = self.newTackSailing
                     self.oldAngleBetweenCoords = self.angleBetweenCoords
                     
-                self.checkBoundaries()
+                self.handleBoundaries()
 
 
 
@@ -189,12 +189,17 @@ class PointToPoint(sailingtask.SailingTask):
         else:
             return 0
           
-    def checkBoundaries(self):
+    def handleBoundaries(self):
+      boundary = self.checkBoundaryInterception()
+      if boundary is not None:
+        sailFromBoundary(boundary)
+      return
+    
+    def checkBoundaryInterception(self):
       for boundary in gVars.boundaries:
         if(standardcalc.distBetweenTwoCoords(boundary.coordinate, self.GPSCoord) <= boundary.radius):
-          self.sailFromBoundary(boundary)
-          break
-      return
+          return boundary
+      return None
     
     def sailFromBoundary(self, boundary):
         sinAngle = standardcalc.angleBetweenTwoCoords(gVars.currentData.gps_coord,boundary.coordinate)
