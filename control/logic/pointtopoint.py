@@ -139,9 +139,9 @@ class PointToPoint(sailingtask.SailingTask):
 
 
         if(gVars.kill_flagPTP == 1):
-          gVars.logger.info("PointToPoint is killed")
+            gVars.logger.info("PointToPoint is killed")
         else:
-          gVars.logger.info("Finished Point to Point")
+            gVars.logger.info("Finished Point to Point")
 
         return
     
@@ -190,16 +190,16 @@ class PointToPoint(sailingtask.SailingTask):
             return 0
           
     def handleBoundaries(self):
-      boundary = self.checkBoundaryInterception()
-      if boundary is not None:
-        sailFromBoundary(boundary)
-      return
+        boundary = self.checkBoundaryInterception()
+        if boundary is not None:
+            self.sailFromBoundary(boundary)
+        return
     
     def checkBoundaryInterception(self):
-      for boundary in gVars.boundaries:
-        if(standardcalc.distBetweenTwoCoords(boundary.coordinate, self.GPSCoord) <= boundary.radius):
-          return boundary
-      return None
+        for boundary in gVars.boundaries:
+            if(standardcalc.distBetweenTwoCoords(boundary.coordinate, self.GPSCoord) <= boundary.radius):
+                return boundary
+        return None
     
     def sailFromBoundary(self, boundary):
         sinAngle = standardcalc.angleBetweenTwoCoords(gVars.currentData.gps_coord,boundary.coordinate)
