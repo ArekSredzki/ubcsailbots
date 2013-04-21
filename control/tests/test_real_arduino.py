@@ -2,9 +2,7 @@ import sys,os
 sys.path.append(os.path.abspath('../../'))
 
 import unittest
-import serial as ser
 from control.piardio import arduino
-import control.StaticVars as sVars
 import time
 
 @unittest.skip("Skip unless connected to Arduino by USB")
@@ -13,10 +11,10 @@ class testGetFromArduino(unittest.TestCase):
         self.ard = arduino.arduino()
     
     def testReturn(self):
-        arr = self.ard.getFromArduino()
-        print("Heading: " + str(arr[sVars.HOG_INDEX]) + ", COG: " + str(arr[sVars.COG_INDEX]) + ", SOG: " + 
-              str(arr[sVars.SOG_INDEX]) + ", AWA: " + str(arr[sVars.AWA_INDEX]) + ", GPS[" + str(arr[sVars.GPS_INDEX]) 
-              + "]" + ", Sheet Percent: " + str(arr[sVars.SHT_INDEX]) + ", Num of Satellites: " + str(arr[sVars.SAT_INDEX]))
+        ard = self.ard.getFromArduino()
+        print("Heading: " + str(ard.hog) + ", COG: " + str(ard.cog) + ", SOG: " + 
+              str(ard.sog) + ", AWA: " + str(ard.awa) + ", GPS[" + str(ard.gps_coord) 
+              + "]" + ", Sheet Percent: " + str(ard.sheet_percent) + ", Num of Satellites: " + str(ard.num_sat))
         #self.ard.ser.close()
     
     def testSend(self):
