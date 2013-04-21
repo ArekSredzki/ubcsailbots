@@ -7,14 +7,14 @@ Created on Apr 14, 2013
 from os import path
 from control.parser import parsing
 from control.logic import standardcalc
-from control import StaticVars as sVars
-from control import GlobalVars as gVars
-from control import sailingtask
+from control import static_vars as sVars
+from control import global_vars as gVars
+from control import sailing_task
 import math
 import time
 
 
-class PointToPoint(sailingtask.SailingTask):
+class PointToPoint(sailing_task.SailingTask):
     #constants
     COMPASS_METHOD = 0
     COG_METHOD = 1

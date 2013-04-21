@@ -10,7 +10,7 @@ runControlCode=True
 
 if runControlCode:
   import control.main
-  from control.GuiHandler import GuiHandler
+  from control.gui_handler import GuiHandler
   interface = GuiHandler()
   controlThread = Thread(target=control.main.run)
   controlThread.daemon = True

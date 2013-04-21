@@ -11,10 +11,10 @@ sys.path.append("..")
 from datetime import datetime
 from control.logic import standardcalc
 from control.logic import pointtopoint
-import control.GlobalVars as gVars
-from control import sailingtask
+from control import global_vars as gVars
+from control import sailing_task
 
-class StationKeeping(sailingtask.SailingTask):
+class StationKeeping(sailing_task.SailingTask):
     def __init__(self):
         self.pointtopoint = pointtopoint.PointToPoint()
         

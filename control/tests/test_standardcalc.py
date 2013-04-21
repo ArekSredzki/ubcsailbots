@@ -6,7 +6,7 @@ import math
 
 from control.logic import standardcalc
 from control.datatype import datatypes
-from control import GlobalVars as gVars
+from control import global_vars as gVars
 
 class TestSetBoxCoords(unittest.TestCase):
     def setUp(self):

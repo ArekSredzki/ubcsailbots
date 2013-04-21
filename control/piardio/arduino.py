@@ -13,7 +13,6 @@ import sys
 sys.path.append("..")
 from control.datatype import datatypes
 from serial.tools import list_ports
-import control.StaticVars as sVars
 import time
 
 SERIAL_PORT = '/dev/ttyACM0'

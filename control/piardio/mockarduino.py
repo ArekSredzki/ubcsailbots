@@ -12,7 +12,6 @@ boat data that can be used by the control logic and gui.
 
 from control.datatype import datatypes
 from control.logic import standardcalc
-import control.StaticVars as sVars
 import random
 import math
 

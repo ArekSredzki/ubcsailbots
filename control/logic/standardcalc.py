@@ -7,8 +7,8 @@ import math
 from os import path
 from control.datatype import datatypes
 from control.parser import parsing
-from control import StaticVars as sVars
-from control import GlobalVars as gVars
+from control import static_vars as sVars
+from control import global_vars as gVars
 
 EARTH_RADIUS = 6378140.0
 

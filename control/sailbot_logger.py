@@ -8,7 +8,7 @@ import logging
 import datetime
 from os import path
 
-class logger:
+class Logger:
     def __init__(self):
         logging.basicConfig(filename=path.join(path.dirname(__file__),'log/sailbot.log'), format='%(levelname)s:%(message)s  %(asctime)s ', level=logging.DEBUG)
         self.logger = logging.getLogger("sailbot.log")

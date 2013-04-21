@@ -4,7 +4,7 @@ sys.path.append(os.path.abspath('../'))
 import unittest
 import math
 import control.datatype.datatypes as datatype
-import control.StaticVars as sVars
+import control.static_vars as sVars
 
 class TestGPSCoordinate(unittest.TestCase):
 	def setUp(self):

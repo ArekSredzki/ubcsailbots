@@ -2,7 +2,7 @@
 import sys, os
 sys.path.append(os.path.abspath('../../'))
 import unittest
-from control import GlobalVars
+from control import global_vars as gVars
 print sys.path
 from control.logic import pointtopoint
 from control import sailbotlogger
@@ -10,7 +10,7 @@ import control.datatype.datatypes as datatypes
 
 class TestPointToPoint(unittest.TestCase):
     def setUp(self):
-        GlobalVars.logger = sailbotlogger.logger()
+        gVars.logger = sailbotlogger.logger()
         self.p2p = pointtopoint.PointToPoint()
       
     def testWhichTackWanted(self):
@@ -56,20 +56,20 @@ class TestPointToPoint(unittest.TestCase):
     
     def testCheckHitBoundaries(self):
         self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
-        GlobalVars.boundaries=[]
+        gVars.boundaries=[]
         coordinate = datatypes.GPSCoordinate(49,-123) #same coordinate
         radius = 50
         boundary = datatypes.Boundary(coordinate,radius)
-        GlobalVars.boundaries.append(boundary)
+        gVars.boundaries.append(boundary)
         
         self.assertEqual(self.p2p.checkBoundaryInterception(), boundary)
     
     def testOutsideHitBoundaries(self):
         self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
-        GlobalVars.boundaries=[]
+        gVars.boundaries=[]
         coordinate = datatypes.GPSCoordinate(49,-123.1) #11ish km west
         radius = 50
         boundary = datatypes.Boundary(coordinate,radius)
-        GlobalVars.boundaries.append(boundary)
+        gVars.boundaries.append(boundary)
         
         self.assertEqual(self.p2p.checkBoundaryInterception(), None)
