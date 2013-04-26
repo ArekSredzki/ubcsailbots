@@ -70,7 +70,7 @@ class PointToPoint(sailing_task.SailingTask):
                         if(self.isThereChangeToAWAorWeatherOrMode() ):
                             #gVars.logger.info("Changing sheets and rudder")
                             gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
-                            gVars.arduino.steer(self.AWA_METHOD,standardcalc.boundTo360(-self.TACKING_ANGLE))
+                            gVars.arduino.steer(self.AWA_METHOD,-self.TACKING_ANGLE)
                
                         if(self.AWA > 0):
                             self.tackDirection = 1
@@ -99,7 +99,7 @@ class PointToPoint(sailing_task.SailingTask):
                         if(self.isThereChangeToAWAorWeatherOrMode()):
                             #gVars.logger.info("Changing sheets and rudder")
                             gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
-                            gVars.arduino.steer(self.AWA_METHOD,standardcalc.boundTo360(self.TACKING_ANGLE))
+                            gVars.arduino.steer(self.AWA_METHOD,self.TACKING_ANGLE)
                             
                         if(self.AWA > 0):
                             self.tackDirection = 1
@@ -122,7 +122,7 @@ class PointToPoint(sailing_task.SailingTask):
                 if(self.isThereChangeToAWAorWeatherOrModeOrAngle()):
                     #gVars.logger.info("Changing sheets and rudder")
                     gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
-                    gVars.arduino.steer(self.COMPASS_METHOD,standardcalc.boundTo360(self.angleBetweenCoords))                    
+                    gVars.arduino.steer(self.COMPASS_METHOD,self.angleBetweenCoords)                    
                 self.handleBoundaries()
 
 
