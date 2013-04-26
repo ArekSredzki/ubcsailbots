@@ -7,11 +7,11 @@ Created on Apr 14, 2013
 import math
 from control.logic import standardcalc
 from control.logic import pointtopoint
-from control import GlobalVars as gVars
+from control import global_vars as gVars
 from control.datatype import datatypes
-from control import sailingtask
+from control import sailing_task
 
-class RoundBuoy(sailingtask.SailingTask):
+class RoundBuoy(sailing_task.SailingTask):
     def __init__(self):
         self.pointtopoint = pointtopoint.PointToPoint
         

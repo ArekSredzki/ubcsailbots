@@ -10,16 +10,16 @@ import sys
 sys.path.append("..")
 from control.logic import standardcalc
 from control.datatype import datatypes
-from control import GlobalVars as gVars
-from control import StaticVars as sVars
+from control import global_vars as gVars
+from control import static_vars as sVars
 from control.logic import roundbuoy
 from control.logic import pointtopoint
-from control import sailingtask
+from control import sailing_task
 
 # ---    Navigation Challenge    ---
 #Input: Buoy GPS Coordinates (Latitude and Longitude of the Buoy), Left Inner Point (The coordinates of the left innermost gate), Right Inner Point (The coordinates of the right innermost gate)
 #Output: None
-class Navigation(sailingtask.SailingTask):
+class Navigation(sailing_task.SailingTask):
     
     def __init__(self):
         self.HORIZ_BOUNDARY_DISTANCE = 60

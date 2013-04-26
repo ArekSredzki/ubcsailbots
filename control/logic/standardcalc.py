@@ -7,8 +7,8 @@ import math
 from os import path
 from control.datatype import datatypes
 from control.parser import parsing
-from control import StaticVars as sVars
-from control import GlobalVars as gVars
+from control import static_vars as sVars
+from control import global_vars as gVars
 
 EARTH_RADIUS = 6378140.0
 
@@ -211,7 +211,8 @@ def getWeatherSetting(awa, sog):
     minIndex = 0
     minNum = 500
     SOGList = parsing.parse(path.join(path.dirname(__file__), 'SOGarray'))
-    SOGrow = SOGList[abs(int(awa))]
+    index = boundTo180(awa)
+    SOGrow = SOGList[abs(int(index))]
     
     for i in range(len(SOGrow)):
         if(abs(SOGrow[i]-sog)<minNum):

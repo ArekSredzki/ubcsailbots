@@ -4,7 +4,7 @@ Created on Apr 14, 2013
 @author: joshandrews
 '''
 
-from control import GlobalVars as gVars
+from control import global_vars as gVars
 
 class SailingTask:
     def __init__(self):

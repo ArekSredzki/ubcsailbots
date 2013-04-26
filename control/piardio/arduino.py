@@ -13,7 +13,6 @@ import sys
 sys.path.append("..")
 from control.datatype import datatypes
 from serial.tools import list_ports
-import control.StaticVars as sVars
 import time
 
 SERIAL_PORT = '/dev/ttyACM0'
@@ -81,7 +80,15 @@ class arduino:
         wr = "TACK,{w},{t}".format(w=weather, t=tack)
         print wr
         self.ser.write(wr)
-        time.sleep(.1)
+        
+        if(weather == 0):
+            time.sleep(6.5)
+        elif(weather == 1):
+            time.sleep(5.9)
+        elif(weather == 2):
+            time.sleep(5.6)
+        elif(weather == 3):
+            time.sleep(5.3)
      
     # Calls gybe on the arduino
     def gybe(self, tack):

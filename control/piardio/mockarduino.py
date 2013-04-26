@@ -12,7 +12,6 @@ boat data that can be used by the control logic and gui.
 
 from control.datatype import datatypes
 from control.logic import standardcalc
-import control.StaticVars as sVars
 import random
 import math
 
@@ -24,7 +23,7 @@ STRONG_CURRENT = False
 
 # Set this to hold a constant AWA.  Otherwise set it to None.  Useful 
 # for functionality testing on Challenges. Not as much useful point to point.
-STATIC_AWA = 50
+STATIC_AWA = 0
 
 class arduino:
     def __init__(self):
@@ -162,7 +161,7 @@ class arduino:
             
             self.previousx = x
         else:
-            awa = STATIC_AWA
+            awa = STATIC_AWA-self.arduinoData.hog
         
         self.arduinoData.awa = awa
     

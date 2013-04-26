@@ -8,10 +8,8 @@ GUI Handler for the control logic
 @author: joshandrews
 '''
 
-import control.GlobalVars as gVars
-import control.StaticVars as sVars
-import control.challenge as challenge
-from datetime import timedelta
+import control.global_vars as gVars
+import control.static_vars as sVars
 from datetime import datetime
 
 # GUI Handler Class

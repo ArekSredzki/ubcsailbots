@@ -5,20 +5,17 @@ Created on Jan 19, 2013
 '''
 import sys
 import thread
-import logging
 import sched
 import time
 from datetime import datetime
-from os import path
 from challenge import longdistance
 from challenge import navigation
 from challenge import stationkeeping
 from logic import roundbuoy
 from logic import pointtopoint
-from control import sailbotlogger
-from datatype import datatypes
-import control.GlobalVars as gVars
-import control.StaticVars as sVars
+from control import sailbot_logger
+import control.global_vars as gVars
+import control.static_vars as sVars
 import piardio.arduino
 import piardio.mockarduino
 import traceback
@@ -26,13 +23,13 @@ import traceback
 # Mock:
     #   - If true, mock will run from a mock arduino class which simulates boat and wind conditions (see readme)
     #   - If false, mock will run off of an actual arduino through dev/tty ports     
-mock = True
+mock = False
 
 # Main - pass challenge or logic function name as argument
 def run(argv=None):
     #with open(path.join(path.dirname(__file__),'log/sailbot.log'), 'w'):
     #    pass
-    gVars.logger = sailbotlogger.logger()
+    gVars.logger = sailbot_logger.Logger()
     gVars.logger.info("Start")
     
     gVars.logger.info("Mock Enabled: " + str(mock))

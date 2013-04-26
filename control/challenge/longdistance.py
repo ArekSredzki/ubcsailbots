@@ -6,13 +6,13 @@ Created on Jan 19, 2013
 
 import sys
 sys.path.append("..")
-import control.StaticVars as sVars
-from control import GlobalVars as gVars
+from control import static_vars as sVars
+from control import global_vars as gVars
 from control.logic import pointtopoint
 from control.logic import roundbuoy
-from control import sailingtask
+from control import sailing_task
 
-class LongDistance(sailingtask.SailingTask):
+class LongDistance(sailing_task.SailingTask):
     
     def __init__(self):
         self.pointtopoint = pointtopoint.PointToPoint()
