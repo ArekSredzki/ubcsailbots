@@ -5,12 +5,12 @@ import unittest
 from control import global_vars as gVars
 print sys.path
 from control.logic import pointtopoint
-from control import sailbotlogger
+from control import sailbot_logger
 import control.datatype.datatypes as datatypes
 
 class TestPointToPoint(unittest.TestCase):
     def setUp(self):
-        gVars.logger = sailbotlogger.logger()
+        gVars.logger = sailbot_logger.Logger()
         self.p2p = pointtopoint.PointToPoint()
       
     def testWhichTackWanted(self):

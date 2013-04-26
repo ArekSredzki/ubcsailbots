@@ -23,7 +23,7 @@ import traceback
 # Mock:
     #   - If true, mock will run from a mock arduino class which simulates boat and wind conditions (see readme)
     #   - If false, mock will run off of an actual arduino through dev/tty ports     
-mock = False
+mock = True
 
 # Main - pass challenge or logic function name as argument
 def run(argv=None):

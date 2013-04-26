@@ -222,6 +222,14 @@ class TestBoundto180(unittest.TestCase):
         self.num2bounded = -160
         self.num3 = -200
         self.num3bounded = 160
+        self.num4 = 890
+        self.num4bounded = 170
+        self.num5 = 920
+        self.num5bounded = -160
+        self.num6 = -890
+        self.num6bounded = -170
+        self.num7 = -920
+        self.num7bounded = 160
     
     def testNoChange(self):
         self.assertEqual(standardcalc.boundTo180(self.num1), self.num1bounded)
@@ -231,3 +239,53 @@ class TestBoundto180(unittest.TestCase):
     
     def testLessThan180(self):
         self.assertEqual(standardcalc.boundTo180(self.num3), self.num3bounded)
+    
+    def testGreaterThan360ToPositive(self):
+        self.assertEqual(standardcalc.boundTo180(self.num4), self.num4bounded)
+        
+    def testGreaterThan360ToNegative(self):
+        self.assertEqual(standardcalc.boundTo180(self.num5), self.num5bounded)
+    
+    def testLessThan360ToNegative(self):
+        self.assertEqual(standardcalc.boundTo180(self.num6), self.num6bounded)
+        
+    def testLessThan360ToPositive(self):
+        self.assertEqual(standardcalc.boundTo180(self.num7), self.num7bounded)
+
+class TestBoundto360(unittest.TestCase):
+    def setUp(self):
+        self.num1 = 5
+        self.num1bounded = 5
+        self.num2 = 200
+        self.num2bounded = 200
+        self.num3 = -200
+        self.num3bounded = 160
+        self.num4 = 890
+        self.num4bounded = 170
+        self.num5 = 920
+        self.num5bounded = 200
+        self.num6 = -890
+        self.num6bounded = 190
+        self.num7 = -920
+        self.num7bounded = 160
+    
+    def testNoChange(self):
+        self.assertEqual(standardcalc.boundTo360(self.num1), self.num1bounded)
+    
+    def testGreaterThan180(self):
+        self.assertEqual(standardcalc.boundTo360(self.num2), self.num2bounded)
+    
+    def testLessThan180(self):
+        self.assertEqual(standardcalc.boundTo360(self.num3), self.num3bounded)
+    
+    def testGreaterThan360(self):
+        self.assertEqual(standardcalc.boundTo360(self.num4), self.num4bounded)
+        
+    def testGreaterThan360ToAbove180(self):
+        self.assertEqual(standardcalc.boundTo360(self.num5), self.num5bounded)
+    
+    def testLessThanNegative360(self):
+        self.assertEqual(standardcalc.boundTo360(self.num6), self.num6bounded)
+        
+    def testLessThanNegative360More(self):
+        self.assertEqual(standardcalc.boundTo360(self.num7), self.num7bounded)

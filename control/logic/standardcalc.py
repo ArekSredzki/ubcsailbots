@@ -292,10 +292,23 @@ def findCosLawAngle(a, b, c):  #cos law: c^2 = a^2 + b^2 - 2*a*b*cos(theta), ret
 
 # Bounds angle to -180 to 180
 def boundTo180(angle):
+    if angle < 0:
+        angle = angle%-360
+    else:
+        angle = angle%360
+        
     if (angle <= -180):
         return angle+360
     elif (angle > 180):
         return angle-360
+    else:
+        return angle
+    
+def boundTo360(angle):
+    if (angle < 0):
+        return (angle%-360)+360
+    elif (angle > 360):
+        return angle % 360
     else:
         return angle
     
