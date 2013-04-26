@@ -90,7 +90,7 @@ class arduino:
         #    "GYBE,<WindwardSideOfBoat>"
         wr = "GYBE,{t}".format(t=tack)
         self.ser.write(wr)
-        time.sleep(.1)
+        time.sleep(1)
     
     # Returns the latest array of all info from the arduino
     def getFromArduino(self):

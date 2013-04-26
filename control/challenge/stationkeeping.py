@@ -134,7 +134,7 @@ class StationKeeping(sailingtask.SailingTask):
         boxCoords = standardcalc.setBoxCoords(topLeftCoord, topRightCoord, botLeftCoord, botRightCoord)   #boxCoords[0] = TL, boxCoords[1] = TR, boxCoords[2] = BR, boxCoords[3] = BL
         wayPtCoords = self.setWayPtCoords(boxCoords)  #top, right, bottom, left
         gVars.logger.info("North waypoint: " + str(wayPtCoords[0]) + " East waypoint: " + str(wayPtCoords[1]) +" South waypoint: " + str(wayPtCoords[2]) + " West waypoint: " + str(wayPtCoords[3]) )
-        spdList = [0.75]*10
+        spdList = [0.75]*100
         boxDistList = self.getBoxDist(boxCoords)  #top, right, bottom, left
         meanSpd = 0.75   #from old arduino code
         gVars.SKCurrentWaypnt = boxDistList.index(min(boxDistList))
@@ -183,15 +183,17 @@ class StationKeeping(sailingtask.SailingTask):
                 if (turning == 0):
                     spdList = standardcalc.changeSpdList(spdList)
                     meanSpd = standardcalc.meanOfList(spdList)
-                    #gVars.logger.info("The mean speed of the boat is " + str(meanSpd) + " metres per second.")
-                if (boxDistList[gVars.SKCurrentWaypnt] >= meanSpd*(secLeft+1)):  #leeway of 1 seconds
+                    gVars.logger.info("The mean speed of the boat is " + str(meanSpd) + " metres per second.")
+                if (boxDistList[gVars.SKCurrentWaypnt] >= meanSpd*(secLeft+0)):  #leeway of 0 seconds
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
-                    gVars.logger.info("Distance left to travel 1:" + str(meanSpd*(secLeft+2)))
+                    gVars.logger.info("Distance left to travel 1:" + str(meanSpd*(secLeft+0)))
+                    gVars.logger.info("Seconds Left:" + str(secLeft))
                     exiting = 1
                     gVars.logger.info("Station Keeping event is about to end. Exiting to current waypoint.")
-                elif (boxDistList[(gVars.SKCurrentWaypnt + 2) % 4] >= meanSpd*(secLeft+1+2) ): #leeway of 1 seconds, 2 seconds for gybe
+                elif (boxDistList[(gVars.SKCurrentWaypnt + 2) % 4] >= meanSpd*(secLeft+0+1) ): #leeway of 0 seconds, 1 seconds for gybe
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
-                    gVars.logger.info("Distance left to travel 2:" + str(meanSpd*(secLeft+2+2)))
+                    gVars.logger.info("Distance left to travel 2:" + str(meanSpd*(secLeft+0+1)))
+                    gVars.logger.info("Seconds Left:" + str(secLeft))
                     gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 2) % 4
                     self.pointtopoint.killPointToPoint()
                     gVars.logger.info("Station Keeping event is about to end. Gybing and exiting to waypoint " + str(gVars.SKCurrentWaypnt))
