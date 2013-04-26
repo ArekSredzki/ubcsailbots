@@ -14,6 +14,7 @@ from control.datatype import datatypes
 from control.logic import standardcalc
 import random
 import math
+import time
 
 EARTH_RADIUS = 6378140
 
@@ -68,7 +69,7 @@ class arduino:
         self.arduinoData.hog = hog
     
     def gybe(self, x):
-        pass
+        time.sleep(4)
     
     def adjust_sheets(self, sheet_percent):                                                
         self.arduinoData.sheet_percent = sheet_percent
