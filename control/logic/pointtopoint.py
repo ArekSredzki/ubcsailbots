@@ -31,7 +31,6 @@ class PointToPoint(sailing_task.SailingTask):
         self.oldAngleBetweenCoords = 0
         self.tackDirection = 0
         self.printedStraight = 0
-        gVars.kill_flagPTP = 0
         gVars.logger.info("New Point to Point object")
 
         
@@ -43,6 +42,7 @@ class PointToPoint(sailing_task.SailingTask):
         gVars.logger.info("Started point to pointAWA toward "+repr(Dest))
         self.Dest = Dest
         self.updateData()
+        gVars.kill_flagPTP = 0
         
         while(self.distanceToWaypoint > ACCEPTANCE_DISTANCE) and gVars.kill_flagPTP == 0:
             time.sleep(.1)
