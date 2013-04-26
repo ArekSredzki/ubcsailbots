@@ -69,7 +69,10 @@ class arduino:
         self.arduinoData.hog = hog
     
     def gybe(self, x):
+        tempspeed = self.arduinoData.sog
+        self.arduinoData.sog = 0
         time.sleep(4)
+        self.arduinoData.sog = tempspeed
     
     def adjust_sheets(self, sheet_percent):                                                
         self.arduinoData.sheet_percent = sheet_percent

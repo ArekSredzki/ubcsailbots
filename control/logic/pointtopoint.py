@@ -40,7 +40,7 @@ class PointToPoint(sailing_task.SailingTask):
     # Output: Nothing
     def run(self, Dest, initialTack = None, ACCEPTANCE_DISTANCE = sVars.ACCEPTANCE_DISTANCE_DEFAULT):
         time.sleep(1.0)
-        gVars.logger.info("Started point to pointAWA")
+        gVars.logger.info("Started point to pointAWA toward "+repr(Dest))
         self.Dest = Dest
         self.updateData()
         
