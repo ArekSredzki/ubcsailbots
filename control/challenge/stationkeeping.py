@@ -170,7 +170,7 @@ class StationKeeping(sailing_task.SailingTask):
                     thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], ))
                     inTurnZone = 1
                     turning = 1
-                elif (((boxDistList[gVars.SKCurrentWaypnt] > 10) or (boxDistList[(gVars.SKCurrentWaypnt+2)%4] > 10)) and standardcalc.isWPNoGoAWA(gVars.currentData.awa,gVars.currentData.hog, wayPtCoords[gVars.SKCurrentWaypnt], gVars.currentData.sog, gVars.currentData.gps_coord)):
+                elif (((boxDistList[gVars.SKCurrentWaypnt] > 10) and (boxDistList[(gVars.SKCurrentWaypnt+2)%4] > 10)) and (inTurnZone == 0) and standardcalc.isWPNoGoAWA(gVars.currentData.awa,gVars.currentData.hog, wayPtCoords[gVars.SKCurrentWaypnt], gVars.currentData.sog, gVars.currentData.gps_coord)):
                     gVars.logger.info("The boat is sailing upwind. Changing current waypoint.")
                     gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 1) % 4
                     gVars.logger.info("The current waypoint is " + str(gVars.SKCurrentWaypnt) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
@@ -183,7 +183,7 @@ class StationKeeping(sailing_task.SailingTask):
                 if (turning == 0):
                     spdList = standardcalc.changeSpdList(spdList)
                     meanSpd = standardcalc.meanOfList(spdList)
-                    gVars.logger.info("The mean speed of the boat is " + str(meanSpd) + " metres per second.")
+                    #gVars.logger.info("The mean speed of the boat is " + str(meanSpd) + " metres per second.")
                 if (boxDistList[gVars.SKCurrentWaypnt] >= meanSpd*(secLeft+0)):  #leeway of 0 seconds
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
                     gVars.logger.info("Distance left to travel 1:" + str(meanSpd*(secLeft+0)))
