@@ -162,12 +162,12 @@ def angleBetweenTwoCoords(sourceCoord, destCoord):
 #Returns 0 if waypoint can be reached
 def isWPNoGoAWA (AWA, hog, dest, sog, GPS):    
     if(sog < sVars.SPEED_AFFECTION_THRESHOLD):
-        if(isAngleBetween(hog-AWA-45,angleBetweenTwoCoords(GPS,dest),hog-AWA+45)):
+        if(isAngleBetween(hog+AWA-45,angleBetweenTwoCoords(GPS,dest),hog+AWA+45)):
             return 1
         else:
             return 0
     else:
-        if(isAngleBetween(hog-AWA-34,angleBetweenTwoCoords(GPS,dest),hog-AWA+34)):
+        if(isAngleBetween(hog+AWA-34,angleBetweenTwoCoords(GPS,dest),hog+AWA+34)):
             return 1
         else:
             return 0

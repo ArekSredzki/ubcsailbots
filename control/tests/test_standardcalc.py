@@ -224,6 +224,9 @@ class TestIsWpnNoGo(unittest.TestCase):
         
     def testExpectNotNoGo(self):
         self.assertFalse(standardcalc.isWPNoGoAWA(self.appWind, self.heading, self.Dest, self.sog, self.GPSCoord))
+    def testExpectNoGo(self):
+        self.appWind=-131
+        self.assertTrue(standardcalc.isWPNoGoAWA(self.appWind, self.heading, self.Dest, self.sog, self.GPSCoord))
 
     
         
