@@ -213,6 +213,19 @@ class TestChangeSpdList(unittest.TestCase):
         self.assertEqual(standardcalc.changeSpdList(self.list1), -1)
         self.assertEqual(self.list3[0] != 1, 1)
         self.assertEqual(self.list3[2] == gVars.currentData.sog, 1)
+
+class TestIsWpnNoGo(unittest.TestCase):
+    def setUp(self):
+        self.appWind = 131
+        self.heading = -30
+        self.GPSCoord = datatypes.GPSCoordinate(49,-123)
+        self.Dest = datatypes.GPSCoordinate(48.9,-123.1)
+        self.sog = 0
+        
+    def testExpectNotNoGo(self):
+        self.assertFalse(standardcalc.isWPNoGoAWA(self.appWind, self.heading, self.Dest, self.sog, self.GPSCoord))
+
+    
         
 class TestBoundto180(unittest.TestCase):
     def setUp(self):

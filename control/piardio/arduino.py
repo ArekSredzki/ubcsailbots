@@ -13,6 +13,7 @@ import sys
 sys.path.append("..")
 from control.datatype import datatypes
 from serial.tools import list_ports
+from control.logic import standardcalc
 import time
 
 SERIAL_PORT = '/dev/ttyACM0'
@@ -136,8 +137,8 @@ class arduino:
     # Takes an array from the arduino and maps it to the appropriate objects in the python array
     def interpretArr(self, ardArr):
         arduinoData = datatypes.ArduinoData()
-        arduinoData.hog = ardArr[ARD_HOG]
-        arduinoData.cog = ardArr[ARD_COG]
+        arduinoData.hog = standardcalc.boundTo180(ardArr[ARD_HOG])
+        arduinoData.cog = standardcalc.boundTo180(ardArr[ARD_COG])
         arduinoData.sog = ardArr[ARD_SOG]
         arduinoData.awa = ardArr[ARD_AWAV]
         arduinoData.gps_coord = datatypes.GPSCoordinate(ardArr[ARD_LAT]/10000000, ardArr[ARD_LONG]/10000000)
