@@ -138,7 +138,7 @@ class StationKeeping(sailing_task.SailingTask):
         boxDistList = self.getBoxDist(boxCoords)  #top, right, bottom, left
         meanSpd = 0.75   #from old arduino code
         gVars.SKCurrentWaypnt = boxDistList.index(min(boxDistList))
-        thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], ))
+        thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], None, None, True))
         gVars.logger.info("The current waypoint is " + str(gVars.SKCurrentWaypnt) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
         gVars.logger.info("Station Keeping Initialization finished. Now running Station Keeping Challenge")
         self.skrun(boxCoords, wayPtCoords, spdList, meanSpd)
@@ -167,7 +167,7 @@ class StationKeeping(sailing_task.SailingTask):
                         gVars.arduino.gybe(1)
                     else:
                         gVars.arduino.gybe(0)
-                    thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], ))
+                    thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], None, None, True))
                     inTurnZone = 1
                     turning = 1
                 elif (((boxDistList[gVars.SKCurrentWaypnt] > 10) and (boxDistList[(gVars.SKCurrentWaypnt+2)%4] > 10)) and (inTurnZone == 0) and standardcalc.isWPNoGoAWA(gVars.currentData.awa,gVars.currentData.hog, wayPtCoords[gVars.SKCurrentWaypnt], gVars.currentData.sog, gVars.currentData.gps_coord)):
@@ -175,7 +175,7 @@ class StationKeeping(sailing_task.SailingTask):
                     gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 1) % 4
                     gVars.logger.info("The current waypoint is " + str(gVars.SKCurrentWaypnt) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
                     self.pointtopoint.killPointToPoint()
-                    thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], ))
+                    thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], None, None, True))
                     turning = 1
                 elif ((boxDistList[(gVars.SKCurrentWaypnt+2)%4] > 10) and (inTurnZone == 1)):
                     inTurnZone = 0
@@ -201,7 +201,7 @@ class StationKeeping(sailing_task.SailingTask):
                         gVars.arduino.gybe(1)
                     else:
                         gVars.arduino.gybe(0)
-                    thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], ))
+                    thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], None, None, True))
                     exiting = 1
         if (gVars.kill_flagSK == 1):
             gVars.logger.info("Station Keeping Kill Flag initialized. Station Keeping Challenge has been stopped.")

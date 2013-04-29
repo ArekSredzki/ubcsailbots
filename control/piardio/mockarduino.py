@@ -24,7 +24,7 @@ STRONG_CURRENT = False
 
 # Set this to hold a constant AWA.  Otherwise set it to None.  Useful 
 # for functionality testing on Challenges. Not as much useful point to point.
-STATIC_AWA = 90
+STATIC_AWA = 0
 
 class arduino:
     def __init__(self):

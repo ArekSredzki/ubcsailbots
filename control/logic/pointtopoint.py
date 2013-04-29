@@ -38,26 +38,28 @@ class PointToPoint(sailing_task.SailingTask):
     # --- Point to Point ---
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
     # Output: Nothing
-    def run(self, Dest, initTack = None, ACCEPTANCE_DISTANCE = sVars.ACCEPTANCE_DISTANCE_DEFAULT):
+    def run(self, Dest, initTack = None, ACCEPTANCE_DISTANCE = None, noTack = False):
         time.sleep(1.0)
         gVars.logger.info("Started point to pointAWA toward "+repr(Dest))
         self.Dest = Dest
         self.updateData()
         gVars.kill_flagPTP = 0
         self.initialTack = initTack
-        
+        if ACCEPTANCE_DISTANCE == None:
+            ACCEPTANCE_DISTANCE = sVars.ACCEPTANCE_DISTANCE_DEFAULT
+            
         while(self.distanceToWaypoint > ACCEPTANCE_DISTANCE) and gVars.kill_flagPTP == 0:
             time.sleep(.1)
             self.updateData()
    
-            if(standardcalc.isWPNoGoAWA(self.AWA, self.hog, self.Dest,self.sog,self.GPSCoord)):
+            if(standardcalc.isWPNoGoAWA(self.AWA, self.hog, self.Dest,self.sog,self.GPSCoord) and noTack == False):
                 self.printedStraight = 0
-                #Trying to determine whether 45 degrees clockwise or counter clockwise of TWA wrt North is closer to current heading
-                #This means we are trying to determine whether hog-TWA-45 or hog-TWA+45 (both using TWA wrt North) is closer to our current heading.
-                #Since those values give us TWA wrt to north, we need to subtract hog from them to get TWA wrt to our heading and figure out which one has a smaller value.
-                #To get it wrt to current heading, we use hog-TWA-45-hog and hog-TWA+45-hog.  Both terms have hogs cancelling out.
-                #We are left with -TWA-45 and -TWA+45, which makes sense since the original TWA was always with respect to the boat.
-                #Since we are trying to figure out which one is closest to turn to, we use absolute values.
+                '''Trying to determine whether 45 degrees clockwise or counter clockwise of TWA wrt North is closer to current heading
+                    This means we are trying to determine whether hog-TWA-45 or hog-TWA+45 (both using TWA wrt North) is closer to our current heading.
+                    Since those values give us TWA wrt to north, we need to subtract hog from them to get TWA wrt to our heading and figure out which one has a smaller value.
+                    To get it wrt to current heading, we use hog-TWA-45-hog and hog-TWA+45-hog.  Both terms have hogs cancelling out.
+                    We are left with -TWA-45 and -TWA+45, which makes sense since the original TWA was always with respect to the boat.
+                    Since we are trying to figure out which one is closest to turn to, we use absolute values.'''
                 if(self.starboardTackWanted(self.initialTack)):
                     self.enterTackLoop(False)
                     
