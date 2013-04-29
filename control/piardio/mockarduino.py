@@ -165,9 +165,9 @@ class arduino:
             
             self.previousx = x
         else:
-            awa = STATIC_AWA-self.arduinoData.hog
+            awa = standardcalc.boundTo180(standardcalc.boundTo360(STATIC_AWA)-standardcalc.boundTo180(self.arduinoData.hog))
         
-        self.arduinoData.awa = awa
+        self.arduinoData.awa = standardcalc.boundTo180(awa)
     
     def _updateGPS(self):
         # Calculation for change in GPS Coordinate
@@ -195,7 +195,7 @@ class arduino:
         self._updateActualWind()    
         self._updateHOG()
         self._updateCOG()
-        self._updateSOG()
         self._updateAWA()
+        self._updateSOG()
         self._updateGPS()     
         

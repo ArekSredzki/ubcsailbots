@@ -31,18 +31,20 @@ class PointToPoint(sailing_task.SailingTask):
         self.oldAngleBetweenCoords = 0
         self.tackDirection = 0
         self.printedStraight = 0
+        self.initialTack = None
         gVars.logger.info("New Point to Point object")
 
         
     # --- Point to Point ---
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
     # Output: Nothing
-    def run(self, Dest, initialTack = None, ACCEPTANCE_DISTANCE = sVars.ACCEPTANCE_DISTANCE_DEFAULT):
+    def run(self, Dest, initTack = None, ACCEPTANCE_DISTANCE = sVars.ACCEPTANCE_DISTANCE_DEFAULT):
         time.sleep(1.0)
         gVars.logger.info("Started point to pointAWA toward "+repr(Dest))
         self.Dest = Dest
         self.updateData()
         gVars.kill_flagPTP = 0
+        self.initialTack = initTack
         
         while(self.distanceToWaypoint > ACCEPTANCE_DISTANCE) and gVars.kill_flagPTP == 0:
             time.sleep(.1)
@@ -56,63 +58,11 @@ class PointToPoint(sailing_task.SailingTask):
                 #To get it wrt to current heading, we use hog-TWA-45-hog and hog-TWA+45-hog.  Both terms have hogs cancelling out.
                 #We are left with -TWA-45 and -TWA+45, which makes sense since the original TWA was always with respect to the boat.
                 #Since we are trying to figure out which one is closest to turn to, we use absolute values.
-                if(self.starboardTackWanted(initialTack)):
-                    self.tackSailing = 1
-                    initialTack = None
-                    gVars.tacked_flag = 0
-                    gVars.logger.info("On starboard tack")
-
-                    while(self.doWeStillWantToTack()):
-                        time.sleep(.1)
-                        gVars.tacked_flag = 0
-                        self.updateData()
-                                                   
-                        if(self.isThereChangeToAWAorWeatherOrMode() ):
-                            #gVars.logger.info("Changing sheets and rudder")
-                            gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
-                            gVars.arduino.steer(self.AWA_METHOD,-self.TACKING_ANGLE)
-               
-                        if(self.AWA > 0):
-                            self.tackDirection = 1
-                        else:
-                            self.tackDirection = 0
-                        
-                        self.handleBoundaries()
-                        if(gVars.tacked_flag):
-                            break
-                     
-                    if(gVars.tacked_flag == 0):                                                                
-                        gVars.arduino.tack(gVars.currentColumn,self.tackDirection)
-                        gVars.logger.info("Tacked from 80 degrees")
+                if(self.starboardTackWanted(self.initialTack)):
+                    self.enterTackLoop(False)
                     
-                elif(self.portTackWanted(initialTack)):
-                    self.tackSailing = 2
-                    initialTack = None
-                    gVars.tacked_flag = 0
-                    gVars.logger.info("On port tack")
-
-                    while(self.doWeStillWantToTack()):               
-                        time.sleep(.1)               
-                        gVars.tacked_flag = 0
-                        self.updateData()
-                        
-                        if(self.isThereChangeToAWAorWeatherOrMode()):
-                            #gVars.logger.info("Changing sheets and rudder")
-                            gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
-                            gVars.arduino.steer(self.AWA_METHOD,self.TACKING_ANGLE)
-                            
-                        if(self.AWA > 0):
-                            self.tackDirection = 1
-                        else:
-                            self.tackDirection = 0
-                            
-                        self.handleBoundaries()
-                        if(gVars.tacked_flag):
-                            break
-                    
-                    if(gVars.tacked_flag == 0):                                                                
-                        gVars.arduino.tack(gVars.currentColumn,self.tackDirection)
-                        gVars.logger.info("Tacked from 80 degrees")
+                elif(self.portTackWanted(self.initialTack)):
+                    self.enterTackLoop(True) 
                     
             else:                    
                 if(self.printedStraight == 0):
@@ -133,6 +83,40 @@ class PointToPoint(sailing_task.SailingTask):
             gVars.logger.info("Finished Point to Point")
 
         return
+    
+    def enterTackLoop(self, port):
+        tackAngleMultiplier = 1
+        if port:
+            self.tackSailing = 2
+            gVars.logger.info("On port tack")
+        else:
+            self.tackSailing = 1
+            gVars.logger.info("On starboard tack")
+            tackAngleMultiplier = -1
+        
+        self.initialTack = None
+        gVars.tacked_flag = 0
+
+        while(self.doWeStillWantToTack()):
+            time.sleep(.1)
+            gVars.tacked_flag = 0
+            self.updateData()
+                                       
+            if(self.isThereChangeToAWAorWeatherOrMode() ):
+                #gVars.logger.info("Changing sheets and rudder")
+                gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
+                gVars.arduino.steer(self.AWA_METHOD,tackAngleMultiplier*self.TACKING_ANGLE)
+   
+            self.setTackDirection()
+            
+            self.handleBoundaries()
+            if(gVars.tacked_flag):
+                break
+         
+        if(gVars.tacked_flag == 0):                                                                
+            gVars.arduino.tack(gVars.currentColumn,self.tackDirection)
+            gVars.logger.info("Tacked from 80 degrees")
+
     
     def updateData(self):
         self.GPSCoord = gVars.currentData.gps_coord
@@ -216,3 +200,10 @@ class PointToPoint(sailing_task.SailingTask):
         gVars.tacked_flag = 1
         
         return
+    
+    # Sets 1, or 0 for Arduino Call to Tack
+    def setTackDirection(self):
+        if(self.AWA > 0):
+            self.tackDirection = 1
+        else:
+            self.tackDirection = 0

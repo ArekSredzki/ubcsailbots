@@ -13,11 +13,8 @@ class TestPointToPoint(unittest.TestCase):
         gVars.logger = sailbot_logger.Logger()
         self.p2p = pointtopoint.PointToPoint()
       
-    def testWhichTackWanted(self):
+    def testWhichTackWantedStarboardWanted(self):
         initialTack=None
-        self.p2p.AWA = 30
-        self.assertFalse(self.p2p.starboardTackWanted(initialTack))
-        self.assertTrue(self.p2p.portTackWanted(initialTack))
     
         self.p2p.AWA = -30
         self.assertTrue(self.p2p.starboardTackWanted(initialTack))
@@ -26,7 +23,13 @@ class TestPointToPoint(unittest.TestCase):
         self.p2p.AWA = -150
         self.assertTrue(self.p2p.starboardTackWanted(initialTack))
         self.assertFalse(self.p2p.portTackWanted(initialTack))
-    
+
+    def testWhichTackWantedPortWanted(self):
+        initialTack=None
+        self.p2p.AWA = 30
+        self.assertFalse(self.p2p.starboardTackWanted(initialTack))
+        self.assertTrue(self.p2p.portTackWanted(initialTack))
+        
         self.p2p.AWA = 150
         self.assertFalse(self.p2p.starboardTackWanted(initialTack))
         self.assertTrue(self.p2p.portTackWanted(initialTack))
@@ -34,8 +37,8 @@ class TestPointToPoint(unittest.TestCase):
         self.p2p.AWA = 0
         self.assertFalse(self.p2p.starboardTackWanted(initialTack))
         self.assertTrue(self.p2p.portTackWanted(initialTack))
-
-    def testdoWeStillWantToTack(self):
+        
+    def testdoWeStillWantToTackReturnTrue(self):
         self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
         self.p2p.Dest = datatypes.GPSCoordinate(49.1,-123) # 0 degrees, N
         
@@ -45,15 +48,20 @@ class TestPointToPoint(unittest.TestCase):
         self.p2p.hog = 45 # NE
         self.assertTrue(self.p2p.doWeStillWantToTack())
         
-        self.p2p.hog = 90 # E
-        self.assertFalse(self.p2p.doWeStillWantToTack())
-        
         self.p2p.hog = -45 # NW
         self.assertTrue(self.p2p.doWeStillWantToTack())
         
+        
+    def testdoWeStillWantToTackReturnFalse(self):
+        self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
+        self.p2p.Dest = datatypes.GPSCoordinate(49.1,-123) # 0 degrees, N
+        
+        self.p2p.hog = 90 # E
+        self.assertFalse(self.p2p.doWeStillWantToTack())
+        
         self.p2p.hog = -90 # NW
         self.assertFalse(self.p2p.doWeStillWantToTack())
-    
+        
     def testCheckHitBoundaries(self):
         self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
         gVars.boundaries=[]
@@ -73,3 +81,13 @@ class TestPointToPoint(unittest.TestCase):
         gVars.boundaries.append(boundary)
         
         self.assertEqual(self.p2p.checkBoundaryInterception(), None)
+    
+    def testSetTackDirectionTo1(self):
+        self.p2p.AWA = 130
+        self.p2p.setTackDirection()
+        self.assertEqual(self.p2p.tackDirection, 1)
+    
+    def testSetTackDirectionTo0(self):
+        self.p2p.AWA = -20
+        self.p2p.setTackDirection()
+        self.assertEqual(self.p2p.tackDirection, 0)
