@@ -43,9 +43,10 @@ class RoundBuoy(sailing_task.SailingTask):
         
     def findRightBuoyPoint(self, BuoyLoc):
         angleOfCourse = standardcalc.angleBetweenTwoCoords(gVars.currentData.gps_coord, BuoyLoc)
+        angleFromEast = 90-angleOfCourse
         
-        LongitudalDistBetweenBuoyAndTarget = self.TargetToBuoyDist*math.cos(self.TargetAndBuoyAngle-angleOfCourse)
-        LatitudalDistBetweenBuoyAndTarget = self.TargetToBuoyDist*math.sin(self.TargetAndBuoyAngle-angleOfCourse)
+        LongitudalDistBetweenBuoyAndTarget = self.TargetToBuoyDist*math.cos(angleFromEast-self.TargetAndBuoyAngle)
+        LatitudalDistBetweenBuoyAndTarget = self.TargetToBuoyDist*math.sin(angleFromEast-self.TargetAndBuoyAngle)
         
         rightPoint = standardcalc.GPSDistAway(BuoyLoc, LongitudalDistBetweenBuoyAndTarget, LatitudalDistBetweenBuoyAndTarget)
         
@@ -53,9 +54,10 @@ class RoundBuoy(sailing_task.SailingTask):
     
     def findLeftBuoyPoint(self, BuoyLoc):
         angleOfCourse = standardcalc.angleBetweenTwoCoords(gVars.currentData.gps_coord, BuoyLoc)
+        angleFromEast = 90-angleOfCourse
         
-        LongitudalDistBetweenBuoyAndTarget = self.TargetToBuoyDist*math.cos(180-(self.TargetAndBuoyAngle+angleOfCourse))
-        LatitudalDistBetweenBuoyAndTarget = self.TargetToBuoyDist*math.sin(self.TargetAndBuoyAngle+angleOfCourse)
+        LongitudalDistBetweenBuoyAndTarget = self.TargetToBuoyDist*math.cos(angleFromEast+self.TargetAndBuoyAngle)
+        LatitudalDistBetweenBuoyAndTarget = self.TargetToBuoyDist*math.sin(angleFromEast+self.TargetAndBuoyAngle)
         
         leftPoint = standardcalc.GPSDistAway(BuoyLoc, LongitudalDistBetweenBuoyAndTarget, LatitudalDistBetweenBuoyAndTarget)
         
