@@ -34,7 +34,6 @@ class GuiHandler:
             gVars.functionQueue.append(instructionsData.challenge)
             gVars.queueParameters.append(tuple(instructionsData.waypoints))
             
-        print gVars.currentProcess
     # returns the  instructions object
     def getInstructions(self):        #main.returninstructionsdataforgui
         return gVars.instructions

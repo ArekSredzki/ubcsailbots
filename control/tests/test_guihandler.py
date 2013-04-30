@@ -61,7 +61,7 @@ class TestGuiHandler(unittest.TestCase):
         else:
             seconds = (datetime.now() - gVars.taskStartTime).total_seconds()
             seconds = round(seconds)
-        self.assertEquals(self.gui_handler.getData(), {"telemetry":{"Heading": self.currdata.hog, "COG" : self.currdata.cog, "SOG" : self.currdata.sog, "AWA" : self.currdata.awa, "latitude": self.currdata.gps_coord.lat , "longitude" : self.currdata.gps_coord.long, "SheetPercent": self.currdata.sheet_percent, "Rudder":self.currdata.rudder},
+        self.assertEqual(self.gui_handler.getData(), {"telemetry":{"Heading": self.currdata.hog, "COG" : self.currdata.cog, "SOG" : self.currdata.sog, "AWA" : self.currdata.awa, "latitude": self.currdata.gps_coord.lat , "longitude" : self.currdata.gps_coord.long, "SheetPercent": self.currdata.sheet_percent, "Rudder":self.currdata.rudder},
                   "connectionStatus":{"gpsSat":self.currdata.num_sat,"HDOP":self.currdata.gps_accuracy, "automode":self.currdata.auto},
                   "currentProcess":{"name":gVars.currentProcess,"Starttime":seconds}})
         

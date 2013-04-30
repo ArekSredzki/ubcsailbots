@@ -26,6 +26,7 @@ SKMinLeft = None
 SKSecLeft = None
 SKMilliSecLeft = None
 SKCurrentWaypnt = None
+SKSheetSetting = 96
 currentColumn = 0
 logger = None
 arduino = None
