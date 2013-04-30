@@ -12,7 +12,6 @@ urls = (
     '/', 'overview',
     '/debug', 'debug',
     '/instructions', 'instructions',
-    '/health', 'health',
     '/api', 'api',
     '/debug/getlog','getlog',
     '/shutdown', 'shutdown',
@@ -69,18 +68,6 @@ class instructions:
          
         page.navigationBar = render.navigationBar(page)
         page.contentPane = render.instructions(page)
-        return render.base(page)
-class health:
-    def GET(self):
-        page = PageControl()
-
-        page.setTitle('UBC Sailbots - Boat Health')
-        page.addWidget('dataDisplayTableWidget')
-        # Note how we are calling 'format' prior to passing the page
-        page.format()
-        
-        page.navigationBar = render.navigationBar(page)
-        page.contentPane = render.health(page)
         return render.base(page)
 
 class api:
