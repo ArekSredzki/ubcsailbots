@@ -163,7 +163,7 @@ class StationKeeping(sailing_task.SailingTask):
                     gVars.logger.info("The current waypoint is " + str(gVars.SKCurrentWaypnt) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
                     self.pointtopoint.killPointToPoint()
                     gVars.logger.info("Commencing gybe.")
-                    if (gVars.currentData.awa < 0):
+                    if (gVars.currentData.awa > 0):
                         gVars.arduino.gybe(1)
                     else:
                         gVars.arduino.gybe(0)
@@ -197,7 +197,7 @@ class StationKeeping(sailing_task.SailingTask):
                     gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 2) % 4
                     self.pointtopoint.killPointToPoint()
                     gVars.logger.info("Station Keeping event is about to end. Gybing and exiting to waypoint " + str(gVars.SKCurrentWaypnt))
-                    if (gVars.currentData.awa < 0):
+                    if (gVars.currentData.awa > 0):
                         gVars.arduino.gybe(1)
                     else:
                         gVars.arduino.gybe(0)
