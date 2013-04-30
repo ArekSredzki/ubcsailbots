@@ -1,11 +1,11 @@
-import sys, os
-sys.path.append(os.path.abspath('../../'))
+import sys
+sys.path.append('..')
 import unittest
 from control import global_vars as gVars
 print sys.path
 from control.logic import roundbuoy
 from control import sailbot_logger
-import control.datatype.datatypes as datatypes
+from control.datatype import datatypes
 
 class TestPointToPoint(unittest.TestCase):
     def setUp(self):

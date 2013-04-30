@@ -8,7 +8,6 @@ import math
 from control.logic import standardcalc
 from control.logic import pointtopoint
 from control import global_vars as gVars
-from control.datatype import datatypes
 from control import sailing_task
 
 class RoundBuoy(sailing_task.SailingTask):
@@ -18,21 +17,27 @@ class RoundBuoy(sailing_task.SailingTask):
     MinimumDistance = 10
     
     def __init__(self):
-        self.pointtopoint = pointtopoint.PointToPoint
+        self.pointtopoint = pointtopoint.PointToPoint()
         
     def run(self, BuoyLoc, FinalLoc=None, port=True):
         rightBuoyPoint = self.findRightBuoyPoint(BuoyLoc)
         leftBuoyPoint = self.findLeftBuoyPoint(BuoyLoc)
-        
+        if FinalLoc == None:
+            FinalLoc = gVars.currentData.gps_coord
+            
         if(self.distanceBetweenBoatAndBuoyGreaterThanMinDistance(BuoyLoc)):
-            self.pointtopoint.run(BuoyLoc,None,self.MinimumDistance,False)
+            self.pointtopoint.run(BuoyLoc,None,self.MinimumDistance)
             
         if(port==True):
-            self.pointtopoint.run(rightBuoyPoint)
-            self.pointtopoint.run(leftBuoyPoint)
+            gVars.logger.info("Sailing To Right Buoy Point: " + repr(rightBuoyPoint))
+            self.pointtopoint.run(rightBuoyPoint, 0)
+            gVars.logger.info("Sailing To Left Buoy Point: " + repr(leftBuoyPoint))
+            self.pointtopoint.run(leftBuoyPoint, None, None, True)
         else:
-            self.pointtopoint.run(leftBuoyPoint)
-            self.pointtopoint.run(rightBuoyPoint)
+            gVars.logger.info("Sailing To Left Buoy Point: " + repr(leftBuoyPoint))
+            self.pointtopoint.run(leftBuoyPoint, 1)
+            gVars.logger.info("Sailing To Right Buoy Point: " + repr(rightBuoyPoint))
+            self.pointtopoint.run(rightBuoyPoint, None, None, True)
             
         self.pointtopoint.run(FinalLoc)
         
@@ -46,7 +51,7 @@ class RoundBuoy(sailing_task.SailingTask):
         
         return rightPoint
     
-    def findLeftBuoyPont(self, BuoyLoc):
+    def findLeftBuoyPoint(self, BuoyLoc):
         angleOfCourse = standardcalc.angleBetweenTwoCoords(gVars.currentData.gps_coord, BuoyLoc)
         
         LongitudalDistBetweenBuoyAndTarget = self.TargetToBuoyDist*math.cos(180-(self.TargetAndBuoyAngle+angleOfCourse))
