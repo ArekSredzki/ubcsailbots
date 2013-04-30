@@ -18,6 +18,7 @@ class StationKeeping(sailing_task.SailingTask):
     def __init__(self):
         self.pointtopoint = pointtopoint.PointToPoint()
         self.upwindWaypoint = 0
+        self.DISTANCE_TO_EDGE = 15
         
     def setWayPtCoords(self, boxCoords): #sets the waypoints of the challenge
         wayPtCoords = []    #order = top face, right face, bottom face, left face
@@ -165,7 +166,7 @@ class StationKeeping(sailing_task.SailingTask):
             self.setSheetPercentage(boxDistList)
             if (exiting == 0):
                 #gVars.logger.info("WPNSTUFF. Current waypoint lat: " + str(wayPtCoords[gVars.SKCurrentWaypnt].lat) + ". Current waypoint long: " + str(wayPtCoords[gVars.SKCurrentWaypnt].long) + ". current GPS lat: " + str(gVars.currentData.gps_coord.lat) + ". current GPS long: " + str(gVars.currentData.gps_coord.long))
-                if (((boxDistList[gVars.SKCurrentWaypnt] < 10) or (boxDistList[(gVars.SKCurrentWaypnt+2)%4] < 10)) and (inTurnZone == 0)):
+                if (((boxDistList[gVars.SKCurrentWaypnt] < self.DISTANCE_TO_EDGE) or (boxDistList[(gVars.SKCurrentWaypnt+2)%4] < self.DISTANCE_TO_EDGE)) and (inTurnZone == 0)):
                     self.pointtopoint.killPointToPoint()
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
                     gVars.logger.info("The boat is too close to an edge. Changing current waypoint.")
@@ -182,7 +183,7 @@ class StationKeeping(sailing_task.SailingTask):
                     thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], None, None, True, True))
                     inTurnZone = 1
                     turning = 1
-                elif (((boxDistList[gVars.SKCurrentWaypnt] > 10) and (boxDistList[(gVars.SKCurrentWaypnt+2)%4] > 10)) and (inTurnZone == 0) and standardcalc.isWPNoGoAWA(gVars.currentData.awa,gVars.currentData.hog, wayPtCoords[gVars.SKCurrentWaypnt], gVars.currentData.sog, gVars.currentData.gps_coord)):
+                elif (((boxDistList[gVars.SKCurrentWaypnt] > self.DISTANCE_TO_EDGE) and (boxDistList[(gVars.SKCurrentWaypnt+2)%4] > self.DISTANCE_TO_EDGE)) and (inTurnZone == 0) and standardcalc.isWPNoGoAWA(gVars.currentData.awa,gVars.currentData.hog, wayPtCoords[gVars.SKCurrentWaypnt], gVars.currentData.sog, gVars.currentData.gps_coord)):
                     gVars.logger.info("The boat is sailing upwind. Changing current waypoint.")
                     self.upwindWaypoint = gVars.SKCurrentWaypnt
                     gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 1) % 4
@@ -190,7 +191,7 @@ class StationKeeping(sailing_task.SailingTask):
                     self.pointtopoint.killPointToPoint()
                     thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], None, None, True, True))
                     turning = 1
-                elif ((boxDistList[(gVars.SKCurrentWaypnt+2)%4] > 10) and (inTurnZone == 1)):
+                elif ((boxDistList[(gVars.SKCurrentWaypnt+2)%4] > self.DISTANCE_TO_EDGE) and (inTurnZone == 1)):
                     inTurnZone = 0
                     turning = 0
                 if (turning == 0):
