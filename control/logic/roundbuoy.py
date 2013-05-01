@@ -22,7 +22,7 @@ class RoundBuoy(sailing_task.SailingTask):
     def run(self, BuoyLoc, FinalLoc=None, port=True):
         rightBuoyPoint = self.findRightBuoyPoint(BuoyLoc)
         leftBuoyPoint = self.findLeftBuoyPoint(BuoyLoc)
-        if FinalLoc == None:
+        if FinalLoc is None:
             FinalLoc = gVars.currentData.gps_coord
             
         if(self.distanceBetweenBoatAndBuoyGreaterThanMinDistance(BuoyLoc)):
@@ -45,8 +45,8 @@ class RoundBuoy(sailing_task.SailingTask):
         angleOfCourse = standardcalc.angleBetweenTwoCoords(gVars.currentData.gps_coord, BuoyLoc)
         angleFromEast = 90-angleOfCourse
         
-        LongitudalDistBetweenBuoyAndTarget = self.TargetToBuoyDist*math.cos(angleFromEast-self.TargetAndBuoyAngle)
-        LatitudalDistBetweenBuoyAndTarget = self.TargetToBuoyDist*math.sin(angleFromEast-self.TargetAndBuoyAngle)
+        LongitudalDistBetweenBuoyAndTarget = self.TargetToBuoyDist*math.cos(math.radians(angleFromEast-self.TargetAndBuoyAngle))
+        LatitudalDistBetweenBuoyAndTarget = self.TargetToBuoyDist*math.sin(math.radians(angleFromEast-self.TargetAndBuoyAngle))
         
         rightPoint = standardcalc.GPSDistAway(BuoyLoc, LongitudalDistBetweenBuoyAndTarget, LatitudalDistBetweenBuoyAndTarget)
         
@@ -56,8 +56,8 @@ class RoundBuoy(sailing_task.SailingTask):
         angleOfCourse = standardcalc.angleBetweenTwoCoords(gVars.currentData.gps_coord, BuoyLoc)
         angleFromEast = 90-angleOfCourse
         
-        LongitudalDistBetweenBuoyAndTarget = self.TargetToBuoyDist*math.cos(angleFromEast+self.TargetAndBuoyAngle)
-        LatitudalDistBetweenBuoyAndTarget = self.TargetToBuoyDist*math.sin(angleFromEast+self.TargetAndBuoyAngle)
+        LongitudalDistBetweenBuoyAndTarget = self.TargetToBuoyDist*math.cos(math.radians(angleFromEast+self.TargetAndBuoyAngle))
+        LatitudalDistBetweenBuoyAndTarget = self.TargetToBuoyDist*math.sin(math.radians(angleFromEast+self.TargetAndBuoyAngle))
         
         leftPoint = standardcalc.GPSDistAway(BuoyLoc, LongitudalDistBetweenBuoyAndTarget, LatitudalDistBetweenBuoyAndTarget)
         

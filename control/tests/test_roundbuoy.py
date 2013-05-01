@@ -7,10 +7,14 @@ from control.logic import roundbuoy
 from control import sailbot_logger
 from control.datatype import datatypes
 
-class TestPointToPoint(unittest.TestCase):
+class TestRoundBuoy(unittest.TestCase):
     def setUp(self):
         gVars.logger = sailbot_logger.Logger()
         self.round_buoy = roundbuoy.RoundBuoy()
         
-    def testFindFirstBuoyPoint(self):
+        
+    def testFindRightBuoyPoint(self):
+        gVars.currentData.gps_coord.lat = 0
+        gVars.currentData.gps_coord.long = 0
+        
         return
