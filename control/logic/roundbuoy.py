@@ -7,6 +7,7 @@ Created on Apr 14, 2013
 import math
 from control.logic import standardcalc
 from control.logic import pointtopoint
+from control.datatype import datatypes
 from control import global_vars as gVars
 from control import sailing_task
 
@@ -23,7 +24,9 @@ class RoundBuoy(sailing_task.SailingTask):
         rightBuoyPoint = self.findRightBuoyPoint(BuoyLoc)
         leftBuoyPoint = self.findLeftBuoyPoint(BuoyLoc)
         if FinalLoc is None:
-            FinalLoc = gVars.currentData.gps_coord
+            FinalLoc = datatypes.GPSCoordinate()
+            FinalLoc.lat = gVars.currentData.gps_coord.lat
+            FinalLoc.long = gVars.currentData.gps_coord.long
             
         if(self.distanceBetweenBoatAndBuoyGreaterThanMinDistance(BuoyLoc)):
             self.pointtopoint.run(BuoyLoc,None,self.MinimumDistance)
@@ -31,8 +34,10 @@ class RoundBuoy(sailing_task.SailingTask):
         if(port==True):
             gVars.logger.info("Sailing To Right Buoy Point: " + repr(rightBuoyPoint))
             self.pointtopoint.run(rightBuoyPoint, 0)
+            gVars.logger.info("Final Loc is:" + repr(FinalLoc))
             gVars.logger.info("Sailing To Left Buoy Point: " + repr(leftBuoyPoint))
             self.pointtopoint.run(leftBuoyPoint, None, None, True)
+            gVars.logger.info("Final Loc is:" + repr(FinalLoc))
         else:
             gVars.logger.info("Sailing To Left Buoy Point: " + repr(leftBuoyPoint))
             self.pointtopoint.run(leftBuoyPoint, 1)
