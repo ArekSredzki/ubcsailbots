@@ -10,16 +10,28 @@ import time
 sys.path.append("..")
 from datetime import datetime
 from control.logic import standardcalc
-from control.logic import pointtopoint
 from control import global_vars as gVars
 from control import sailing_task
+from control.parser import parsing
+from os import path
 
 class StationKeeping(sailing_task.SailingTask):
+    
+    DISTANCE_TO_EDGE = 15
+    AWA_METHOD = 2
+    SAIL_BY_APPARENT_WIND_ANGLE_MAX = 65
+    SAIL_BY_APPARENT_WIND_ANGLE_MIN = 34
+    CRITICAL_HEIGHT_ABOVE_BOX_MIDPOINT = 10
+    CRITICAL_HEIGHT_BELOW_BOX_MIDPOINT = 5
+    CRITICAL_HEIGHT_ABOVE_BOTTOM_OF_BOX = 15
+    
     def __init__(self):
-        self.pointtopoint = pointtopoint.PointToPoint()
         self.upwindWaypoint = 0
-        self.DISTANCE_TO_EDGE = 15
-        
+        self.sheetList = parsing.parse(path.join(path.dirname(__file__), 'apparentSheetSetting'))
+        self.oldTackingAngle = 0
+        self.oldSheetPercentageMultiplier = 0
+        self.oldAwa = 0
+
     def setWayPtCoords(self, boxCoords): #sets the waypoints of the challenge
         wayPtCoords = []    #order = top face, right face, bottom face, left face
         if (boxCoords[0].lat == boxCoords[1].lat):    #square
@@ -146,12 +158,17 @@ class StationKeeping(sailing_task.SailingTask):
         spdList = [0.75]*100
         boxDistList = self.getBoxDist(boxCoords)  #top, right, bottom, left
         meanSpd = 0.75   #from old arduino code
-        gVars.SKCurrentWaypnt = boxDistList.index(max(boxDistList))
-        thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], None, None, True, True))
-        gVars.logger.info("The current waypoint is " + str(gVars.SKCurrentWaypnt) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
+        self.currentWaypoint = boxDistList.index(max(boxDistList))
+        gVars.logger.info("The current waypoint is " + str(self.currentWaypoint) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
         gVars.logger.info("Station Keeping Initialization finished. Now running Station Keeping Challenge")
+        if (gVars.currentData.awa > 0):
+            self.upwindWaypoint = (self.currentWaypoint + 3) % 4
+            gVars.arduino.gybe(1)
+        else:
+            self.upwindWaypoint = (self.currentWaypoint + 1) % 4
+            gVars.arduino.gybe(0)
+            
         self.skrun(boxCoords, wayPtCoords, spdList, meanSpd)
-        return
         
     def skrun(self, boxCoords, wayPtCoords, spdList, meanSpd):
         exiting = 0
@@ -160,66 +177,60 @@ class StationKeeping(sailing_task.SailingTask):
         while ((gVars.kill_flagSK == 0)):
             time.sleep(.1)
             secLeft = 300 - (datetime.now() - gVars.taskStartTime).seconds
-            #gVars.logger.info("Time left is " + str(secLeft) +" seconds.")
             self.SKTimer()
             boxDistList = self.getBoxDist(boxCoords)
-            self.setSheetPercentage(boxDistList)
+            self.sailByApparentWind(boxDistList)
+            
             if (exiting == 0):
-                #gVars.logger.info("WPNSTUFF. Current waypoint lat: " + str(wayPtCoords[gVars.SKCurrentWaypnt].lat) + ". Current waypoint long: " + str(wayPtCoords[gVars.SKCurrentWaypnt].long) + ". current GPS lat: " + str(gVars.currentData.gps_coord.lat) + ". current GPS long: " + str(gVars.currentData.gps_coord.long))
-                if (((boxDistList[gVars.SKCurrentWaypnt] < self.DISTANCE_TO_EDGE) or (boxDistList[(gVars.SKCurrentWaypnt+2)%4] < self.DISTANCE_TO_EDGE)) and (inTurnZone == 0)):
-                    self.pointtopoint.killPointToPoint()
+                #gVars.logger.info("WPNSTUFF. Current waypoint lat: " + str(wayPtCoords[self.currentWaypoint].lat) + ". Current waypoint long: " + str(wayPtCoords[self.currentWaypoint].long) + ". current GPS lat: " + str(gVars.currentData.gps_coord.lat) + ". current GPS long: " + str(gVars.currentData.gps_coord.long))
+                if (((boxDistList[self.currentWaypoint] < self.DISTANCE_TO_EDGE) or (boxDistList[(self.currentWaypoint+2)%4] < self.DISTANCE_TO_EDGE)) and (inTurnZone == 0)):
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
                     gVars.logger.info("The boat is too close to an edge. Changing current waypoint.")
-                    gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 2) % 4
-                    gVars.logger.info("The current waypoint is " + str(gVars.SKCurrentWaypnt) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
+                    self.currentWaypoint = (self.currentWaypoint + 2) % 4
+                    gVars.logger.info("The current waypoint is " + str(self.currentWaypoint) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
                     gVars.logger.info("Commencing gybe.")
                     if (gVars.currentData.awa > 0):
-                        self.upwindWaypoint = (gVars.SKCurrentWaypnt + 3) % 4
+                        self.upwindWaypoint = (self.currentWaypoint + 3) % 4
                         gVars.arduino.gybe(1)
                     else:
-                        self.upwindWaypoint = (gVars.SKCurrentWaypnt + 1) % 4
+                        self.upwindWaypoint = (self.currentWaypoint + 1) % 4
                         gVars.arduino.gybe(0)
                         
-                    thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], None, None, True, True))
                     inTurnZone = 1
                     turning = 1
-                elif (((boxDistList[gVars.SKCurrentWaypnt] > self.DISTANCE_TO_EDGE) and (boxDistList[(gVars.SKCurrentWaypnt+2)%4] > self.DISTANCE_TO_EDGE)) and (inTurnZone == 0) and standardcalc.isWPNoGoAWA(gVars.currentData.awa,gVars.currentData.hog, wayPtCoords[gVars.SKCurrentWaypnt], gVars.currentData.sog, gVars.currentData.gps_coord)):
+                elif (((boxDistList[self.currentWaypoint] > self.DISTANCE_TO_EDGE) and (boxDistList[(self.currentWaypoint+2)%4] > self.DISTANCE_TO_EDGE)) and (inTurnZone == 0) and standardcalc.isWPNoGoAWA(gVars.currentData.awa,gVars.currentData.hog, wayPtCoords[self.currentWaypoint], gVars.currentData.sog, gVars.currentData.gps_coord)):
                     gVars.logger.info("The boat is sailing upwind. Changing current waypoint.")
-                    self.upwindWaypoint = gVars.SKCurrentWaypnt
-                    gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 1) % 4
-                    gVars.logger.info("The current waypoint is " + str(gVars.SKCurrentWaypnt) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
-                    self.pointtopoint.killPointToPoint()
-                    thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], None, None, True, True))
+                    self.upwindWaypoint = self.currentWaypoint
+                    self.currentWaypoint = (self.currentWaypoint + 1) % 4
+                    gVars.logger.info("The current waypoint is " + str(self.currentWaypoint) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
                     turning = 1
-                elif ((boxDistList[(gVars.SKCurrentWaypnt+2)%4] > self.DISTANCE_TO_EDGE) and (inTurnZone == 1)):
+                elif ((boxDistList[(self.currentWaypoint+2)%4] > self.DISTANCE_TO_EDGE) and (inTurnZone == 1)):
                     inTurnZone = 0
                     turning = 0
                 if (turning == 0):
                     spdList = standardcalc.changeSpdList(spdList)
                     meanSpd = standardcalc.meanOfList(spdList)
                     #gVars.logger.info("The mean speed of the boat is " + str(meanSpd) + " metres per second.")
-                if (boxDistList[gVars.SKCurrentWaypnt] >= meanSpd*(secLeft+0)):  #leeway of 0 seconds
+                if (boxDistList[self.currentWaypoint] >= meanSpd*(secLeft+0)):  #leeway of 0 seconds
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
                     gVars.logger.info("Distance left to travel 1:" + str(meanSpd*(secLeft+0)))
                     gVars.logger.info("Seconds Left:" + str(secLeft))
                     exiting = 1
                     gVars.logger.info("Station Keeping event is about to end. Exiting to current waypoint.")
-                elif (boxDistList[(gVars.SKCurrentWaypnt + 2) % 4] >= meanSpd*(secLeft+0+4) ): #leeway of 0 seconds, 4 seconds for gybe
+                elif (boxDistList[(self.currentWaypoint + 2) % 4] >= meanSpd*(secLeft+0+4) ): #leeway of 0 seconds, 4 seconds for gybe
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
                     gVars.logger.info("Distance left to travel 2:" + str(meanSpd*(secLeft+0+4)))
                     gVars.logger.info("Seconds Left:" + str(secLeft))
-                    gVars.SKCurrentWaypnt = (gVars.SKCurrentWaypnt + 2) % 4
-                    self.pointtopoint.killPointToPoint()
-                    gVars.logger.info("Station Keeping event is about to end. Gybing and exiting to waypoint " + str(gVars.SKCurrentWaypnt))
+                    self.currentWaypoint = (self.currentWaypoint + 2) % 4
+                    gVars.logger.info("Station Keeping event is about to end. Gybing and exiting to waypoint " + str(self.currentWaypoint))
                     if (gVars.currentData.awa > 0):
                         gVars.arduino.gybe(1)
                     else:
                         gVars.arduino.gybe(0)
-                    thread.start_new_thread(self.pointtopoint.run, (wayPtCoords[gVars.SKCurrentWaypnt], None, None, True, True))
                     exiting = 1
             else:
                 boxDistListNoAbs = self.getBoxDist(boxCoords, False)
-                if boxDistListNoAbs[gVars.SKCurrentWaypnt] < 0 and secLeft <= 0:
+                if boxDistListNoAbs[self.currentWaypoint] < 0 and secLeft <= 0:
                     gVars.kill_flagSK = 1;
                 
         if (gVars.kill_flagSK == 1):
@@ -230,15 +241,50 @@ class StationKeeping(sailing_task.SailingTask):
         gVars.SKMinLeft = 0
         gVars.SKSecLeft = 0
         gVars.SKMilliSecLeft = 0
-        gVars.SKCurrentWaypnt = None
+        self.currentWaypoint = None
     
-    def setSheetPercentage(self, boxDistList):
+    def sailByApparentWind(self, boxDistList):
         downwindWaypointIndex = (self.upwindWaypoint+2) % 4
-        boxHeight = boxDistList[(gVars.SKCurrentWaypnt+1)%4]+boxDistList[(gVars.SKCurrentWaypnt+3)%4]
+        boxHeight = boxDistList[(self.currentWaypoint+1)%4]+boxDistList[(self.currentWaypoint+3)%4]
         downwindHeight = boxDistList[downwindWaypointIndex]
         downwindHeightIdeal = boxHeight/2
-        if downwindHeight-5 > downwindHeightIdeal:
-            gVars.SKSheetSetting = 13
+        
+        tackAngleMultiplier = self.calcTackAngleMultiplier()
+        tackingAngle = self.calcTackingAngle(downwindHeight, downwindHeightIdeal)
+        sheetPercentageMultiplier = self.calcDownwindPercent(downwindHeight, downwindHeightIdeal)*.01
+        
+        if (self.isThereChangeInDownwindHeightOrTackingAngleOrAwa):
+            gVars.arduino.adjust_sheets(round(sheetPercentageMultiplier*self.sheetList[abs(int(gVars.currentData.awa))][gVars.currentColumn]))
+            gVars.arduino.steer(self.AWA_METHOD,tackAngleMultiplier*tackingAngle)
+    
+    def isThereChangeInDownwindHeightOrTackingAngleOrAwa(self, tackingAngle, sheetPercentageMultiplier):
+        if gVars.currentData.awa != self.oldAwa or tackingAngle != self.oldTackingAngle or sheetPercentageMultiplier != self.oldSheetPercentageMultiplier:
+            self.updateOldData(tackingAngle, sheetPercentageMultiplier)
+            return True
         else:
-            downwindPercent = (downwindHeight-5)/downwindHeightIdeal
-            gVars.SKSheetSetting = 100 - abs(int(downwindPercent*100)) + 13
+            return False
+        
+    def updateOldData(self, tackingAngle, sheetPercentageMultiplier):
+        self.oldTackingAngle = tackingAngle
+        self.oldAwa = gVars.currentData.awa
+        self.oldSheetPercentageMultiplier = sheetPercentageMultiplier
+        
+    def calcTackAngleMultiplier(self):
+        if self.upwindWaypoint == (self.currentWaypoint - 1) % 4:
+            return 1
+        else:
+            return -1
+        
+    def calcTackingAngle(self, downwindHeight, downwindHeightIdeal):
+        if downwindHeight-10 > downwindHeightIdeal:
+            return self.SAIL_BY_APPARENT_WIND_ANGLE_MAX
+        else:
+            return self.SAIL_BY_APPARENT_WIND_ANGLE_MAX - (float(downwindHeightIdeal+10-downwindHeight)/float(downwindHeightIdeal-5))*(self.SAIL_BY_APPARENT_WIND_ANGLE_MAX-self.SAIL_BY_APPARENT_WIND_ANGLE_MIN)
+    
+    def calcDownwindPercent(self, downwindHeight, downwindHeightIdeal):
+        if downwindHeight-self.CRITICAL_HEIGHT_ABOVE_BOX_MIDPOINT > downwindHeightIdeal:
+            return 0
+        elif downwindHeight-self.CRITICAL_HEIGHT_ABOVE_BOTTOM_OF_BOX > 0:
+            return float(downwindHeightIdeal+self.CRITICAL_HEIGHT_ABOVE_BOX_MIDPOINT-downwindHeight)/float(downwindHeightIdeal-self.CRITICAL_HEIGHT_BELOW_BOX_MIDPOINT)*100
+        else:
+            return 100

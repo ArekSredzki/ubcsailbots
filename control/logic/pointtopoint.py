@@ -38,14 +38,13 @@ class PointToPoint(sailing_task.SailingTask):
     # --- Point to Point ---
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
     # Output: Nothing
-    def run(self, Dest, initTack = None, ACCEPTANCE_DISTANCE = None, noTack = False, stationKeeping = False):
+    def run(self, Dest, initTack = None, ACCEPTANCE_DISTANCE = None, noTack = False):
         time.sleep(1.0)
         gVars.logger.info("Started point to pointAWA toward "+repr(Dest))
         self.Dest = Dest
         self.updateData()
         gVars.kill_flagPTP = 0
         self.initialTack = initTack
-        self.stationKeeping = stationKeeping
         if ACCEPTANCE_DISTANCE == None:
             ACCEPTANCE_DISTANCE = sVars.ACCEPTANCE_DISTANCE_DEFAULT
             
@@ -117,18 +116,11 @@ class PointToPoint(sailing_task.SailingTask):
             gVars.logger.info("Tacked from 80 degrees")
 
     def adjustSheetsAndSteerByCompass(self):
-        if self.stationKeeping:
-            gVars.arduino.adjust_sheets(gVars.SKSheetSetting)
-        else:
-            gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
-        
+        gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
         gVars.arduino.steer(self.COMPASS_METHOD,self.angleBetweenCoords)  
             
     def adjustSheetsAndSteerByApparentWind(self, tackAngleMultiplier):
-        if self.stationKeeping:
-            gVars.arduino.adjust_sheets(gVars.SKSheetSetting)
-        else:
-            gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
+        gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
         gVars.arduino.steer(self.AWA_METHOD,tackAngleMultiplier*self.TACKING_ANGLE)
         
     def updateData(self):
