@@ -3,7 +3,6 @@ import sys, os
 sys.path.append(os.path.abspath('../../'))
 import unittest
 from control import global_vars as gVars
-print sys.path
 from control.logic import pointtopoint
 from control import sailbot_logger
 import control.datatype.datatypes as datatypes
