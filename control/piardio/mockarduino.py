@@ -73,6 +73,7 @@ class arduino:
     def gybe(self, x):
         tempspeed = self.arduinoData.sog
         self.arduinoData.sog = 0
+        self.arduinoData.hog = standardcalc.boundTo180(self.arduinoData.hog+180)
         time.sleep(4)
         self.arduinoData.sog = tempspeed
     

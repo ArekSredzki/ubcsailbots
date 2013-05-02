@@ -42,7 +42,7 @@ class LongDistance(sailing_task.SailingTask):
                 
                 # Startpoint does not require a buoy rounding
                 if waypoint.coordinate != startPoint.coordinate:
-                    self.pointtopoint.run(waypoint.coordinate, None, 20)
+                    self.pointtopoint.run(waypoint.coordinate, 10, 20)
                     # Currently will round all buoys port.  May need to be changed for course outline
                     self.roundbuoy.run(waypoint.coordinate)
                 else:
