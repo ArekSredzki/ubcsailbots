@@ -205,6 +205,7 @@ class StationKeeping(sailing_task.SailingTask):
                     gVars.logger.info("The current waypoint is " + str(self.currentWaypoint) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
                     turning = 1
                 elif ((boxDistList[(self.currentWaypoint+2)%4] > self.DISTANCE_TO_EDGE) and (inTurnZone == 1)):
+                    gVars.logger.info("Boat out of turn zone, checking for boundaries again. Distance to Edge: " + str(boxDistList[(self.currentWaypoint+2)%4]))
                     inTurnZone = 0
                     turning = 0
                 if (turning == 0):
@@ -253,7 +254,7 @@ class StationKeeping(sailing_task.SailingTask):
         tackingAngle = self.calcTackingAngle(downwindHeight, downwindHeightIdeal)
         sheetPercentageMultiplier = self.calcDownwindPercent(downwindHeight, downwindHeightIdeal)*.01
         
-        if (self.isThereChangeInDownwindHeightOrTackingAngleOrAwa):
+        if (self.isThereChangeInDownwindHeightOrTackingAngleOrAwa(tackingAngle, sheetPercentageMultiplier)):
             gVars.arduino.adjust_sheets(round(sheetPercentageMultiplier*self.sheetList[abs(int(gVars.currentData.awa))][gVars.currentColumn]))
             gVars.arduino.steer(self.AWA_METHOD,tackAngleMultiplier*tackingAngle)
     
@@ -270,7 +271,7 @@ class StationKeeping(sailing_task.SailingTask):
         self.oldSheetPercentageMultiplier = sheetPercentageMultiplier
         
     def calcTackAngleMultiplier(self):
-        if self.upwindWaypoint == (self.currentWaypoint - 1) % 4:
+        if self.upwindWaypoint == (self.currentWaypoint + 3) % 4:
             return 1
         else:
             return -1
