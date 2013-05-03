@@ -23,6 +23,8 @@ class RoundBuoy(sailing_task.SailingTask):
         self.pointtopoint = pointtopoint.PointToPoint()
         
     def run(self, BuoyLoc, FinalLoc=None, port=True):
+        gVars.kill_flagRB = 0
+        
         rightBuoyPoint = self.findRightBuoyPoint(BuoyLoc)
         leftBuoyPoint = self.findLeftBuoyPoint(BuoyLoc)
         rightInitialPoint = self.findRightInitialPoint(BuoyLoc)
@@ -36,25 +38,32 @@ class RoundBuoy(sailing_task.SailingTask):
         if(self.distanceBetweenBoatAndBuoyGreaterThanMinDistance(BuoyLoc)):
             if(port):
                 gVars.logger.info("Sailing To Right Initial Point: " + repr(rightInitialPoint))
-                self.pointtopoint.run(rightInitialPoint)
+                if(gVars.kill_flagRB == 0):
+                    self.pointtopoint.run(rightInitialPoint)
             else:
                 gVars.logger.info("Sailing To Left Initial Point: " + repr(leftInitialPoint))
-                self.pointtopoint.run(leftInitialPoint)
+                if(gVars.kill_flagRB == 0):
+                    self.pointtopoint.run(leftInitialPoint)
             
         if(port==True):
             gVars.logger.info("Sailing To Right Buoy Point: " + repr(rightBuoyPoint))
-            self.pointtopoint.run(rightBuoyPoint, 0)
+            if(gVars.kill_flagRB == 0):
+                self.pointtopoint.run(rightBuoyPoint, 0)
             #gVars.logger.info("Final Loc is:" + repr(FinalLoc))
             gVars.logger.info("Sailing To Left Buoy Point: " + repr(leftBuoyPoint))
-            self.pointtopoint.run(leftBuoyPoint, None, None, True)
+            if(gVars.kill_flagRB == 0):
+                self.pointtopoint.run(leftBuoyPoint, None, None, True)
             #gVars.logger.info("Final Loc is:" + repr(FinalLoc))
         else:
             gVars.logger.info("Sailing To Left Buoy Point: " + repr(leftBuoyPoint))
-            self.pointtopoint.run(leftBuoyPoint, 1)
+            if(gVars.kill_flagRB == 0):
+                self.pointtopoint.run(leftBuoyPoint, 1)
             gVars.logger.info("Sailing To Right Buoy Point: " + repr(rightBuoyPoint))
-            self.pointtopoint.run(rightBuoyPoint, None, None, True)
-            
-        self.pointtopoint.run(FinalLoc)
+            if(gVars.kill_flagRB == 0):
+                self.pointtopoint.run(rightBuoyPoint, None, None, True)
+        
+        if(gVars.kill_flagRB == 0):
+            self.pointtopoint.run(FinalLoc)
         
     def findRightBuoyPoint(self, BuoyLoc):
         angleOfCourse = standardcalc.angleBetweenTwoCoords(gVars.currentData.gps_coord, BuoyLoc)
