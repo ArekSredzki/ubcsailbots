@@ -4,7 +4,7 @@ function MapWidget(listener){
     this.default_lat = 49.27628;
     this.default_lon = -123.17561;
     this.default_radius = 1000;
-    this.zoom = 14;
+    this.zoom = 16;
 
     this.map; //complex object of type OpenLayers.Map
     this.boatLayer; //Layer for the boat marker
