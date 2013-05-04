@@ -71,9 +71,9 @@ def run(argv=None):
         
 def getTaskObject(process):
     if (process == sVars.GO_AROUND_PORT):
-        return roundbuoy.RoundBuoy()
+        return roundbuoy.RoundBuoy(True)
     elif (process == sVars.GO_AROUND_STBD):
-        return roundbuoy.RoundBuoy()
+        return roundbuoy.RoundBuoy(False)
     elif (process == sVars.GO_TO):
         return pointtopoint.PointToPoint()
     elif (process == sVars.NAVIGATION_CHALLENGE):

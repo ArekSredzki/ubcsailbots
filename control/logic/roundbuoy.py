@@ -19,10 +19,11 @@ class RoundBuoy(sailing_task.SailingTask):
     InitialSailToBuoyDist = math.sqrt(math.pow(7,2)+math.pow(7,2))
     MinimumDistance = 10
     
-    def __init__(self):
+    def __init__(self, port=True):
+        self.port = port
         self.pointtopoint = pointtopoint.PointToPoint()
         
-    def run(self, BuoyLoc, FinalLoc=None, port=True):
+    def run(self, BuoyLoc, FinalLoc=None):
         gVars.kill_flagRB = 0
         
         rightBuoyPoint = self.findRightBuoyPoint(BuoyLoc)
@@ -36,7 +37,7 @@ class RoundBuoy(sailing_task.SailingTask):
             FinalLoc.long = gVars.currentData.gps_coord.long
                         
         if(self.distanceBetweenBoatAndBuoyGreaterThanMinDistance(BuoyLoc)):
-            if(port):
+            if(self.port):
                 gVars.logger.info("Sailing To Right Initial Point: " + repr(rightInitialPoint))
                 if(gVars.kill_flagRB == 0):
                     self.pointtopoint.run(rightInitialPoint)
@@ -45,7 +46,7 @@ class RoundBuoy(sailing_task.SailingTask):
                 if(gVars.kill_flagRB == 0):
                     self.pointtopoint.run(leftInitialPoint)
             
-        if(port==True):
+        if(self.port==True):
             gVars.logger.info("Sailing To Right Buoy Point: " + repr(rightBuoyPoint))
             if(gVars.kill_flagRB == 0):
                 self.pointtopoint.run(rightBuoyPoint, 0)
