@@ -15,7 +15,7 @@ class TestStationKeeping(unittest.TestCase):
         gVars.logger = sailbot_logger.Logger()
         self.stationKeeping = stationkeeping.StationKeeping()
     
-    # These tests are taken directly from don's example email.    
+    # These tests are taken directly from Don's example email.    
     def testCalcDownwindPercent0Percent(self):
         downwindPercent = self.stationKeeping.calcDownwindPercent(30, 20)
         self.assertEquals(downwindPercent,0)
@@ -32,6 +32,7 @@ class TestStationKeeping(unittest.TestCase):
         downwindPercent = self.stationKeeping.calcDownwindPercent(40, 20)
         self.assertEquals(downwindPercent,0)
         
+    # These tests reflect a proportional awa setting.  Proportions may be changed.
     def testCalcTackingAngleEquals65(self):
         tackingAngle = self.stationKeeping.calcTackingAngle(30, 20)
         self.assertEquals(round(tackingAngle), 65)
