@@ -62,7 +62,7 @@ function addWaypoint(){
 	var newWaypoint = new Array()
 	newWaypoint [0] = overviewData.telemetry.latitude;
 	newWaypoint [1] = overviewData.telemetry.longitude;
-	newWaypoint [2] = "pointToPoint";
+	newWaypoint [2] = getDefaultChallengeWptType();
 	
 	
 	instructions.waypoints.push(newWaypoint); 
@@ -114,7 +114,8 @@ function updateWaypointDataDisplayTable()
 		
 		$('#lat'+(i+1)).val("");
 		$('#lon'+(i+1)).val("");
-		$('#waypointtype'+(i+1)).val("none");
+		var waypointType = getDefaultChallengeWptType();
+		$('#waypointtype'+(i+1)).val(waypointType);
 	}
 	
 	for (var i=0; i<instructions.waypoints.length; i++){
@@ -124,6 +125,29 @@ function updateWaypointDataDisplayTable()
 	}
 }
 
+function  getDefaultChallengeWptType(){
+  switch (instructions.challenge){
+    case "navigation":
+      return "nav_start_port";
+    break;
+    
+    case "stationkeeping":
+      return "station_keeping";
+    break;
+    
+    case "longdistance":
+      return "ld_first";
+    break;
+    
+    case "chaserace":
+    //**TODO
+    break;
+    
+    default:
+      return "pointToPoint" ;
+  }
+
+}
 function updateBoundaryDataDisplayTable(){
 		// First remove all rows from table
 	$("#boundaryListTable .boundaryRow").remove();
