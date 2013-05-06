@@ -136,7 +136,15 @@ class StationKeeping(sailing_task.SailingTask):
             boxDistList = [topDist, rightDist, bottomDist, leftDist]
             
         return boxDistList
-    
+    def getStartDirection(self, wayPtCoords):
+      distances=[]
+      for i in range(0,4):
+        dist = standardcalc.distBetweenTwoCoords(gVars.currentData.gps_coord, wayPtCoords[i])
+        distances.append(dist)
+      
+      direction = (distances.index(min(distances))+2)%4
+      return direction
+                                                                                            
     def run(self, topLeftWaypnt, topRightWaypnt, botLeftWaypnt, botRightWaypnt):
         
         topLeftCoord = topLeftWaypnt.coordinate
@@ -150,20 +158,14 @@ class StationKeeping(sailing_task.SailingTask):
         
         spdList = [0.75]*100
         boxDistList = self.getBoxDist(boxCoords)  #top, right, bottom, left
-        meanSpd = 0.75   #from old arduino code
-        self.currentWaypoint = boxDistList.index(max(boxDistList))
         
+        meanSpd = 0.75   #from old arduino code
+        self.currentWaypoint = self.getStartDirection(wayPtCoords)
+        self.printDistanceLogs(boxDistList)
+
         gVars.logger.info("The current waypoint is " + str(self.currentWaypoint) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
         gVars.logger.info("Station Keeping Initialization finished. Now running Station Keeping Challenge")
         
-        # This could be passed in with a parameter
-        if (gVars.currentData.awa > 0):
-            self.upwindWaypoint = (self.currentWaypoint + 3) % 4
-            gVars.arduino.gybe(1)
-        else:
-            self.upwindWaypoint = (self.currentWaypoint + 1) % 4
-            gVars.arduino.gybe(0)
-            
         self.stationKeep(boxCoords, wayPtCoords, spdList, meanSpd)
         
     def stationKeep(self, boxCoords, wayPtCoords, spdList, meanSpd):
@@ -182,7 +184,7 @@ class StationKeeping(sailing_task.SailingTask):
             self.sailByApparentWind(boxDistList)
             self.printDistanceLogs(boxDistList)
             if (not exiting):
-                if (((boxDistList[self.currentWaypoint] < self.DISTANCE_TO_EDGE) or (boxDistList[(self.currentWaypoint+2)%4] < self.DISTANCE_TO_EDGE)) and (inTurnZone == False)):
+                if ((boxDistList[self.currentWaypoint] < self.DISTANCE_TO_EDGE) and (inTurnZone == False)):
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
                     gVars.logger.info("The boat is too close to an edge. Changing current waypoint.")
                     
@@ -199,14 +201,7 @@ class StationKeeping(sailing_task.SailingTask):
                         gVars.arduino.gybe(0)
                         
                     inTurnZone = True
-                    turning = True
-                elif (((boxDistList[self.currentWaypoint] > self.DISTANCE_TO_EDGE) and (boxDistList[(self.currentWaypoint+2)%4] > self.DISTANCE_TO_EDGE)) and (inTurnZone == False) and standardcalc.isWPNoGoAWA(gVars.currentData.awa,gVars.currentData.hog, wayPtCoords[self.currentWaypoint], gVars.currentData.sog, gVars.currentData.gps_coord)):
-                    gVars.logger.info("The boat is sailing upwind. Changing current waypoint.")
-                    
-                    self.upwindWaypoint = self.currentWaypoint
-                    self.currentWaypoint = (self.currentWaypoint + 1) % 4
-                    gVars.logger.info("The current waypoint is " + str(self.currentWaypoint) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
-                    turning = True
+                    turning = True            
                 elif ((boxDistList[(self.currentWaypoint+2)%4] > self.DISTANCE_TO_EDGE) and (inTurnZone == True)):
                     gVars.logger.info("Boat out of turn zone, checking for boundaries again. Distance to Edge: " + str(boxDistList[(self.currentWaypoint+2)%4]))
                     
@@ -278,9 +273,9 @@ class StationKeeping(sailing_task.SailingTask):
         
     def calcTackAngleMultiplier(self):
         if self.upwindWaypoint == (self.currentWaypoint + 3) % 4:
-            return -1
-        else:
             return 1
+        else:
+            return -1
         
     def calcTackingAngle(self, downwindHeight, downwindHeightIdeal):
         if downwindHeight-10 > downwindHeightIdeal:
@@ -305,4 +300,4 @@ class StationKeeping(sailing_task.SailingTask):
     def printHeightLog(self,downwindHeight,downwindHeightIdeal ):
       if (time.time()-self.heightLogTime >self.LOG_UPDATE_INTERVAL):
         self.heightLogTime = time.time()
-        gVars.logger.info("HEIGHT: " + str(round(downwindHeight,0)) +"Ideal Height: " + str(round(downwindHeightIdeal,0)) )
+        gVars.logger.info("HEIGHT: " + str(int(downwindHeight)) +"  Ideal Height: " + str(int(downwindHeightIdeal)) )
