@@ -45,21 +45,20 @@ class TestWaypointCoords(unittest.TestCase):
   def testNorthWpt(self):
     northWpt = datatypes.GPSCoordinate(50,-122.5)
     self.assertEqual(self.waypoints[0].lat,northWpt.lat)
-    self.assertEqual(self.waypoints[0].long,northWpt.long) 
+    self.assertEqual(round(self.waypoints[0].long,1),northWpt.long) 
   def testEastWpt(self):
     eastWpt = datatypes.GPSCoordinate(49.5,-122)
     self.assertEqual(self.waypoints[1].lat,eastWpt.lat)
     self.assertEqual(self.waypoints[1].long,eastWpt.long)     
   def testSouthWpt(self):
     southWpt = datatypes.GPSCoordinate(49,-122.5)
-    self.assertEqual(self.waypoints[2].long,southWpt.long)         
+    self.assertEqual(round(self.waypoints[2].long,1),southWpt.long)         
     self.assertEqual(self.waypoints[2].lat,southWpt.lat)
   def testWestWpt(self):
     eastWpt = datatypes.GPSCoordinate(49.5,-123)
     self.assertEqual(self.waypoints[3].lat,eastWpt.lat)
     self.assertEqual(self.waypoints[3].long,eastWpt.long)             
       
-@unittest.skip("skip while testing above code")      
 class TestStationKeeping(unittest.TestCase):
     def setUp(self):
         gVars.logger = sailbot_logger.Logger()
@@ -82,20 +81,20 @@ class TestStationKeeping(unittest.TestCase):
         self.assertEquals(downwindPercent,0)
         
     # These tests reflect a proportional awa setting.  Proportions may be changed.
-    def testCalcTackingAngleEquals65(self):
+    def testCalcTackingAngleEquals120(self):
         tackingAngle = self.stationKeeping.calcTackingAngle(30, 20)
-        self.assertEquals(round(tackingAngle), 65)
+        self.assertEquals(round(tackingAngle), 120)
     
     def testCalcTackingAngleEquals34(self):
         tackingAngle = self.stationKeeping.calcTackingAngle(15, 20)
         self.assertEquals(round(tackingAngle), 34)
     
-    def testCalcTackingAngleEquals48(self):
+    def testCalcTackingAngleEquals74(self):
         tackingAngle = self.stationKeeping.calcTackingAngle(22, 20)
-        self.assertEquals(round(tackingAngle), 48)
+        self.assertEquals(round(tackingAngle), 74)
     
-    def testCalcTackingAngleEquals65WithHighNum(self):
+    def testCalcTackingAngleEquals120WithHighNum(self):
         tackingAngle = self.stationKeeping.calcTackingAngle(40, 20)
-        self.assertEquals(round(tackingAngle), 65)
+        self.assertEquals(round(tackingAngle), 120)
         
         
