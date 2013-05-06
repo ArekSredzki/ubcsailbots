@@ -23,6 +23,7 @@ class StationKeeping(sailing_task.SailingTask):
     CRITICAL_HEIGHT_ABOVE_BOX_MIDPOINT = 10
     CRITICAL_HEIGHT_BELOW_BOX_MIDPOINT = 5
     CRITICAL_HEIGHT_ABOVE_BOTTOM_OF_BOX = 15
+    LOG_UPDATE_INTERVAL=2
     
     def __init__(self):
         self.upwindWaypoint = 0
@@ -30,6 +31,8 @@ class StationKeeping(sailing_task.SailingTask):
         self.oldTackingAngle = 0
         self.oldSheetPercentageMultiplier = 0
         self.oldAwa = 0
+        self.heightLogTime =0
+        self.distanceLogTime=0
 
     def setWayPtCoords(self, boxCoords): #sets the waypoints of the challenge
         wayPtCoords = []    #order = top face, right face, bottom face, left face
@@ -177,7 +180,7 @@ class StationKeeping(sailing_task.SailingTask):
             self.SKTimer()
             boxDistList = self.getBoxDist(boxCoords)
             self.sailByApparentWind(boxDistList)
-            
+            self.printDistanceLogs(boxDistList)
             if (not exiting):
                 if (((boxDistList[self.currentWaypoint] < self.DISTANCE_TO_EDGE) or (boxDistList[(self.currentWaypoint+2)%4] < self.DISTANCE_TO_EDGE)) and (inTurnZone == False)):
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
@@ -251,6 +254,7 @@ class StationKeeping(sailing_task.SailingTask):
         boxHeight = boxDistList[(self.currentWaypoint+1)%4]+boxDistList[(self.currentWaypoint+3)%4]
         downwindHeight = boxDistList[downwindWaypointIndex]
         downwindHeightIdeal = boxHeight/2
+        self.printHeightLog(downwindHeight,downwindHeightIdeal)
         
         tackAngleMultiplier = self.calcTackAngleMultiplier()
         tackingAngle = self.calcTackingAngle(downwindHeight, downwindHeightIdeal)
@@ -291,3 +295,14 @@ class StationKeeping(sailing_task.SailingTask):
             return float(downwindHeightIdeal+self.CRITICAL_HEIGHT_ABOVE_BOX_MIDPOINT-downwindHeight)/float(downwindHeightIdeal-self.CRITICAL_HEIGHT_BELOW_BOX_MIDPOINT)*100
         else:
             return 100
+    def printDistanceLogs(self, boxDistList):
+      if (time.time()-self.distanceLogTime >self.LOG_UPDATE_INTERVAL):
+        self.distanceLogTime = time.time()
+        gVars.logger.info(str(int(boxDistList[0]))+" - Top dist  ")
+        gVars.logger.info(str(int(boxDistList[1]))+" - Right Dist: ")
+        gVars.logger.info(str(int(boxDistList[2]))+" - Bot Dist: ")
+        gVars.logger.info(str(int(boxDistList[3]))+" - Left Dist: ")
+    def printHeightLog(self,downwindHeight,downwindHeightIdeal ):
+      if (time.time()-self.heightLogTime >self.LOG_UPDATE_INTERVAL):
+        self.heightLogTime = time.time()
+        gVars.logger.info("HEIGHT: " + str(round(downwindHeight,0)) +"Ideal Height: " + str(round(downwindHeightIdeal,0)) )
