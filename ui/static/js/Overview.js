@@ -19,6 +19,7 @@ function getlog(){
         url: "api?request=overviewData",
         type: 'GET',
         dataType: "json",
+        timeout: 3000,
         success: function (overviewData) {
           console.log(overviewData);
 	        $("#telemetry-speedOverGroundCell").text(overviewData.telemetry.SOG.toFixed(parseInt(2))+" m/s");

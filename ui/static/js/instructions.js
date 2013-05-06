@@ -32,6 +32,7 @@ function getlog(){
         url: "api?request=overviewData",
         type: 'GET',
         dataType: "json",
+        timeout: 3000,
         success: function (data) {
         	overviewData=data;
     			mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
@@ -102,9 +103,7 @@ function updateWaypointDataDisplayTable()
 	        		'<td>type:</td>' +
 	        		'<td><select id="waypointtype$NUM" onchange="updateWaypoints($NUM)"><option value="none"></option><option value="pointToPoint">Point to Point</option><option value="roundBuoyPort">Round BuoyPort</option><option value="roundBuoyStbd">Round Buoy Stbd</option><option value="ld_start_finish">ld Start Finish</option><option value="ld_first">ld First</option><option value="ld_second">ld Second</option><option value="nav_first">nav First</option><option value="nav_start_port">nav start port</option><option value="nav_start_stbd">nav start stb</option><option value="station_keeping">Station Keeping</option></select></td>' +
 	        		'<td><button id="deleteWaypointButton$NUM" onclick="deleteWaypoint($NUM)">X</button></td>' +
-	 '</tr>';
-	 console.log(waypointRowString);
-	
+	 '</tr>';	
 	// Foreach value in the length (including if there is no values), add a waypoint marker
 	for (var i=0; i<instructions.waypoints.length; i++)
 	{

@@ -13,6 +13,7 @@ function getDebugLog(){
   		url: window.location.pathname + '/getlog',
   		type: 'GET',
   		dataType: "text",
+  		timeout: 3000,
   		success: function (data) {
   		  if (data!=""){
   			 logMessage(data, '#debugLogConsole');
