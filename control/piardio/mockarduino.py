@@ -15,7 +15,7 @@ from control.logic import standardcalc
 import random
 import math
 import time
-
+import control.global_vars as gVars
 EARTH_RADIUS = 6378140
 
 # Parameters which may be changed to affect how the simulation runs
@@ -67,13 +67,14 @@ class arduino:
             hog -= 100
             
         hog = standardcalc.boundTo180(hog)
-        
+        gVars.logger.info("--------TACK----------")
         self.arduinoData.hog = hog
     
     def gybe(self, x):
         tempspeed = self.arduinoData.sog
         self.arduinoData.sog = 0
         self.arduinoData.hog = standardcalc.boundTo180(self.arduinoData.hog+180)
+        gVars.logger.info("-------GYBE-----------")
         time.sleep(4)
         self.arduinoData.sog = tempspeed
     
@@ -82,7 +83,7 @@ class arduino:
         
     def steer(self, method, degree):
         if method == 2:
-            self.arduinoData.hog = self.arduinoData.awa + degree
+            #self.arduinoData.hog = self.arduinoData.awa + degree
             self.steerByApparentWind = True
             self.steerByApparentWindAngle = degree
         else:
@@ -101,7 +102,7 @@ class arduino:
         # Updates slight variation in HOG      
         self.arduinoData.hog += (round(random.uniform(-.1, .1), 2) + self.currplusmin)
         if self.steerByApparentWind:
-            self.arduinoData.hog = self.arduinoData.awa + self.steerByApparentWindAngle
+            self.arduinoData.hog = self.arduinoData.hog + self.arduinoData.awa + self.steerByApparentWindAngle
     
     def _updateCOG(self):
         # Sets the course over ground

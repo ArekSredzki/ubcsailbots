@@ -15,6 +15,7 @@ from control.datatype import datatypes
 from serial.tools import list_ports
 from control.logic import standardcalc
 import time
+import control.global_vars as gVars
 
 SERIAL_PORT = '/dev/ttyACM0'
 BAUD = 57600
@@ -80,6 +81,7 @@ class arduino:
         #    "TACK,<Weather>, <WindwardSideOfBoat>"
         wr = "TACK,{w},{t}".format(w=weather, t=tack)
         print wr
+        gVars.logger.info("------------TACK------------")
         self.ser.write(wr)
         
         if(weather == 0):
@@ -98,6 +100,7 @@ class arduino:
         #    "GYBE,<WindwardSideOfBoat>"
         wr = "GYBE,{t}".format(t=tack)
         self.ser.write(wr)
+        gVars.logger.info("------------GYBE-------------")
         time.sleep(4)
     
     # Returns the latest array of all info from the arduino
