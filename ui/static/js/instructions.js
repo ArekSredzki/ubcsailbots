@@ -38,7 +38,7 @@ function getlog(){
     	    setTimeout('getlog()',1000);
     	    console.log(overviewData);
 	     },
-	     fail : function(){
+	     error : function(){
 	       setTimeout('getlog()',1000);
 	     }
 	});

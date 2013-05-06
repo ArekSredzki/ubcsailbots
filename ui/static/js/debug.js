@@ -21,7 +21,7 @@ function getDebugLog(){
         	// Make sure that we automatically scroll to the bottom 
          setTimeout('getDebugLog()',1000);
       },
-      fail: function(){
+      error: function(){
           setTimeout('getDebugLog()',1000);
       }
 	});

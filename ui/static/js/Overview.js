@@ -20,7 +20,7 @@ function getlog(){
         type: 'GET',
         dataType: "json",
         success: function (overviewData) {
-        console.log(overviewData);
+          console.log(overviewData);
 	        $("#telemetry-speedOverGroundCell").text(overviewData.telemetry.SOG.toFixed(parseInt(2))+" m/s");
 	        $("#telemetry-windDirectionCell").text(overviewData.telemetry.AWA.toFixed(parseInt(0))+ " degrees");
 	        $("#telemetry-latitudeCell").text(overviewData.telemetry.latitude.toFixed(parseInt(5)));
@@ -47,7 +47,7 @@ function getlog(){
 		        date.setSeconds(timeInSeconds);
 		       	var time = date.toTimeString().substr(0,8);
 		      	$("#currentProcess-elapsedTimeCell").text(time);
-		 	}
+		 	    }
 	        // Update map widget
 	     	mapWidget.update_boat_location(overviewData.telemetry.longitude, overviewData.telemetry.latitude);
 	     	
@@ -57,7 +57,7 @@ function getlog(){
 	     	compassWidget.setWindDirection(overviewData.telemetry.AWA);
 	     	setTimeout('getlog()',1000);
 	      },
-	      fail: function(){
+	      error: function(){
 	        setTimeout('getlog()',1000);
 	      }
 
