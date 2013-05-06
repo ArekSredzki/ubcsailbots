@@ -36,7 +36,7 @@ class Logger:
           
     def info(self, msg):
         self.logger.info(msg)
-        self.buffer += (msg + "  " + str(datetime.datetime.now()) + "<br>")  
+        self.buffer += ("[INFO]:"+msg + "  " + str(datetime.datetime.now()) + "<br>")  
     
     def clearBuffer(self):
         self.buffer = ""
