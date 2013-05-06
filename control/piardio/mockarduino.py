@@ -45,7 +45,7 @@ class arduino:
         
         print("Current Plus/Min: " + str(self.currplusmin))  
         # Instantiates an array of initial conditions which simulates putting a boat in the water.
-        cog = round(random.uniform(-179, 180), 2)
+        cog = 90
         hog = cog - round(random.uniform(-2, 2), 2)
         self.arduinoData = datatypes.ArduinoData(hog, cog, 0,
                           round(random.uniform(-179, 180), 2), datatypes.GPSCoordinate(49.27480, -123.18960), 0, 
