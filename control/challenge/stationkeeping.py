@@ -296,10 +296,10 @@ class StationKeeping(sailing_task.SailingTask):
     def printDistanceLogs(self, boxDistList):
       if (time.time()-self.distanceLogTime >self.LOG_UPDATE_INTERVAL):
         self.distanceLogTime = time.time()
-        gVars.logger.info(str(int(boxDistList[0]))+" - Top dist  ")
-        gVars.logger.info(str(int(boxDistList[1]))+" - Right Dist: ")
-        gVars.logger.info(str(int(boxDistList[2]))+" - Bot Dist: ")
-        gVars.logger.info(str(int(boxDistList[3]))+" - Left Dist: ")
+        gVars.logger.info(str(int(boxDistList[self.upwindWaypoint]))+" - Top dist  ")
+        gVars.logger.info(str(int(boxDistList[(self.upwindWaypoint+1)%4]))+" - Right Dist: ")
+        gVars.logger.info(str(int(boxDistList[(self.upwindWaypoint+2)%4]))+" - Bot Dist: ")
+        gVars.logger.info(str(int(boxDistList[(self.upwindWaypoint+3)%4]))+" - Left Dist: ")
     def printHeightLog(self,downwindHeight,downwindHeightIdeal ):
       if (time.time()-self.heightLogTime >self.LOG_UPDATE_INTERVAL):
         self.heightLogTime = time.time()

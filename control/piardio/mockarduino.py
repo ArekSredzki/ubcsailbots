@@ -102,7 +102,7 @@ class arduino:
         # Updates slight variation in HOG      
         self.arduinoData.hog += (round(random.uniform(-.1, .1), 2) + self.currplusmin)
         if self.steerByApparentWind:
-            self.arduinoData.hog = self.arduinoData.hog + self.arduinoData.awa + self.steerByApparentWindAngle
+            self.arduinoData.hog = self.arduinoData.hog + self.arduinoData.awa - self.steerByApparentWindAngle
     
     def _updateCOG(self):
         # Sets the course over ground
