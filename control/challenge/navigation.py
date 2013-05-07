@@ -76,7 +76,7 @@ class Navigation(sailing_task.SailingTask):
             self.pointtopoint.run(buoySailPoint)
         
         if(gVars.kill_flagNav == 0):
-            self.roundbuoy.run(BuoyCoords,standardcalc.angleBetweenTwoCoords(BuoyCoords,GPSCoord))
+            self.roundbuoy.run(BuoyCoords)
         
         if(gVars.kill_flagNav == 0):
             thread.start_new_thread(self.pointtopoint.run, interpolatedPoint)
