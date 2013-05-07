@@ -106,7 +106,7 @@ class PointToPoint(sailing_task.SailingTask):
             if(self.isThereChangeToAWAorWeatherOrMode() ):
                 self.adjustSheetsAndSteerByApparentWind(tackAngleMultiplier)
    
-            self.setTackDirection()
+c            self.setTackDirection()
             
             self.handleBoundaries()
             if(gVars.tacked_flag):
@@ -139,13 +139,13 @@ class PointToPoint(sailing_task.SailingTask):
         gVars.kill_flagPTP = 1
         
     def starboardTackWanted(self,initialTack):
-        if( (abs(-self.AWA-self.TACKING_ANGLE)<abs(-self.AWA+self.TACKING_ANGLE) and initialTack is None) or initialTack == 1 ):
+        if( (abs(-self.AWA-self.TACKING_ANGLE)>=abs(-self.AWA+self.TACKING_ANGLE) and initialTack is None) or initialTack == 1 ):
             return 1
         else:
             return 0
             
     def portTackWanted(self,initialTack):
-        if( (abs(-self.AWA-self.TACKING_ANGLE)>=abs(-self.AWA+self.TACKING_ANGLE) and initialTack is None) or initialTack == 0 ):
+        if( (abs(-self.AWA-self.TACKING_ANGLE)<abs(-self.AWA+self.TACKING_ANGLE) and initialTack is None) or initialTack == 0 ):
             return 1
         else:
             return 0
