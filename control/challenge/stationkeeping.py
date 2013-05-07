@@ -16,9 +16,10 @@ from os import path
 
 class StationKeeping(sailing_task.SailingTask):
     
+    CHALLENGE_TIME =300
     DISTANCE_TO_EDGE = 15
     AWA_METHOD = 2
-    SAIL_BY_APPARENT_WIND_ANGLE_MAX = 120
+    SAIL_BY_APPARENT_WIND_ANGLE_MAX = 110
     SAIL_BY_APPARENT_WIND_ANGLE_MIN = 34
     CRITICAL_HEIGHT_ABOVE_BOX_MIDPOINT = 10
     CRITICAL_HEIGHT_BELOW_BOX_MIDPOINT = 5
@@ -31,8 +32,9 @@ class StationKeeping(sailing_task.SailingTask):
         self.oldTackingAngle = 0
         self.oldSheetPercentageMultiplier = 0
         self.oldAwa = 0
-        self.heightLogTime =0
-        self.distanceLogTime=0
+        self.meanSpd = 0.75   #from old arduino code
+        self.secLeft = self.CHALLENGE_TIME
+        self.initializeLogs()
 
     def setWayPtCoords(self, boxCoords): #sets the waypoints of the challenge
         wayPtCoords = []    #order = top face, right face, bottom face, left face
@@ -156,10 +158,9 @@ class StationKeeping(sailing_task.SailingTask):
         wayPtCoords = self.setWayPtCoords(boxCoords)  #top, right, bottom, left
         gVars.logger.info("North waypoint: " + str(wayPtCoords[0]) + " East waypoint: " + str(wayPtCoords[1]) +" South waypoint: " + str(wayPtCoords[2]) + " West waypoint: " + str(wayPtCoords[3]) )
         
-        spdList = [0.75]*100
+        spdList = [self.meanSpd]*100
         boxDistList = self.getBoxDist(boxCoords)  #top, right, bottom, left
         
-        meanSpd = 0.75   #from old arduino code
         self.currentWaypoint = self.getStartDirection(wayPtCoords)
         self.printDistanceLogs(boxDistList)
 
@@ -171,9 +172,9 @@ class StationKeeping(sailing_task.SailingTask):
         else:
             self.upwindWaypoint = (self.currentWaypoint + 3) % 4
             
-        self.stationKeep(boxCoords, wayPtCoords, spdList, meanSpd)
+        self.stationKeep(boxCoords, wayPtCoords, spdList)
         
-    def stationKeep(self, boxCoords, wayPtCoords, spdList, meanSpd):
+    def stationKeep(self, boxCoords, wayPtCoords, spdList):
         exiting = False
         
         # Gives boat 2 * DISTANCE_TO_EDGE buffer to enter the box (left and right of boundary)
@@ -183,10 +184,10 @@ class StationKeeping(sailing_task.SailingTask):
         while ((gVars.kill_flagSK == 0)):
             time.sleep(.1)
             
-            secLeft = 300 - (datetime.now() - gVars.taskStartTime).seconds
+            self.secLeft = self.CHALLENGE_TIME - (datetime.now() - gVars.taskStartTime).seconds
             self.SKTimer()
             boxDistList = self.getBoxDist(boxCoords)
-            self.sailByApparentWind(boxDistList)
+            self.sailByApparentWind(boxDistList,exiting)
             self.printDistanceLogs(boxDistList)
             if (not exiting):
                 if ((boxDistList[self.currentWaypoint] < self.DISTANCE_TO_EDGE) and (inTurnZone == False)):
@@ -212,17 +213,17 @@ class StationKeeping(sailing_task.SailingTask):
                     turning = False
                 if (not turning):
                     spdList = standardcalc.changeSpdList(spdList)
-                    meanSpd = standardcalc.meanOfList(spdList)
-                if (boxDistList[self.currentWaypoint] >= meanSpd*(secLeft+0)):  #leeway of 0 seconds
+                    self.meanSpd = standardcalc.meanOfList(spdList)
+                if (boxDistList[self.currentWaypoint] >= self.meanSpd*(self.secLeft+0)):  #leeway of 0 seconds
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
-                    gVars.logger.info("Distance left to travel 1:" + str(meanSpd*(secLeft+0)))
-                    gVars.logger.info("Seconds Left:" + str(secLeft))
+                    gVars.logger.info("Distance left to travel 1:" + str(self.meanSpd*(self.secLeft+0)))
+                    gVars.logger.info("Seconds Left:" + str(self.secLeft))
                     exiting = True
                     gVars.logger.info("Station Keeping event is about to end. Exiting to current waypoint.")
-                elif (boxDistList[(self.currentWaypoint + 2) % 4] >= meanSpd*(secLeft+0+4) ): #leeway of 0 seconds, 4 seconds for gybe
+                elif (boxDistList[(self.currentWaypoint + 2) % 4] >= self.meanSpd*(self.secLeft+0+4) ): #leeway of 0 seconds, 4 seconds for gybe
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
-                    gVars.logger.info("Distance left to travel 2:" + str(meanSpd*(secLeft+0+4)))
-                    gVars.logger.info("Seconds Left:" + str(secLeft))
+                    gVars.logger.info("Distance left to travel 2:" + str(self.meanSpd*(self.secLeft+0+4)))
+                    gVars.logger.info("Seconds Left:" + str(self.secLeft))
                     self.currentWaypoint = (self.currentWaypoint + 2) % 4
                     gVars.logger.info("Station Keeping event is about to end. Gybing and exiting to waypoint " + str(self.currentWaypoint))
                     if (gVars.currentData.awa > 0):
@@ -232,7 +233,7 @@ class StationKeeping(sailing_task.SailingTask):
                     exiting = True 
             else:
                 boxDistListNoAbs = self.getBoxDist(boxCoords, False)
-                if boxDistListNoAbs[self.currentWaypoint] < 0 and secLeft <= 0:
+                if boxDistListNoAbs[self.currentWaypoint] < 0 and self.secLeft <= 0:
                     gVars.kill_flagSK = 1;
                 
         if (gVars.kill_flagSK == 1):
@@ -247,7 +248,7 @@ class StationKeeping(sailing_task.SailingTask):
         self.currentWaypoint = None
     
     # StationKeepings sail method.  This function steers and adjusts the sheets
-    def sailByApparentWind(self, boxDistList):
+    def sailByApparentWind(self, boxDistList,exiting):
         downwindWaypointIndex = (self.upwindWaypoint+2) % 4
         boxHeight = boxDistList[(self.currentWaypoint+1)%4]+boxDistList[(self.currentWaypoint+3)%4]
         downwindHeight = boxDistList[downwindWaypointIndex]
@@ -257,11 +258,24 @@ class StationKeeping(sailing_task.SailingTask):
         tackAngleMultiplier = self.calcTackAngleMultiplier()
         tackingAngle = self.calcTackingAngle(downwindHeight, downwindHeightIdeal)
         sheetPercentageMultiplier = self.calcDownwindPercent(downwindHeight, downwindHeightIdeal)*.01
-        
+        sheet_percent =round(sheetPercentageMultiplier*self.sheetList[abs(int(gVars.currentData.awa))][gVars.currentColumn])
+        if (exiting):
+          sheet_percent = self.adjustSheetsForExit(sheet_percent,boxDistList[self.currentWaypoint] )   
         if (self.isThereChangeInDownwindHeightOrTackingAngleOrAwa(tackingAngle, sheetPercentageMultiplier)):
-            gVars.arduino.adjust_sheets(round(sheetPercentageMultiplier*self.sheetList[abs(int(gVars.currentData.awa))][gVars.currentColumn]))
-            gVars.arduino.steer(self.AWA_METHOD,tackAngleMultiplier*tackingAngle)
-    
+            gVars.arduino.adjust_sheets(sheet_percent)
+            wind_bearing = tackAngleMultiplier*tackingAngle
+            gVars.arduino.steer(self.AWA_METHOD,wind_bearing)
+            self.printSailingLog(sheet_percent,wind_bearing)
+            
+    def adjustSheetsForExit(self, sheet_percent, distance):
+        sheet_delta = distance - self.meanSpd*(self.secLeft)
+        sheet_percent+= sheet_delta*5
+        if sheet_percent<0:
+          sheet_percent=0
+        elif sheet_percent>100:
+          sheet_percent=100
+        return sheet_percent
+           
     def isThereChangeInDownwindHeightOrTackingAngleOrAwa(self, tackingAngle, sheetPercentageMultiplier):
         if gVars.currentData.awa != self.oldAwa or tackingAngle != self.oldTackingAngle or sheetPercentageMultiplier != self.oldSheetPercentageMultiplier:
             self.updateOldData(tackingAngle, sheetPercentageMultiplier)
@@ -284,7 +298,7 @@ class StationKeeping(sailing_task.SailingTask):
         if downwindHeight-10 > downwindHeightIdeal:
             return self.SAIL_BY_APPARENT_WIND_ANGLE_MAX
         else:
-            return self.SAIL_BY_APPARENT_WIND_ANGLE_MAX - (float(downwindHeightIdeal+10-downwindHeight)/float(downwindHeightIdeal-5))*(self.SAIL_BY_APPARENT_WIND_ANGLE_MAX-self.SAIL_BY_APPARENT_WIND_ANGLE_MIN)
+            return self.SAIL_BY_APPARENT_WIND_ANGLE_MAX - (float(downwindHeightIdeal+10-downwindHeight)/float(downwindHeightIdeal))*(self.SAIL_BY_APPARENT_WIND_ANGLE_MAX-self.SAIL_BY_APPARENT_WIND_ANGLE_MIN)
     
     def calcDownwindPercent(self, downwindHeight, downwindHeightIdeal):
         if downwindHeight-self.CRITICAL_HEIGHT_ABOVE_BOX_MIDPOINT > downwindHeightIdeal:
@@ -293,14 +307,23 @@ class StationKeeping(sailing_task.SailingTask):
             return float(downwindHeightIdeal+self.CRITICAL_HEIGHT_ABOVE_BOX_MIDPOINT-downwindHeight)/float(downwindHeightIdeal-self.CRITICAL_HEIGHT_BELOW_BOX_MIDPOINT)*100
         else:
             return 100
+    
+    def initializeLogs(self):
+        self.heightLogTime =0
+        self.distanceLogTime=0
+        self.sailLogTime =0
     def printDistanceLogs(self, boxDistList):
       if (time.time()-self.distanceLogTime >self.LOG_UPDATE_INTERVAL):
         self.distanceLogTime = time.time()
-        gVars.logger.info(str(int(boxDistList[self.upwindWaypoint]))+" - Top dist  ")
-        gVars.logger.info(str(int(boxDistList[(self.upwindWaypoint+1)%4]))+" - Right Dist: ")
-        gVars.logger.info(str(int(boxDistList[(self.upwindWaypoint+2)%4]))+" - Bot Dist: ")
-        gVars.logger.info(str(int(boxDistList[(self.upwindWaypoint+3)%4]))+" - Left Dist: ")
+        gVars.logger.info(str(int(boxDistList[self.upwindWaypoint]))+" wpt#"+str(self.upwindWaypoint)+ " - Top dist  ")
+        gVars.logger.info(str(int(boxDistList[(self.upwindWaypoint+1)%4]))+" wpt#"+str((self.upwindWaypoint+1)%4)+" - Right Dist: ")
+        gVars.logger.info(str(int(boxDistList[(self.upwindWaypoint+2)%4]))+" wpt#"+str((self.upwindWaypoint+2)%4)+" - Bot Dist: ")
+        gVars.logger.info(str(int(boxDistList[(self.upwindWaypoint+3)%4]))+" wpt#"+str((self.upwindWaypoint+3)%4)+" - Left Dist: ")
     def printHeightLog(self,downwindHeight,downwindHeightIdeal ):
       if (time.time()-self.heightLogTime >self.LOG_UPDATE_INTERVAL):
         self.heightLogTime = time.time()
         gVars.logger.info("HEIGHT: " + str(int(downwindHeight)) +"  Ideal Height: " + str(int(downwindHeightIdeal)) )
+    def printSailingLog(self, sheet_percent, wind_bearing):
+      if (time.time()-self.sailLogTime >self.LOG_UPDATE_INTERVAL):
+        self.sailLogTime = time.time()
+        gVars.logger.info("Sheet Percent: " + str(sheet_percent) +"  Course " + str(wind_bearing) )
