@@ -106,7 +106,7 @@ class PointToPoint(sailing_task.SailingTask):
             if(self.isThereChangeToAWAorWeatherOrMode() ):
                 self.adjustSheetsAndSteerByApparentWind(tackAngleMultiplier)
    
-c            self.setTackDirection()
+            self.setTackDirection()
             
             self.handleBoundaries()
             if(gVars.tacked_flag):
