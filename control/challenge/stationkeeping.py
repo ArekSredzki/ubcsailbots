@@ -199,10 +199,8 @@ class StationKeeping(sailing_task.SailingTask):
                     gVars.logger.info("Commencing gybe.")
                     
                     if (gVars.currentData.awa > 0):
-                        self.upwindWaypoint = (self.currentWaypoint + 3) % 4
                         gVars.arduino.gybe(1)
                     else:
-                        self.upwindWaypoint = (self.currentWaypoint + 1) % 4
                         gVars.arduino.gybe(0)
                         
                     inTurnZone = True
