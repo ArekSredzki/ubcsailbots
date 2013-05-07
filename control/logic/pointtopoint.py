@@ -86,14 +86,14 @@ class PointToPoint(sailing_task.SailingTask):
         return
 
     def enterTackLoop(self, port):
-        tackAngleMultiplier = 1
+        tackAngleMultiplier = -1
         if port:
             self.tackSailing = 2
             gVars.logger.info("On port tack")
         else:
             self.tackSailing = 1
             gVars.logger.info("On starboard tack")
-            tackAngleMultiplier = -1
+            tackAngleMultiplier = 1
         
         self.initialTack = None
         gVars.tacked_flag = 0
