@@ -165,7 +165,12 @@ class StationKeeping(sailing_task.SailingTask):
 
         gVars.logger.info("The current waypoint is " + str(self.currentWaypoint) + ". 0 means top, 1 means right, 2 means bottom, 3 means left")
         gVars.logger.info("Station Keeping Initialization finished. Now running Station Keeping Challenge")
-        
+         
+        if (gVars.currentData.awa > 0):
+            self.upwindWaypoint = (self.currentWaypoint + 1) % 4
+        else:
+            self.upwindWaypoint = (self.currentWaypoint + 3) % 4
+            
         self.stationKeep(boxCoords, wayPtCoords, spdList, meanSpd)
         
     def stationKeep(self, boxCoords, wayPtCoords, spdList, meanSpd):
