@@ -24,6 +24,10 @@ class PointToPoint(sailing_task.SailingTask):
 
     def __init__(self):
         self.sheetList = parsing.parse(path.join(path.dirname(__file__), 'apparentSheetSetting'))
+        self.initialTack = None
+        gVars.logger.info("New Point to Point object")
+          
+    def initialize(self):
         self.oldTackSailing = 0
         self.tackSailing = 0
         self.oldAWA = 0
@@ -31,15 +35,12 @@ class PointToPoint(sailing_task.SailingTask):
         self.oldAngleBetweenCoords = 0
         self.tackDirection = 0
         self.printedStraight = 0
-        self.initialTack = None
-        gVars.logger.info("New Point to Point object")
-
-        
+    
     # --- Point to Point ---
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
     # Output: Nothing
     def run(self, Dest, initTack = None, ACCEPTANCE_DISTANCE = None, noTack = False):
-        time.sleep(1.0)
+        self.initialize()
         gVars.logger.info("Started point to pointAWA toward "+repr(Dest))
         self.Dest = Dest
         self.updateData()
@@ -83,7 +84,7 @@ class PointToPoint(sailing_task.SailingTask):
             gVars.logger.info("Finished Point to Point")
 
         return
-    
+
     def enterTackLoop(self, port):
         tackAngleMultiplier = 1
         if port:
