@@ -62,10 +62,10 @@ class PointToPoint(sailing_task.SailingTask):
                     We are left with -TWA-45 and -TWA+45, which makes sense since the original TWA was always with respect to the boat.
                     Since we are trying to figure out which one is closest to turn to, we use absolute values.'''
                 if(self.starboardTackWanted(self.initialTack)):
-                    self.enterTackLoop(False)
+                    self.enterBeatLoop(False)
                     
                 elif(self.portTackWanted(self.initialTack)):
-                    self.enterTackLoop(True) 
+                    self.enterBeatLoop(True) 
                     
             else:                    
                 if(self.printedStraight == 0):
@@ -85,7 +85,7 @@ class PointToPoint(sailing_task.SailingTask):
 
         return
 
-    def enterTackLoop(self, port):
+    def enterBeatLoop(self, port):
         tackAngleMultiplier = -1
         if port:
             self.tackSailing = 2
@@ -139,19 +139,19 @@ class PointToPoint(sailing_task.SailingTask):
         gVars.kill_flagPTP = 1
         
     def starboardTackWanted(self,initialTack):
-        if( (abs(-self.AWA-self.TACKING_ANGLE)>=abs(-self.AWA+self.TACKING_ANGLE) and initialTack is None) or initialTack == 1 ):
+        if( (self.AWA>=0 and initialTack is None) or initialTack == 1 ):
             return 1
         else:
             return 0
             
     def portTackWanted(self,initialTack):
-        if( (abs(-self.AWA-self.TACKING_ANGLE)<abs(-self.AWA+self.TACKING_ANGLE) and initialTack is None) or initialTack == 0 ):
+        if( (self.AWA<0 and initialTack is None) or initialTack == 0 ):
             return 1
         else:
             return 0
     
     def doWeStillWantToTack(self):
-        if(abs(self.hog-standardcalc.angleBetweenTwoCoords(self.GPSCoord, self.Dest))<80 and gVars.kill_flagPTP ==0):
+        if(abs(standardcalc.calculateAngleDelta(self.hog,standardcalc.angleBetweenTwoCoords(self.GPSCoord, self.Dest))) < 80 and gVars.kill_flagPTP ==0):
             return 1
         else:
             return 0

@@ -305,3 +305,28 @@ class TestBoundto360(unittest.TestCase):
         
     def testLessThanNegative360More(self):
         self.assertEqual(standardcalc.boundTo360(self.num7), self.num7bounded)
+        
+class TestBoundAngleDelta(unittest.TestCase):
+    def setUp(self):
+      pass
+    
+    def testTwoPossitveAngles(self):
+        angle1=50
+        angle2=20
+        self.assertEqual(standardcalc.calculateAngleDelta(angle1,angle2),30)
+    def testTwoNegativeAngles(self):
+        angle1=-50
+        angle2=-20
+        self.assertEqual(standardcalc.calculateAngleDelta(angle1,angle2),-30)
+    def testPosAndNegAngles(self):
+        angle1=-50
+        angle2=20
+        self.assertEqual(standardcalc.calculateAngleDelta(angle1,angle2),-70)        
+    def testWrapAround180(self):
+        angle1=150
+        angle2=-150
+        self.assertEqual(standardcalc.calculateAngleDelta(angle1,angle2),-60)        
+    def testWrapAround180SwapSigns(self):
+        angle1=-150
+        angle2=150
+        self.assertEqual(standardcalc.calculateAngleDelta(angle1,angle2),60)        

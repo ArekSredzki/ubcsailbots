@@ -333,3 +333,11 @@ def isAngleBetween(firstAngle, middleAngle, secondAngle):
         return 0
     else:
         return 1
+      
+def calculateAngleDelta(angle1, angle2):
+    difference = angle1-angle2
+    if difference >180:
+        difference-=360
+    if difference <-180:
+        difference+=360
+    return difference  

@@ -15,27 +15,27 @@ class TestPointToPoint(unittest.TestCase):
     def testWhichTackWantedStarboardWanted(self):
         initialTack=None
     
-        self.p2p.AWA = -30
+        self.p2p.AWA = 30
         self.assertTrue(self.p2p.starboardTackWanted(initialTack))
         self.assertFalse(self.p2p.portTackWanted(initialTack))
     
-        self.p2p.AWA = -150
+        self.p2p.AWA = 150
         self.assertTrue(self.p2p.starboardTackWanted(initialTack))
         self.assertFalse(self.p2p.portTackWanted(initialTack))
-
+    
+        self.p2p.AWA = 0
+        self.assertTrue(self.p2p.starboardTackWanted(initialTack))
+        self.assertFalse(self.p2p.portTackWanted(initialTack))
     def testWhichTackWantedPortWanted(self):
         initialTack=None
-        self.p2p.AWA = 30
+        self.p2p.AWA = -30
         self.assertFalse(self.p2p.starboardTackWanted(initialTack))
         self.assertTrue(self.p2p.portTackWanted(initialTack))
         
-        self.p2p.AWA = 150
+        self.p2p.AWA = -150
         self.assertFalse(self.p2p.starboardTackWanted(initialTack))
         self.assertTrue(self.p2p.portTackWanted(initialTack))
-    
-        self.p2p.AWA = 0
-        self.assertFalse(self.p2p.starboardTackWanted(initialTack))
-        self.assertTrue(self.p2p.portTackWanted(initialTack))
+
         
     def testdoWeStillWantToTackReturnTrue(self):
         self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
