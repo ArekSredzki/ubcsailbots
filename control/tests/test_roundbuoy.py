@@ -2,7 +2,6 @@ import sys
 sys.path.append('..')
 import unittest
 from control import global_vars as gVars
-print sys.path
 from control.logic import roundbuoy
 from control.logic import standardcalc
 from control import sailbot_logger

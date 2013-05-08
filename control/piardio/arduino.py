@@ -35,7 +35,7 @@ ARD_SOG = 10    # Speed over Ground
 ARD_RUD = 11    # Rudder Angle
 
 coms = list_ports.comports()
-print coms
+#print coms
 usbserials = []
 for com in coms:
     for port in com:
@@ -120,7 +120,6 @@ class arduino:
                 #last filled line, so you could make the above statement conditional
                 #like so: if lines[-2]: last_received = lines[-2]
                 ardBuffer = lines[-1]                
-        print ardArr
         if (len(ardBuffer) > 0):
             ardArr = ardArr.replace(" ", "")
             ardArr = ardArr.replace("\x00", "")
