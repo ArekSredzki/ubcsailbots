@@ -60,9 +60,9 @@ class arduino:
         # Format
         #     Tack: Port=0 Stbd=1
         if (tack == 1):
-            hog -= 70
-        else:
             hog += 70
+        else:
+            hog -= 70
             
         hog = standardcalc.boundTo180(hog)
         gVars.logger.info("--------TACK----------")

@@ -208,6 +208,6 @@ class PointToPoint(sailing_task.SailingTask):
     # Sets 1, or 0 for Arduino Call to Tack
     def setTackDirection(self):
         if(self.AWA > 0):
-            self.tackDirection = 0
-        else:
             self.tackDirection = 1
+        else:
+            self.tackDirection = 0
