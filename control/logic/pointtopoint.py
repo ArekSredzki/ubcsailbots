@@ -39,10 +39,12 @@ class PointToPoint(sailing_task.SailingTask):
     # --- Point to Point ---
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
     # Output: Nothing
-    def run(self, Dest, initTack = None, acceptDist=None, noTack = False):
+    def run(self, Dest, initTack = None, acceptDist=None, noTack = False, steerByCourse=COMPASS_METHOD):
         self.initialize()
         gVars.logger.info("Started point to pointAWA toward "+repr(Dest))
         self.Dest = Dest
+        self.STEER_METHOD = steerByCourse
+
         self.updateData()
         gVars.kill_flagPTP = 0
         self.initialTack = initTack
@@ -118,7 +120,7 @@ class PointToPoint(sailing_task.SailingTask):
 
     def adjustSheetsAndSteerByCompass(self):
         gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
-        gVars.arduino.steer(self.COMPASS_METHOD,self.angleBetweenCoords)  
+        gVars.arduino.steer(self.STEER_METHOD,self.angleBetweenCoords)  
             
     def adjustSheetsAndSteerByApparentWind(self, tackAngleMultiplier):
         gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
