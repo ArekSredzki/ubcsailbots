@@ -36,8 +36,6 @@ class arduino:
         self.actualWindSpeed = round(random.uniform(3, 6), 2)*self.windStrength
         self.idealBoatSpd = round(random.uniform(.5, 1), 2)*self.windStrength
         self.previousx = None
-        self.steerByApparentWind = False
-        self.steerByApparentWindAngle = 0
         if (STRONG_CURRENT):
             self.currplusmin = round(random.uniform(-4, -2), 2)
         else:
@@ -62,14 +60,14 @@ class arduino:
         # Format
         #     Tack: Port=0 Stbd=1
         if (tack == 1):
-            hog += 100
+            hog -= 70
         else:
-            hog -= 100
+            hog += 70
             
         hog = standardcalc.boundTo180(hog)
         gVars.logger.info("--------TACK----------")
         self.arduinoData.hog = hog
-    
+        self.arduinoData.awa = hog+STATIC_AWA
     def gybe(self, x):
         tempspeed = self.arduinoData.sog
         self.arduinoData.sog = 0
@@ -83,12 +81,9 @@ class arduino:
         
     def steer(self, method, degree):
         if method == 2:
-            #self.arduinoData.hog = self.arduinoData.awa + degree
-            self.steerByApparentWind = True
-            self.steerByApparentWindAngle = degree
+            self.arduinoData.hog = STATIC_AWA-degree
         else:
             self.arduinoData.hog = degree
-            self.steerByApparentWind = False
     
     def _updateActualWind(self):
         # Updates actual wind angle
@@ -101,8 +96,6 @@ class arduino:
     def _updateHOG(self):
         # Updates slight variation in HOG      
         self.arduinoData.hog += (round(random.uniform(-.1, .1), 2) + self.currplusmin)
-        if self.steerByApparentWind:
-            self.arduinoData.hog = self.arduinoData.hog + self.arduinoData.awa - self.steerByApparentWindAngle
     
     def _updateCOG(self):
         # Sets the course over ground
