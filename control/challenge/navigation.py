@@ -68,6 +68,7 @@ class Navigation(sailing_task.SailingTask):
         
         if(gVars.kill_flagNav == 0):
             steerByCOG = 1
-            self.pointtopoint.run(interpolatedPoint,None,None,False, steerByCOG)
+            acceptDistance = 0.5
+            self.pointtopoint.run(interpolatedPoint,None,acceptDistance,False, steerByCOG)
         
         return 0
