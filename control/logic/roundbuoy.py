@@ -15,8 +15,8 @@ class RoundBuoy(sailing_task.SailingTask):
     #Constants
     TargetAndBuoyAngle = 45
     InitialSailAndBuoyAngle = 135
-    TargetToBuoyDist = math.sqrt(math.pow(5,2)+math.pow(5,2))
-    InitialSailToBuoyDist = math.sqrt(math.pow(7,2)+math.pow(7,2))
+    TargetToBuoyDist = 12
+    InitialSailToBuoyDist = 20
     MinimumDistance = 10
     
     def __init__(self, port=True):
@@ -40,28 +40,28 @@ class RoundBuoy(sailing_task.SailingTask):
             if(self.port):
                 gVars.logger.info("Sailing To Right Initial Point: " + repr(rightInitialPoint))
                 if(gVars.kill_flagRB == 0):
-                    self.pointtopoint.run(rightInitialPoint)
+                    self.pointtopoint.run(rightInitialPoint, None, 8)
             else:
                 gVars.logger.info("Sailing To Left Initial Point: " + repr(leftInitialPoint))
                 if(gVars.kill_flagRB == 0):
-                    self.pointtopoint.run(leftInitialPoint)
+                    self.pointtopoint.run(leftInitialPoint, None, 8)
             
         if(self.port==True):
             gVars.logger.info("Sailing To Right Buoy Point: " + repr(rightBuoyPoint))
             if(gVars.kill_flagRB == 0):
-                self.pointtopoint.run(rightBuoyPoint, 0)
+                self.pointtopoint.run(rightBuoyPoint, 0,6)
             #gVars.logger.info("Final Loc is:" + repr(FinalLoc))
             gVars.logger.info("Sailing To Left Buoy Point: " + repr(leftBuoyPoint))
             if(gVars.kill_flagRB == 0):
-                self.pointtopoint.run(leftBuoyPoint, None, None, True)
+                self.pointtopoint.run(leftBuoyPoint, None, 6, True)
             #gVars.logger.info("Final Loc is:" + repr(FinalLoc))
         else:
             gVars.logger.info("Sailing To Left Buoy Point: " + repr(leftBuoyPoint))
             if(gVars.kill_flagRB == 0):
-                self.pointtopoint.run(leftBuoyPoint, 1)
+                self.pointtopoint.run(leftBuoyPoint, 1,6)
             gVars.logger.info("Sailing To Right Buoy Point: " + repr(rightBuoyPoint))
             if(gVars.kill_flagRB == 0):
-                self.pointtopoint.run(rightBuoyPoint, None, None, True)
+                self.pointtopoint.run(rightBuoyPoint, None, 6, True)
         
         if(gVars.kill_flagRB == 0):
             self.pointtopoint.run(FinalLoc)
