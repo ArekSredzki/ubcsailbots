@@ -20,7 +20,7 @@ from control import sailing_task
 #Input: Buoy GPS Coordinates (Latitude and Longitude of the Buoy), Left Inner Point (The coordinates of the left innermost gate), Right Inner Point (The coordinates of the right innermost gate)
 #Output: None
 class Navigation(sailing_task.SailingTask):
-    
+    LOG_UPDATE_INTERVAL=1
     def __init__(self):
         self.roundbuoy = roundbuoy.RoundBuoy()
         gVars.logger.debug("navigation about to create p2p")
@@ -28,6 +28,7 @@ class Navigation(sailing_task.SailingTask):
         gVars.logger.debug("navigation finished create p2p")
         
     def run(self, Waypoint1,Waypoint2,Waypoint3):
+        self.nav_log_timer=0
         GPSCoord = gVars.currentData.gps_coord
         
         gVars.kill_flagNav = 0
@@ -56,10 +57,10 @@ class Navigation(sailing_task.SailingTask):
         if(num_nav_start_port > 1 or num_nav_start_stbd > 1 or num_nav_first > 1):
             gVars.logger.error("Repeating or too many arguments")
         
-        interpolatedPoint = datatypes.GPSCoordinate((PortStartInnerPoint.lat+StarboardStartInnerPoint.lat)/2,(PortStartInnerPoint.long+StarboardStartInnerPoint.long)/2)
-        angleOfCourse = standardcalc.angleBetweenTwoCoords(interpolatedPoint, BuoyCoords)
+        self.interpolatedPoint = datatypes.GPSCoordinate((PortStartInnerPoint.lat+StarboardStartInnerPoint.lat)/2,(PortStartInnerPoint.long+StarboardStartInnerPoint.long)/2)
+        angleOfCourse = standardcalc.angleBetweenTwoCoords(self.interpolatedPoint, BuoyCoords)
 
-        halfwayBackPoint = datatypes.GPSCoordinate((interpolatedPoint.lat+BuoyCoords.lat)/2,(interpolatedPoint.long+BuoyCoords.long)/2)
+        halfwayBackPoint = datatypes.GPSCoordinate((self.interpolatedPoint.lat+BuoyCoords.lat)/2,(self.interpolatedPoint.long+BuoyCoords.long)/2)
         
         gVars.logger.info("Rounding Buoy")                
         if(gVars.kill_flagNav == 0):
@@ -69,6 +70,14 @@ class Navigation(sailing_task.SailingTask):
         if(gVars.kill_flagNav == 0):
             steerByCOG = 1
             acceptDistance = 0.5
-            self.pointtopoint.run(interpolatedPoint,None,acceptDistance,False, steerByCOG)
+            thread.start_new_thread(self.printNavigationLog, ())
+            self.pointtopoint.run(self.interpolatedPoint,None,acceptDistance,False, steerByCOG)
         
         return 0
+    
+    def printNavigationLog(self):
+      while (gVars.kill_flagNav == 0):
+          if (time.time() - self.nav_log_timer>self.LOG_UPDATE_INTERVAL):
+              self.nav_log_timer = time.time()
+              gVars.logger.info("Distance: "+ str(standardcalc.distBetweenTwoCoords(gVars.currentData.gps_coord, self.interpolatedPoint)))
+      
