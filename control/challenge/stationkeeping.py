@@ -12,6 +12,7 @@ from control.logic import standardcalc
 from control import global_vars as gVars
 from control import sailing_task
 from control.parser import parsing
+from control.datatype import datatypes
 from os import path
 
 class StationKeeping(sailing_task.SailingTask):
@@ -39,70 +40,11 @@ class StationKeeping(sailing_task.SailingTask):
 
     def setWayPtCoords(self, boxCoords): #sets the waypoints of the challenge
         wayPtCoords = []    #order = top face, right face, bottom face, left face
-        if (boxCoords[0].lat == boxCoords[1].lat):    #square
-            wayPtCoords.append(standardcalc.GPSDistAway(boxCoords[0], standardcalc.distBetweenTwoCoords(boxCoords[0], boxCoords[1])/2.0, 0))
-            wayPtCoords.append(standardcalc.GPSDistAway(boxCoords[1], 0, -(standardcalc.distBetweenTwoCoords(boxCoords[1], boxCoords[2])/2.0)))
-            wayPtCoords.append(standardcalc.GPSDistAway(boxCoords[2], -(standardcalc.distBetweenTwoCoords(boxCoords[2], boxCoords[3])/2.0), 0))
-            wayPtCoords.append(standardcalc.GPSDistAway(boxCoords[3], 0, standardcalc.distBetweenTwoCoords(boxCoords[3], boxCoords[0])/2.0))
-        elif (boxCoords[0].lat < boxCoords[1].lat):     #diamond or tilted left square
-            cAngle1 = standardcalc.angleBetweenTwoCoords(boxCoords[0],boxCoords[1])
-            midDist1 = (standardcalc.distBetweenTwoCoords(boxCoords[0], boxCoords[1])/2.0)*math.sin(math.radians(cAngle1)) #gets x distance to middle point between TL and TR
-            midDist2 = (standardcalc.distBetweenTwoCoords(boxCoords[0], boxCoords[1])/2.0)*math.cos(math.radians(cAngle1)) #gets y distance to middle point between TL and TR
-            
-            cAngle2 = standardcalc.angleBetweenTwoCoords(boxCoords[1],boxCoords[2]) - 90
-            midDist3 = (standardcalc.distBetweenTwoCoords(boxCoords[1], boxCoords[2])/2.0)*math.cos(math.radians(cAngle2)) #gets x distance to middle point between TR and BR
-            midDist4 = (standardcalc.distBetweenTwoCoords(boxCoords[1], boxCoords[2])/2.0)*math.sin(math.radians(cAngle2)) #gets y distance to middle point between TT and BR
-            
-            cAngle3 = 180 - math.fabs(standardcalc.angleBetweenTwoCoords(boxCoords[2],boxCoords[3]))
-            midDist5 = (standardcalc.distBetweenTwoCoords(boxCoords[2], boxCoords[3])/2.0)*math.sin(math.radians(cAngle3)) #gets x distance to middle point between BR and BL
-            midDist6 = (standardcalc.distBetweenTwoCoords(boxCoords[2], boxCoords[3])/2.0)*math.cos(math.radians(cAngle3)) #gets y distance to middle point between BR and BL
-            
-            cAngle4 = 90 - abs(standardcalc.angleBetweenTwoCoords(boxCoords[3],boxCoords[0]))
-            midDist7 = (standardcalc.distBetweenTwoCoords(boxCoords[3], boxCoords[0])/2.0)*math.cos(math.radians(cAngle4)) #gets x distance to middle point between BL and TL
-            midDist8 = (standardcalc.distBetweenTwoCoords(boxCoords[3], boxCoords[0])/2.0)*math.sin(math.radians(cAngle4)) #gets y distance to middle point between BL and TL
-            
-            topMidpnt = standardcalc.GPSDistAway(boxCoords[0], midDist1, midDist2)
-            rightMidpnt = standardcalc.GPSDistAway(boxCoords[1], midDist3, -midDist4)
-            botMidpnt = standardcalc.GPSDistAway(boxCoords[2], -midDist5, -midDist6)
-            leftMidpnt = standardcalc.GPSDistAway(boxCoords[3], -midDist7, midDist8)
-            
-            wayPtCoords.append(topMidpnt)
-            wayPtCoords.append(rightMidpnt)
-            wayPtCoords.append(botMidpnt)
-            wayPtCoords.append(leftMidpnt)
-            
-            gVars.logger.info("cAngle4: " + str(cAngle4) + "Midpoint1: " + str(topMidpnt) + " Midpoint2: " + str(rightMidpnt) + " Midpoint3: " + str(botMidpnt) + " Midpoint4: " + str(leftMidpnt))
-        else:    #right tilted square
-            cAngle1 = standardcalc.angleBetweenTwoCoords(boxCoords[0],boxCoords[1]) - 90
-            midDist1 = (standardcalc.distBetweenTwoCoords(boxCoords[0], boxCoords[1])/2.0)*math.cos(math.radians(cAngle1)) #gets x distance to middle point between TL and TR
-            midDist2 = (standardcalc.distBetweenTwoCoords(boxCoords[0], boxCoords[1])/2.0)*math.sin(math.radians(cAngle1)) #gets y distance to middle point between TL and TR
-            
-            cAngle2 = 180 - abs(standardcalc.angleBetweenTwoCoords(boxCoords[1],boxCoords[2]))
-            midDist3 = (standardcalc.distBetweenTwoCoords(boxCoords[1], boxCoords[2])/2.0)*math.sin(math.radians(cAngle2)) #gets x distance to middle point between TR and BR
-            midDist4 = (standardcalc.distBetweenTwoCoords(boxCoords[1], boxCoords[2])/2.0)*math.cos(math.radians(cAngle2)) #gets y distance to middle point between TT and BR
-            
-            cAngle3 = 90 - abs(math.fabs(standardcalc.angleBetweenTwoCoords(boxCoords[2],boxCoords[3])))
-            midDist5 = (standardcalc.distBetweenTwoCoords(boxCoords[2], boxCoords[3])/2.0)*math.cos(math.radians(cAngle3)) #gets x distance to middle point between BR and BL
-            midDist6 = (standardcalc.distBetweenTwoCoords(boxCoords[2], boxCoords[3])/2.0)*math.sin(math.radians(cAngle3)) #gets y distance to middle point between BR and BL
-            
-            cAngle4 = standardcalc.angleBetweenTwoCoords(boxCoords[3],boxCoords[0])
-            midDist7 = (standardcalc.distBetweenTwoCoords(boxCoords[3], boxCoords[0])/2.0)*math.sin(math.radians(cAngle4)) #gets x distance to middle point between BL and TL
-            midDist8 = (standardcalc.distBetweenTwoCoords(boxCoords[3], boxCoords[0])/2.0)*math.cos(math.radians(cAngle4)) #gets y distance to middle point between BL and TL
-            
-            topMidpnt = standardcalc.GPSDistAway(boxCoords[0], midDist1, -midDist2)
-            rightMidpnt = standardcalc.GPSDistAway(boxCoords[1], -midDist2, -midDist1)
-            botMidpnt = standardcalc.GPSDistAway(boxCoords[2], -midDist1, midDist2)
-            leftMidpnt = standardcalc.GPSDistAway(boxCoords[3], midDist2, midDist1)
-            
-            wayPtCoords.append(topMidpnt)
-            wayPtCoords.append(rightMidpnt)
-            wayPtCoords.append(botMidpnt)
-            wayPtCoords.append(leftMidpnt)
-            
-            gVars.logger.info("cAngle4: " + str(cAngle4) + "Midpoint1: " + str(topMidpnt) + " Midpoint2: " + str(rightMidpnt) + " Midpoint3: " + str(botMidpnt) + " Midpoint4: " + str(leftMidpnt))
-        
+        wayPtCoords.append(standardcalc.returnMidPoint(boxCoords[0],boxCoords[1]))
+        wayPtCoords.append(standardcalc.returnMidPoint(boxCoords[1],boxCoords[2]))
+        wayPtCoords.append(standardcalc.returnMidPoint(boxCoords[2],boxCoords[3]))
+        wayPtCoords.append(standardcalc.returnMidPoint(boxCoords[3],boxCoords[0]))    
         return wayPtCoords
-    
     
     def SKTimer(self):
         gVars.SKMinLeft = ((datetime.now() - gVars.taskStartTime ).seconds) / 60

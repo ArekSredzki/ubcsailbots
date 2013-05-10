@@ -50,31 +50,31 @@ class TestAdjustSheetsForExit(unittest.TestCase):
         self.assertEqual(self.stationKeeping.adjustSheetsForExit(self.distance),self.stationKeeping.sheet_percent)
       
 class TestWaypointCoords(unittest.TestCase):
-	def setUp(self):
-		self.stationKeeping = stationkeeping.StationKeeping()
-		topLeftCoord= datatypes.GPSCoordinate(50,-123)
-	 	topRightCoord=datatypes.GPSCoordinate(50,-122)
-		botLeftCoord=datatypes.GPSCoordinate(49,-123)
-		botRightCoord=datatypes.GPSCoordinate(49,-122)
-		self.boxCoords = standardcalc.setBoxCoords(topLeftCoord, topRightCoord, botLeftCoord, botRightCoord)  
-		self.waypoints = self.stationKeeping.setWayPtCoords(self.boxCoords)
-	def testNorthWpt(self):
-		northWpt = datatypes.GPSCoordinate(50,-122.5)
-		self.assertEqual(self.waypoints[0].lat,northWpt.lat)
-  		self.assertEqual(round(self.waypoints[0].long,1),northWpt.long) 
-  	def testEastWpt(self):
-  		eastWpt = datatypes.GPSCoordinate(49.5,-122)
-  		self.assertEqual(self.waypoints[1].lat,eastWpt.lat)
-	  	self.assertEqual(self.waypoints[1].long,eastWpt.long)     
-	def testSouthWpt(self):
-		southWpt = datatypes.GPSCoordinate(49,-122.5)
-		self.assertEqual(round(self.waypoints[2].long,1),southWpt.long)         
-  		self.assertEqual(self.waypoints[2].lat,southWpt.lat)
-  	def testWestWpt(self):
-  		eastWpt = datatypes.GPSCoordinate(49.5,-123)
-  		self.assertEqual(self.waypoints[3].lat,eastWpt.lat)
-	 	self.assertEqual(self.waypoints[3].long,eastWpt.long)             
-      
+		def setUp(self):
+				self.stationKeeping = stationkeeping.StationKeeping()
+				topLeftCoord= datatypes.GPSCoordinate(50,-123)
+				topRightCoord=datatypes.GPSCoordinate(50,-122)
+				botLeftCoord=datatypes.GPSCoordinate(49,-123)
+				botRightCoord=datatypes.GPSCoordinate(49,-122)
+				self.boxCoords = standardcalc.setBoxCoords(topLeftCoord, topRightCoord, botLeftCoord, botRightCoord)  
+				self.waypoints = self.stationKeeping.setWayPtCoords(self.boxCoords)
+		def testNorthWpt(self):
+				northWpt = datatypes.GPSCoordinate(50,-122.5)
+				self.assertEqual(self.waypoints[0].lat,northWpt.lat)
+				self.assertEqual(round(self.waypoints[0].long,1),northWpt.long)
+		def testEastWpt(self):
+	  		eastWpt = datatypes.GPSCoordinate(49.5,-122)
+	  		self.assertEqual(self.waypoints[1].lat,eastWpt.lat)
+		  	self.assertEqual(self.waypoints[1].long,eastWpt.long)     
+		def testSouthWpt(self):
+				southWpt = datatypes.GPSCoordinate(49,-122.5)
+				self.assertEqual(round(self.waypoints[2].long,1),southWpt.long)
+				self.assertEqual(self.waypoints[2].lat,southWpt.lat)
+		def testWestWpt(self):
+	  		eastWpt = datatypes.GPSCoordinate(49.5,-123)
+	  		self.assertEqual(self.waypoints[3].lat,eastWpt.lat)
+	  		self.assertEqual(self.waypoints[3].long,eastWpt.long)             
+	      
 class TestStationKeeping(unittest.TestCase):
     def setUp(self):
         gVars.logger = sailbot_logger.Logger()
