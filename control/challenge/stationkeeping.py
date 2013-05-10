@@ -24,6 +24,7 @@ class StationKeeping(sailing_task.SailingTask):
     CRITICAL_HEIGHT_ABOVE_BOX_MIDPOINT = 10
     CRITICAL_HEIGHT_BELOW_BOX_MIDPOINT = 5
     CRITICAL_HEIGHT_ABOVE_BOTTOM_OF_BOX = 15
+    EXITING_AWA_BEARING = 68 #beam reach
     
     def __init__(self):
         self.upwindWaypoint = 0
@@ -34,6 +35,7 @@ class StationKeeping(sailing_task.SailingTask):
         self.meanSpd = 0.75   #from old arduino code
         self.secLeft = self.CHALLENGE_TIME
         self.SKLogger = SKLogger()
+        self.sheet_percent = 0
 
     def setWayPtCoords(self, boxCoords): #sets the waypoints of the challenge
         wayPtCoords = []    #order = top face, right face, bottom face, left face
@@ -251,29 +253,35 @@ class StationKeeping(sailing_task.SailingTask):
         boxHeight = boxDistList[(self.currentWaypoint+1)%4]+boxDistList[(self.currentWaypoint+3)%4]
         downwindHeight = boxDistList[downwindWaypointIndex]
         downwindHeightIdeal = boxHeight/2
-        
-        tackAngleMultiplier = self.calcTackAngleMultiplier()
-        tackingAngle = self.calcTackingAngle(downwindHeight, downwindHeightIdeal)
-        sheetPercentageMultiplier = self.calcDownwindPercent(downwindHeight, downwindHeightIdeal)*.01
-        sheet_percent =round(sheetPercentageMultiplier*self.sheetList[abs(int(gVars.currentData.awa))][gVars.currentColumn])
+
         if (exiting):
-          sheet_percent = self.adjustSheetsForExit(sheet_percent,boxDistList[self.currentWaypoint] )   
-        if (self.isThereChangeInDownwindHeightOrTackingAngleOrAwa(tackingAngle, sheetPercentageMultiplier)):
-            gVars.arduino.adjust_sheets(sheet_percent)
-            wind_bearing = tackAngleMultiplier*tackingAngle
-            gVars.arduino.steer(self.AWA_METHOD,wind_bearing)
-            self.printSailingLog(sheet_percent,wind_bearing)
+            targetAWA = EXITING_AWA_BEARING
+            self.sheet_percent = self.adjustSheetsForExit(boxDistList[self.currentWaypoint])
+        else:           
+            targetAWA = self.calcTackingAngle(downwindHeight, downwindHeightIdeal)
+            sheetPercentageMultiplier = self.calcDownwindPercent(downwindHeight, downwindHeightIdeal)*.01
+            self.sheet_percent =round(sheetPercentageMultiplier*self.sheetList[abs(int(gVars.currentData.awa))][gVars.currentColumn])
+        
+        windAngleMultiplier = self.calcWindAngleMultiplier()
+        targetAWA = windAngleMultiplier*targetAWA
+
+        if (self.isThereChangeInDownwindHeightOrTackingAngleOrAwa(targetAWA, sheetPercentageMultiplier)):
+            gVars.arduino.adjust_sheets(self.sheet_percent)
+            gVars.arduino.steer(self.AWA_METHOD,targetAWA)
+            self.printSailingLog(self.sheet_percent,targetAWA)
             self.printHeightLog(downwindHeight,downwindHeightIdeal)
 
             
-    def adjustSheetsForExit(self, sheet_percent, distance):
-        sheet_delta = distance - self.meanSpd*(self.secLeft)
-        sheet_percent+= sheet_delta*5
-        if sheet_percent<0:
-          sheet_percent=0
-        elif sheet_percent>100:
-          sheet_percent=100
-        return sheet_percent
+    def adjustSheetsForExit(self, distance):
+        SHEET_MAX = 54
+        MULTIPLIER = 5
+        sheet_delta = distance - gVars.currentData.sog*(self.secLeft)
+        sheets= self.sheet_percent + sheet_delta*MULTIPLIER
+        if sheets<0:
+          sheets=0
+        elif sheets>SHEET_MAX:
+          sheets=SHEET_MAX
+        return sheets
            
     def isThereChangeInDownwindHeightOrTackingAngleOrAwa(self, tackingAngle, sheetPercentageMultiplier):
         if gVars.currentData.awa != self.oldAwa or tackingAngle != self.oldTackingAngle or sheetPercentageMultiplier != self.oldSheetPercentageMultiplier:
@@ -287,7 +295,7 @@ class StationKeeping(sailing_task.SailingTask):
         self.oldAwa = gVars.currentData.awa
         self.oldSheetPercentageMultiplier = sheetPercentageMultiplier
         
-    def calcTackAngleMultiplier(self):
+    def calcWindAngleMultiplier(self):
         if self.upwindWaypoint == (self.currentWaypoint + 3) % 4:
             return -1
         else:
