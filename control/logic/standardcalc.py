@@ -340,4 +340,7 @@ def calculateAngleDelta(angle1, angle2):
         difference-=360
     if difference <-180:
         difference+=360
-    return difference  
+    return difference
+  
+def returnMidPoint(point1, point2):
+    return datatypes.GPSCoordinate( (point1.lat +point2.lat)/2.0, (point1.long +point2.long)/2.0)

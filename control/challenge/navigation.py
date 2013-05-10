@@ -57,7 +57,7 @@ class Navigation(sailing_task.SailingTask):
         if(num_nav_start_port > 1 or num_nav_start_stbd > 1 or num_nav_first > 1):
             gVars.logger.error("Repeating or too many arguments")
         
-        self.interpolatedPoint = datatypes.GPSCoordinate((PortStartInnerPoint.lat+StarboardStartInnerPoint.lat)/2,(PortStartInnerPoint.long+StarboardStartInnerPoint.long)/2)
+        self.interpolatedPoint = standardcalc.returnMidPoint(PortStartInnerPoint,StarboardStartInnerPoint)
         angleOfCourse = standardcalc.angleBetweenTwoCoords(self.interpolatedPoint, BuoyCoords)
 
         halfwayBackPoint = datatypes.GPSCoordinate((self.interpolatedPoint.lat+BuoyCoords.lat)/2,(self.interpolatedPoint.long+BuoyCoords.long)/2)
