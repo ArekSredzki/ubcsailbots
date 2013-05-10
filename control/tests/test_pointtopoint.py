@@ -84,11 +84,11 @@ class TestPointToPoint(unittest.TestCase):
     def testSetTackDirectionToPort(self):
         self.p2p.AWA = 130
         self.p2p.setTackDirection()
-        starboard=0
+        starboard=True
         self.assertEqual(self.p2p.tackDirection, starboard)
     
     def testSetTackDirectionToStarboard(self):
         self.p2p.AWA = -20
         self.p2p.setTackDirection()
-        starboard=1
+        starboard=False
         self.assertEqual(self.p2p.tackDirection, starboard)
