@@ -20,84 +20,47 @@ def GPSDistAway(coord, xDist, yDist):
     result.lat = coord.lat + (180.0/math.pi)*(float(yDist)/EARTH_RADIUS)
     return result
 
-def setBoxCoords(tL, tR, bL, bR): #sets coords of box so that topleft is most west point of the two most northern points
-    coordHalf1 = [tL, tR]
-    coordHalf2 = [bL, bR]
-    firstCoordHalf = []
-    secondCoordHalf = []
-    coordList = []
-    finalCoordList = []
-    if (coordHalf1[1].lat > coordHalf1[0].lat):
-        firstCoordHalf = [coordHalf1[1], coordHalf1[0]]
-    else:
-        firstCoordHalf = [coordHalf1[0], coordHalf1[1]]
-    if (coordHalf2[1].lat > coordHalf2[0].lat):
-        secondCoordHalf = [coordHalf2[1], coordHalf2[0]]
-    else:
-        secondCoordHalf = [coordHalf2[0], coordHalf2[1]]
-        
-    if (firstCoordHalf[0].lat >= secondCoordHalf[0].lat):  #mergesort
-        coordList.append(firstCoordHalf[0])
-        if (firstCoordHalf[1].lat >= secondCoordHalf[0].lat):
-            coordList.append(firstCoordHalf[1])
-            coordList.append(secondCoordHalf[0])
-            coordList.append(secondCoordHalf[1])
-        else:
-            coordList.append(secondCoordHalf[0])
-            if(firstCoordHalf[1].lat >= secondCoordHalf[1].lat):
-                coordList.append(firstCoordHalf[1])
-                coordList.append(secondCoordHalf[1])
-            else:
-                coordList.append(secondCoordHalf[1])
-                coordList.append(firstCoordHalf[1])
-    else:
-        coordList.append(secondCoordHalf[0])
-        if (firstCoordHalf[0].lat < secondCoordHalf[1].lat):
-            coordList.append(secondCoordHalf[1])
-            coordList.append(firstCoordHalf[0])
-            coordList.append(firstCoordHalf[1])
-        else:
-            coordList.append(firstCoordHalf[0])
-            if(firstCoordHalf[1].lat >= secondCoordHalf[1].lat):
-                coordList.append(firstCoordHalf[1])
-                coordList.append(secondCoordHalf[1])
-            else:
-                coordList.append(secondCoordHalf[1])
-                coordList.append(firstCoordHalf[1])
-    #gVars.logger.info("Mergesort: " + str(coordList[0]) + " , " + str(coordList[1]) + " , " + str(coordList[2]) + " , " + str(coordList[3]) )
-    if (coordList[0].lat == coordList[1].lat):      #square
-        if (coordList[0].long < coordList[1].long):
-            finalCoordList.append(coordList[0])
-            finalCoordList.append(coordList[1])
-        else:
-            finalCoordList.append(coordList[1])
-            finalCoordList.append(coordList[0])
-        if (coordList[2].long < coordList[3].long):
-            finalCoordList.append(coordList[3])
-            finalCoordList.append(coordList[2])
-        else:
-            finalCoordList.append(coordList[2])
-            finalCoordList.append(coordList[3])
-    elif (coordList[1].long < coordList[2].long):  #tilted left square or diamond
-        finalCoordList.append(coordList[1])
-        finalCoordList.append(coordList[0])
-        finalCoordList.append(coordList[2])
-        finalCoordList.append(coordList[3])
-        
-    elif (coordList[1].lat == coordList[2].lat):        #diamond 
-        finalCoordList.append(coordList[2])
-        finalCoordList.append(coordList[0])
-        finalCoordList.append(coordList[1])
-        finalCoordList.append(coordList[3])
-    else:                                             #tilted right square
-        finalCoordList.append(coordList[0])
-        finalCoordList.append(coordList[1])
-        finalCoordList.append(coordList[3])
-        finalCoordList.append(coordList[2])
-    #gVars.logger.info("TL: " + str(finalCoordList[0]) + " TR: " + str(finalCoordList[1]) + " BR: " + str(finalCoordList[2]) + " BL: " + str(finalCoordList[3]) )
-    return finalCoordList
-
-
+def setBoxCoords(p0, p1, p2, p3): #sets box coords in order going around the box
+    case=[]
+    case.append([p0,p1,p2,p3])
+    # 0-----3
+    # |     |
+    # |     |
+    # 1-----2
+    
+    case.append([p0,p1,p3,p2])
+    # 0     3
+    # | \ / |
+    # | / \ |
+    # 1     2
+    
+    case.append([p0,p3,p1,p2])
+    # 0-----3
+    #   \ / 
+    #   / \ 
+    # 1-----2
+    
+    # if the points are connected in a square then the sum of angles is 360
+    # otherwise the sum will be <360 and the points are connected wrong
+    angleSums=[]
+    for c in case:
+        angleSums.append(sumCornerAngles(c))
+    caseNumber = angleSums.index(max(angleSums))
+    return case[caseNumber]
+  
+def sumCornerAngles(coordList):
+    sum=angleBetweenThreePoints(coordList[0],coordList[1],coordList[2])
+    sum+=angleBetweenThreePoints(coordList[1],coordList[2],coordList[3])
+    sum+=angleBetweenThreePoints(coordList[2],coordList[3],coordList[0])
+    sum+=angleBetweenThreePoints(coordList[3],coordList[0],coordList[1])
+    return sum
+def angleBetweenThreePoints(p2,p1,p3):
+    #cosine rule around point p2
+    p12=distBetweenTwoCoords(p1,p2)
+    p13=distBetweenTwoCoords(p1,p3)
+    p23=distBetweenTwoCoords(p2,p3)
+    return findCosLawAngle(p12,p13,p23)
+  
 #Returns the distance in metres
 def distBetweenTwoCoords(coord1, coord2):
     dLongRad = math.radians(coord1.long - coord2.long)
