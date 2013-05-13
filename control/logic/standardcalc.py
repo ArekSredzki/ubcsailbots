@@ -46,8 +46,18 @@ def setBoxCoords(p0, p1, p2, p3): #sets box coords in order going around the box
     for c in case:
         angleSums.append(sumCornerAngles(c))
     caseNumber = angleSums.index(max(angleSums))
-    return case[caseNumber]
+    boxList = case[caseNumber]
+    
+    return makeClockWise(boxList)
   
+def makeClockWise(boxList):
+    angle1 = angleBetweenTwoCoords(boxList[0],boxList[1])
+    angle2 = angleBetweenTwoCoords(boxList[0],boxList[3])
+    delta = calculateAngleDelta(angle1, angle2)
+    if delta <0:
+        return boxList
+    else:
+        return [boxList[3],boxList[2],boxList[1],boxList[0]]
 def sumCornerAngles(coordList):
     sum=angleBetweenThreePoints(coordList[0],coordList[1],coordList[2])
     sum+=angleBetweenThreePoints(coordList[1],coordList[2],coordList[3])
