@@ -187,10 +187,11 @@ class Boundary:
 
 # Instructions which contain all instructions passed from a GUI to the control logic
 class Instructions:
-	def __init__(self, challenge="", waypoints=[], boundaries=[]):
+	def __init__(self, challenge, waypoints, boundaries,rounding):
 		self.challenge = challenge
 		self.waypoints = waypoints
 		self.boundaries = boundaries
+		self.rounding = rounding
 	
 	def __repr__(self):
 		return "Instructions(challenge=%r,waypoints=%r,boundaries=%r)" % (self.challenge,self.waypoints,self.boundaries)

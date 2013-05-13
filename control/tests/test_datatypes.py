@@ -94,18 +94,6 @@ class TestBoundary(unittest.TestCase):
 		self.assertEqual(self.y.coordinate.long, -121)
 		self.assertEqual(self.y.radius, 123.456)
 
-class TestInstructions(unittest.TestCase):
-	def setUp(self):
-		self.x = datatype.Instructions()
-		self.y = datatype.Instructions(sVars.LONG_DISTANCE_CHALLENGE, [0, 1], [0, 1])
-	
-	def testConstructor(self):
-		self.assertEqual(self.x.challenge, "")
-		self.assertEqual(self.x.waypoints, [])
-		self.assertEqual(self.x.boundaries, [])
-		self.assertEqual(self.y.challenge, sVars.LONG_DISTANCE_CHALLENGE)
-		self.assertEqual(self.y.waypoints, [0, 1])
-		self.assertEqual(self.y.boundaries, [0, 1])
 
 class TestArduinoData(unittest.TestCase):
 	def setUp(self):

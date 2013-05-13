@@ -29,7 +29,6 @@ $def with (page)
 			</div>
     </div>
     
-    
     <div class="widget dataDisplayTableWidget">
 	    <div class="smallColumn">
 	        <h1>Waypoints</h1>
@@ -54,6 +53,16 @@ $def with (page)
 	       </tr>
 	    </table>
 
+    </div>
+    
+    <div class="widget dataDisplayTableWidget">
+        <h1>Rounding Direction</h1>
+		    <div class="ui-widget">
+		        <select id="rounding" onchange="setRounding(this)">
+				  <option value="port">port</option>
+				  <option value="starboard">starboard</option>
+				</select>
+			</div>
     </div>
     
     <button id="sendDataButton" onclick="senddata()">Send Data</button>

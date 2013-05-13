@@ -10,6 +10,7 @@ var instructions = new Object();
 instructions.challenge = "NONE";
 instructions.waypoints = new Array();
 instructions.boundaries = new Array();
+instructions.rounding = "port";
 var mapWidget;
 
 $(function () {
@@ -86,7 +87,12 @@ function addBoundary(){
 
 function setChallenge(sel){
 	instructions.challenge = sel.options[sel.selectedIndex].value;
-	console.log(instructions.challenge) ;
+	console.log(instructions.challenge);
+}
+
+function setRounding(sel){
+	instructions.rounding = sel.options[sel.selectedIndex].value;
+	console.log(instructions.rounding);
 }
 
 function updateWaypointDataDisplayTable()
