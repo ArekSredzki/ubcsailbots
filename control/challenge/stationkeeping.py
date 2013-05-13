@@ -31,7 +31,7 @@ class StationKeeping(sailing_task.SailingTask):
         self.upwindWaypoint = 0
         self.sheetList = parsing.parse(path.join(path.dirname(__file__), 'apparentSheetSetting'))
         self.oldTackingAngle = 0
-        self.oldSheetPercentageMultiplier = 0
+        self.oldSheet_percent = 0
         self.oldAwa = 0
         self.meanSpd = 0.75   #from old arduino code
         self.secLeft = self.CHALLENGE_TIME
@@ -114,6 +114,7 @@ class StationKeeping(sailing_task.SailingTask):
             self.upwindWaypoint = (self.currentWaypoint + 1) % 4
         else:
             self.upwindWaypoint = (self.currentWaypoint + 3) % 4
+        gVars.logger.info("------UPWIND WAYPOINT=" + str(self.upwindWaypoint)+" ---------")
             
         self.stationKeep(boxCoords, wayPtCoords, spdList)
         
@@ -197,7 +198,7 @@ class StationKeeping(sailing_task.SailingTask):
         downwindHeightIdeal = boxHeight/2
 
         if (exiting):
-            targetAWA = EXITING_AWA_BEARING
+            targetAWA = self.EXITING_AWA_BEARING
             self.sheet_percent = self.adjustSheetsForExit(boxDistList[self.currentWaypoint])
         else:           
             targetAWA = self.calcTackingAngle(downwindHeight, downwindHeightIdeal)
@@ -207,7 +208,7 @@ class StationKeeping(sailing_task.SailingTask):
         windAngleMultiplier = self.calcWindAngleMultiplier()
         targetAWA = windAngleMultiplier*targetAWA
 
-        if (self.isThereChangeInDownwindHeightOrTackingAngleOrAwa(targetAWA, sheetPercentageMultiplier)):
+        if (self.isThereChangeInDownwindHeightOrTackingAngleOrAwa(targetAWA)):
             gVars.arduino.adjust_sheets(self.sheet_percent)
             gVars.arduino.steer(self.AWA_METHOD,targetAWA)
             self.printSailingLog(self.sheet_percent,targetAWA)
@@ -225,17 +226,17 @@ class StationKeeping(sailing_task.SailingTask):
           sheets=SHEET_MAX
         return sheets
            
-    def isThereChangeInDownwindHeightOrTackingAngleOrAwa(self, tackingAngle, sheetPercentageMultiplier):
-        if gVars.currentData.awa != self.oldAwa or tackingAngle != self.oldTackingAngle or sheetPercentageMultiplier != self.oldSheetPercentageMultiplier:
-            self.updateOldData(tackingAngle, sheetPercentageMultiplier)
+    def isThereChangeInDownwindHeightOrTackingAngleOrAwa(self, tackingAngle):
+        if gVars.currentData.awa != self.oldAwa or tackingAngle != self.oldTackingAngle or self.sheet_percent != self.oldSheet_percent:
+            self.updateOldData(tackingAngle)
             return True
         else:
             return False
         
-    def updateOldData(self, tackingAngle, sheetPercentageMultiplier):
+    def updateOldData(self, tackingAngle):
         self.oldTackingAngle = tackingAngle
         self.oldAwa = gVars.currentData.awa
-        self.oldSheetPercentageMultiplier = sheetPercentageMultiplier
+        self.oldSheet_percent = self.sheet_percent
         
     def calcWindAngleMultiplier(self):
         if self.upwindWaypoint == (self.currentWaypoint + 3) % 4:
@@ -268,6 +269,7 @@ class StationKeeping(sailing_task.SailingTask):
         self.SKLogger.printLog()
     def printSailingLog(self, sheet_percent, wind_bearing):
         self.SKLogger.sailLog="Sheet Percent:" + str(sheet_percent) +"  Course:" + str(wind_bearing)
+        gVars.logger.debug(str(self.meanSpd))
         self.SKLogger.printLog()
 
 class SKLogger:

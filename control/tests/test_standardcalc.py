@@ -29,10 +29,10 @@ class TestSetBoxCoords(unittest.TestCase):
         self.assertIs(self.coordlist1[3],self.coord3)  
     def testCase3(self):
         self.coordlist1 = standardcalc.setBoxCoords(self.coord0, self.coord2, self.coord1, self.coord3)        
-        self.assertIs(self.coordlist1[0],self.coord0)
-        self.assertIs(self.coordlist1[3],self.coord1)
-        self.assertIs(self.coordlist1[2],self.coord2)
-        self.assertIs(self.coordlist1[1],self.coord3)
+        self.assertIs(self.coordlist1[0],self.coord1)
+        self.assertIs(self.coordlist1[3],self.coord0)
+        self.assertIs(self.coordlist1[2],self.coord3)
+        self.assertIs(self.coordlist1[1],self.coord2)
                           
 class TestangleBetweenThreePoints(unittest.TestCase):
     def setUp(self):
