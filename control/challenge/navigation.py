@@ -64,8 +64,12 @@ class Navigation(sailing_task.SailingTask):
         
         gVars.logger.info("Rounding Buoy")                
         if(gVars.kill_flagNav == 0):
-            self.roundbuoy.run(BuoyCoords,halfwayBackPoint)
-        gVars.logger.info("Heading for Finish")                
+            self.roundbuoy.run(BuoyCoords)
+        gVars.logger.info("Heading for Midpoint ")
+        
+        if(gVars.kill_flagNav == 0):
+            self.pointtopoint.run(halfwayBackPoint)
+        gVars.logger.info("Heading for Finish")               
         
         if(gVars.kill_flagNav == 0):
             steerByCOG = 1
