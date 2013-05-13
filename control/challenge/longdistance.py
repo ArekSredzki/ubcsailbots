@@ -34,7 +34,7 @@ class LongDistance(sailing_task.SailingTask):
             elif(waypoint.wtype == sVars.LD_SECOND):
                 markTwo = waypoint
         
-        ldWaypoints = [markOne, startPoint, markTwo, startPoint, markOne, startPoint, markTwo, startPoint]
+        ldWaypoints = [markOne, startPoint, markTwo, startPoint, markOne, startPoint, markTwo, startPoint, markOne]
         
         for waypoint in ldWaypoints:
             if gVars.kill_flagLD == 0:
@@ -42,11 +42,11 @@ class LongDistance(sailing_task.SailingTask):
                 
                 # Startpoint does not require a buoy rounding
                 if waypoint.coordinate != startPoint.coordinate:
-                    self.pointtopoint.run(waypoint.coordinate, 10, 20)
+                    self.pointtopoint.run(waypoint.coordinate, None, 30)
                     # Currently will round all buoys port.  May need to be changed for course outline
                     self.roundbuoy.run(waypoint.coordinate)
                 else:
-                    self.pointtopoint.run(waypoint.coordinate, None, 3)
+                    self.pointtopoint.run(waypoint.coordinate, None, 10)
                     
             else:
                 break
