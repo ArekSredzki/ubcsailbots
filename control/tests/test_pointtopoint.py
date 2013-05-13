@@ -40,7 +40,8 @@ class TestPointToPoint(unittest.TestCase):
     def testdoWeStillWantToTackReturnTrue(self):
         self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
         self.p2p.Dest = datatypes.GPSCoordinate(49.1,-123) # 0 degrees, N
-        
+        self.p2p.tackSailing =1
+        self.p2p.roundingLayOffset=0
         self.p2p.hog = 0 # N
         self.assertTrue(self.p2p.doWeStillWantToTack())
         
@@ -54,7 +55,8 @@ class TestPointToPoint(unittest.TestCase):
     def testdoWeStillWantToTackReturnFalse(self):
         self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
         self.p2p.Dest = datatypes.GPSCoordinate(49.1,-123) # 0 degrees, N
-        
+        self.p2p.tackSailing =1
+        self.p2p.roundingLayOffset=0
         self.p2p.hog = 90 # E
         self.assertFalse(self.p2p.doWeStillWantToTack())
         

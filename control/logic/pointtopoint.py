@@ -35,16 +35,17 @@ class PointToPoint(sailing_task.SailingTask):
         self.oldAngleBetweenCoords = 0
         self.tackDirection = 0
         self.printedStraight = 0
+        self.layAngle=75
     
     # --- Point to Point ---
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
     # Output: Nothing
-    def run(self, Dest, initTack = None, acceptDist=None, noTack = False, steerByCourse=COMPASS_METHOD):
+    def run(self, Dest, initTack = None, acceptDist=None, steerByCourse=COMPASS_METHOD, roundingLayOffset =0):
         self.initialize()
         gVars.logger.info("Started point to pointAWA toward "+repr(Dest))
         self.Dest = Dest
         self.STEER_METHOD = steerByCourse
-
+        self.roundingLayOffset = roundingLayOffset
         self.updateData()
         gVars.kill_flagPTP = 0
         self.initialTack = initTack
@@ -56,7 +57,7 @@ class PointToPoint(sailing_task.SailingTask):
             time.sleep(.1)
             self.updateData()
    
-            if(standardcalc.isWPNoGoAWA(self.AWA, self.hog, self.Dest,self.sog,self.GPSCoord) and noTack == False):
+            if(standardcalc.isWPNoGoAWA(self.AWA, self.hog, self.Dest,self.sog,self.GPSCoord)):
                 self.printedStraight = 0
                 
                 if(self.starboardTackWanted(self.initialTack)):
@@ -116,7 +117,7 @@ class PointToPoint(sailing_task.SailingTask):
          
         if(gVars.tacked_flag == 0):                                                                
             gVars.arduino.tack(gVars.currentColumn,self.tackDirection)
-            gVars.logger.info("Tacked from 80 degrees")
+            gVars.logger.info("Tacked from "+str(self.layAngle)+" degrees")
 
     def adjustSheetsAndSteerByCompass(self):
         gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
@@ -155,7 +156,12 @@ class PointToPoint(sailing_task.SailingTask):
             return 0
     
     def doWeStillWantToTack(self):
-        if(abs(standardcalc.calculateAngleDelta(self.hog,standardcalc.angleBetweenTwoCoords(self.GPSCoord, self.Dest))) < 80 and gVars.kill_flagPTP ==0):
+        if self.tackSailing==1: #ie port tack
+            self.layAngle = 75+self.roundingLayOffset
+        elif self.tackSailing==2: #ie starboard tack
+            self.layAngle = 75-self.roundingLayOffset
+
+        if(abs(standardcalc.calculateAngleDelta(self.hog,standardcalc.angleBetweenTwoCoords(self.GPSCoord, self.Dest))) < self.layAngle and gVars.kill_flagPTP ==0):
             return 1
         else:
             return 0

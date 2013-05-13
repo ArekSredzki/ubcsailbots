@@ -24,11 +24,3 @@ class TestRoundBuoy(unittest.TestCase):
     def testFindLeftBuoyPoint(self):
         leftBuoyPoint = roundbuoy.RoundBuoy.findLeftBuoyPoint(self.round_buoy, self.buoyLoc)
         self.assertTrue(abs(standardcalc.angleBetweenTwoCoords(self.buoyLoc,leftBuoyPoint)-(self.angleBetweenBuoyAndGPSCoord-roundbuoy.RoundBuoy.TargetAndBuoyAngle))<0.1)
-        
-    def testFindRightInitialPoint(self):
-        rightInitialPoint = roundbuoy.RoundBuoy.findRightInitialPoint(self.round_buoy, self.buoyLoc)
-        self.assertTrue(abs(standardcalc.angleBetweenTwoCoords(self.buoyLoc,rightInitialPoint)-(self.angleBetweenBuoyAndGPSCoord+roundbuoy.RoundBuoy.InitialSailAndBuoyAngle))<0.1)
-        
-    def testFindLeftInitialPoint(self):
-        leftInitialPoint = roundbuoy.RoundBuoy.findLeftInitialPoint(self.round_buoy, self.buoyLoc)
-        self.assertTrue(abs(standardcalc.angleBetweenTwoCoords(self.buoyLoc,leftInitialPoint)-(self.angleBetweenBuoyAndGPSCoord-roundbuoy.RoundBuoy.InitialSailAndBuoyAngle))<0.1)
