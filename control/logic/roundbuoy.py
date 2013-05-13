@@ -18,8 +18,8 @@ class RoundBuoy(sailing_task.SailingTask):
     TargetToBuoyDist = 12
     InitialSailToBuoyDist = 20
     
-    def __init__(self, port=True):
-        self.port = port
+    def __init__(self):
+        self.rounding = gVars.instructions.rounding
         self.pointtopoint = pointtopoint.PointToPoint()
         
     def run(self, BuoyLoc):
@@ -28,7 +28,7 @@ class RoundBuoy(sailing_task.SailingTask):
         rightBuoyPoint = self.findRightBuoyPoint(BuoyLoc)
         leftBuoyPoint = self.findLeftBuoyPoint(BuoyLoc)
  
-        if(self.port==True):
+        if(self.rounding=="port"):
             gVars.logger.info("Sailing To Right Buoy Point: " + repr(rightBuoyPoint))
             if(gVars.kill_flagRB == 0):
                 self.pointtopoint.run(rightBuoyPoint, 0,6, None, roundingLayOffset =-20)
@@ -37,7 +37,7 @@ class RoundBuoy(sailing_task.SailingTask):
             if(gVars.kill_flagRB == 0):
                 self.pointtopoint.run(leftBuoyPoint, None, 6)
             #gVars.logger.info("Final Loc is:" + repr(FinalLoc))
-        else:
+        elif (self.rounding=="starboard"):
             gVars.logger.info("Sailing To Left Buoy Point: " + repr(leftBuoyPoint))
             if(gVars.kill_flagRB == 0):
                 self.pointtopoint.run(leftBuoyPoint, 1,6,None, roundingLayOffset =20)

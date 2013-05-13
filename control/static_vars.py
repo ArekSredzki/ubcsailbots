@@ -20,8 +20,7 @@ NO_CHALLENGE = "NONE"
 GO_TO = "pointToPoint"
 
 # Round Buoy waypoint types
-GO_AROUND_PORT = "roundBuoyPort"
-GO_AROUND_STBD = "roundBuoyStbd"
+GO_AROUND = "roundbuoy"
 
 # -- Challenge Waypoint types --
 # Long Distance Challenge waypoint types
