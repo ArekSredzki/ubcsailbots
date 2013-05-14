@@ -82,13 +82,9 @@ class StationKeeping(sailing_task.SailingTask):
             
         return boxDistList
     def getStartDirection(self, wayPtCoords):
-      distances=[]
-      for i in range(0,4):
-        dist = standardcalc.distBetweenTwoCoords(gVars.currentData.gps_coord, wayPtCoords[i])
-        distances.append(dist)
-      
-      direction = (distances.index(min(distances))+2)%4
-      return direction
+      index = standardcalc.returnClosestWaypointIndex(wayPtCoords)
+      index = (index+2)%4
+      return index
                                                                                             
     def run(self, topLeftWaypnt, topRightWaypnt, botLeftWaypnt, botRightWaypnt):
         
