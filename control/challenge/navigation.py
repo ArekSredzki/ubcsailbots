@@ -62,7 +62,7 @@ class Navigation(sailing_task.SailingTask):
 
         halfwayBackPoint = datatypes.GPSCoordinate((self.interpolatedPoint.lat+BuoyCoords.lat)/2,(self.interpolatedPoint.long+BuoyCoords.long)/2)
         
-        gVars.logger.info("Rounding Buoy")                
+        gVars.logger.info("Rounding Buoy")      
         if(gVars.kill_flagNav == 0):
             self.roundbuoy.run(BuoyCoords)
         gVars.logger.info("Heading for Midpoint ")
@@ -75,7 +75,7 @@ class Navigation(sailing_task.SailingTask):
             steerByCOG = 1
             acceptDistance = 0.5
             thread.start_new_thread(self.printNavigationLog, ())
-            self.pointtopoint.run(self.interpolatedPoint,None,acceptDistance,False, steerByCOG)
+            self.pointtopoint.run(self.interpolatedPoint,None,acceptDistance, steerByCOG)
         
         return 0
     
