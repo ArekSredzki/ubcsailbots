@@ -36,3 +36,4 @@ kill_flagNav = 0
 kill_flagSK = 0
 kill_flagRB = 0
 kill_flagLD = 0
+kill_flagCR = 0

@@ -11,6 +11,7 @@ from datetime import datetime
 from challenge import longdistance
 from challenge import navigation
 from challenge import stationkeeping
+from challenge import chaserace
 from logic import roundbuoy
 from logic import pointtopoint
 from control import sailbot_logger
@@ -80,6 +81,8 @@ def getTaskObject(process):
         return stationkeeping.StationKeeping()
     elif (process == sVars.LONG_DISTANCE_CHALLENGE):
         return longdistance.LongDistance()
+    elif (process == sVars.CHASE_RACE_CHALLENGE):
+        return chaserace.ChaseRace()
     else:
         gVars.logger.warning("No instruction task named " + str(process))
     
@@ -100,6 +103,7 @@ def unkillAllFunctions():
     gVars.kill_flagSK = 0
     gVars.kill_flagRB = 0
     gVars.kill_flagLD = 0
+    gVars.kill_flagCR = 0
 
 def killAllFunctions():
     # All current kill flags must be added here.
@@ -108,6 +112,7 @@ def killAllFunctions():
     gVars.kill_flagSK = 1
     gVars.kill_flagRB = 1
     gVars.kill_flagLD = 1
+    gVars.kill_flagCR = 1
 
 if __name__ == '__main__':
     try:

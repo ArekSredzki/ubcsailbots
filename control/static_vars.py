@@ -14,6 +14,7 @@ NAVIGATION_CHALLENGE = "navigation"
 STATION_KEEPING_CHALLENGE = "stationkeeping"
 LONG_DISTANCE_CHALLENGE = "longdistance"
 NO_CHALLENGE = "NONE"
+CHASE_RACE_CHALLENGE = "chaserace"
 
 # -- Logic Waypoint Types --
 # Point to Point waypoint types

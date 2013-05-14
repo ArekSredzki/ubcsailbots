@@ -303,4 +303,17 @@ class TestBoundAngleDelta(unittest.TestCase):
     def testWrapAround180SwapSigns(self):
         angle1=-150
         angle2=150
-        self.assertEqual(standardcalc.calculateAngleDelta(angle1,angle2),60)        
+        self.assertEqual(standardcalc.calculateAngleDelta(angle1,angle2),60)      
+
+class TestReturnClosestWaypointIndex(unittest.TestCase):
+    def setUp(self):
+      self.coords =[]
+      self.coords.append(datatypes.GPSCoordinate(1.0,3.0))
+      self.coords.append(datatypes.GPSCoordinate(1.0,2.0))
+      self.coords.append(datatypes.GPSCoordinate(2.0,2.0))
+      self.coords.append(datatypes.GPSCoordinate(2.0,3.0))
+
+    def testClosestPointIsIndex1(self):
+        gVars.currentData.gps_coord = datatypes.GPSCoordinate(2.0,2.0)
+        self.assertEqual(standardcalc.returnClosestWaypointIndex(self.coords),2)    
+          
