@@ -159,8 +159,8 @@ class PointToPoint(sailing_task.SailingTask):
         elif self.tackSailing==2: #ie starboard tack
             self.layAngle = 75-self.roundingLayOffset
         
-        beatEstablished =(abs(self.AWA- self.TACKING_ANGLE)<10)
-        
+        beatEstablished =(abs(abs(self.AWA)- self.TACKING_ANGLE)<10)
+
         if(abs(standardcalc.calculateAngleDelta(self.hog,standardcalc.angleBetweenTwoCoords(self.GPSCoord, self.Dest))) < self.layAngle):
             return 1
         elif beatEstablished:
