@@ -27,6 +27,7 @@ class StationKeeping(sailing_task.SailingTask):
     CRITICAL_HEIGHT_BELOW_BOX_MIDPOINT = 5
     CRITICAL_HEIGHT_ABOVE_BOTTOM_OF_BOX = 15
     EXITING_AWA_BEARING = 68 #beam reach
+    SK_WEATHER_COLUMN =1 #don suspects this weather setting will do for SK
     
     def __init__(self):
         self.upwindWaypoint = 0
@@ -199,14 +200,14 @@ class StationKeeping(sailing_task.SailingTask):
             self.STEER_METHOD = self.AWA_METHOD           
             target = self.calcTackingAngle(downwindHeight, downwindHeightIdeal)
             sheetPercentageMultiplier = self.calcDownwindPercent(downwindHeight, downwindHeightIdeal)*.01
-            self.sheet_percent =round(sheetPercentageMultiplier*self.sheetList[abs(int(gVars.currentData.awa))][gVars.currentColumn])
+            self.sheet_percent =round(sheetPercentageMultiplier*self.sheetList[abs(int(gVars.currentData.awa))][self.SK_WEATHER_COLUMN])
             windAngleMultiplier = self.calcWindAngleMultiplier()
             target = windAngleMultiplier*target
             
         else:
             self.STEER_METHOD = self.COMPASS_METHOD           
             target = standardcalc.angleBetweenTwoCoords(self.wayPtCoords[(self.currentWaypoint+2)%4], self.wayPtCoords[self.currentWaypoint])
-            sheetMax = self.sheetList[abs(int(gVars.currentData.awa))][gVars.currentColumn]
+            sheetMax = self.sheetList[abs(int(gVars.currentData.awa))][self.SK_WEATHER_COLUMN]
             self.sheet_percent = self.adjustSheetsForExit(boxDistList[self.currentWaypoint],sheetMax)
 
         if (self.isThereChangeInDownwindHeightOrTackingAngleOrAwa(target)):
