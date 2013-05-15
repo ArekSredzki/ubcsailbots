@@ -96,7 +96,7 @@ class PointToPoint(sailing_task.SailingTask):
         self.initialTack = None
         gVars.tacked_flag = 0
         
-        while(self.doWeStillWantToTack()):
+        while(self.doWeStillWantToTack() and gVars.kill_flagPTP ==0):
             time.sleep(.1)
             if(self.arrivedAtPoint()):
                 gVars.tacked_flag=1
@@ -113,7 +113,7 @@ class PointToPoint(sailing_task.SailingTask):
             if(gVars.tacked_flag):
                 break
          
-        if(gVars.tacked_flag == 0):                                                                
+        if(gVars.tacked_flag == 0 and gVars.kill_flagPTP ==0):                                                                
             gVars.arduino.tack(gVars.currentColumn,self.tackDirection)
             gVars.logger.info("Tacked from "+str(self.layAngle)+" degrees")
 
@@ -159,9 +159,9 @@ class PointToPoint(sailing_task.SailingTask):
         elif self.tackSailing==2: #ie starboard tack
             self.layAngle = 75-self.roundingLayOffset
         
-        beatEstablished =(abs(abs(self.AWA)- self.TACKING_ANGLE)<10)
-
-        if(abs(standardcalc.calculateAngleDelta(self.hog,standardcalc.angleBetweenTwoCoords(self.GPSCoord, self.Dest))) < self.layAngle and gVars.kill_flagPTP ==0):
+        beatEstablished =(abs(self.AWA- self.TACKING_ANGLE)<10)
+        
+        if(abs(standardcalc.calculateAngleDelta(self.hog,standardcalc.angleBetweenTwoCoords(self.GPSCoord, self.Dest))) < self.layAngle):
             return 1
         elif beatEstablished:
             return 0
