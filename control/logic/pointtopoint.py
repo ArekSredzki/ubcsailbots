@@ -84,10 +84,10 @@ class PointToPoint(sailing_task.SailingTask):
         return
 
     def enterBeatLoop(self, port):
-        tackAngleMultiplier = -1
         if port:
             self.tackSailing = 2
             gVars.logger.info("On port tack")
+            tackAngleMultiplier = -1
         else:
             self.tackSailing = 1
             gVars.logger.info("On starboard tack")
@@ -95,7 +95,7 @@ class PointToPoint(sailing_task.SailingTask):
         
         self.initialTack = None
         gVars.tacked_flag = 0
-
+        
         while(self.doWeStillWantToTack()):
             time.sleep(.1)
             if(self.arrivedAtPoint()):
@@ -104,7 +104,6 @@ class PointToPoint(sailing_task.SailingTask):
             else:
                 gVars.tacked_flag = 0
             self.updateData()
-                                       
             if(self.isThereChangeToAWAorWeatherOrMode() ):
                 self.adjustSheetsAndSteerByApparentWind(tackAngleMultiplier)
    
@@ -120,7 +119,7 @@ class PointToPoint(sailing_task.SailingTask):
 
     def adjustSheetsAndSteerByCompass(self):
         gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
-        gVars.arduino.steer(COMPASS_METHOD,self.angleBetweenCoords)  
+        gVars.arduino.steer(self.COMPASS_METHOD,self.angleBetweenCoords)  
             
     def adjustSheetsAndSteerByApparentWind(self, tackAngleMultiplier):
         gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
@@ -159,11 +158,15 @@ class PointToPoint(sailing_task.SailingTask):
             self.layAngle = 75+self.roundingLayOffset
         elif self.tackSailing==2: #ie starboard tack
             self.layAngle = 75-self.roundingLayOffset
+        
+        beatEstablished =(abs(abs(self.AWA)- self.TACKING_ANGLE)<10)
 
         if(abs(standardcalc.calculateAngleDelta(self.hog,standardcalc.angleBetweenTwoCoords(self.GPSCoord, self.Dest))) < self.layAngle and gVars.kill_flagPTP ==0):
             return 1
-        else:
+        elif beatEstablished:
             return 0
+        else:
+            return 1
         
     def isThereChangeToAWAorWeatherOrModeOrAngle(self):
         if(self.AWA != self.oldAWA or self.oldColumn != gVars.currentColumn or self.oldTackSailing != self.tackSailing or abs(self.oldAngleBetweenCoords-self.angleBetweenCoords)>self.ANGLE_CHANGE_THRESHOLD):
