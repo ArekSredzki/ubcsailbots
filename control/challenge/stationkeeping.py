@@ -86,10 +86,11 @@ class StationKeeping(sailing_task.SailingTask):
             boxDistList = [topDist, rightDist, bottomDist, leftDist]
             
         return boxDistList
+    
     def getStartDirection(self, wayPtCoords):
-      index = standardcalc.returnClosestWaypointIndex(wayPtCoords)
-      index = (index+2)%4
-      return index
+        index = standardcalc.returnClosestWaypointIndex(wayPtCoords)
+        index = (index+2)%4
+        return index
                                                                                             
     def run(self, topLeftWaypnt, topRightWaypnt, botLeftWaypnt, botRightWaypnt):
         

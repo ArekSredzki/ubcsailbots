@@ -16,25 +16,22 @@ class ChaseRace(sailing_task.SailingTask):
     def run(self,wpt0, wpt1, wpt2, wpt3):
         self.initialize(wpt0.coordinate, wpt1.coordinate, wpt2.coordinate, wpt3.coordinate)
         self.race()
-
-          
+ 
     def initialize(self,c0, c1, c2, c3):
         self.roundbuoy = roundbuoy.RoundBuoy()
         self.boxCoords = standardcalc.setBoxCoords(c0, c1, c2, c3)
         self.currentWaypoint = self.getStartDirection(self.boxCoords)
         gVars.logger.info("Current Waypoint is "+str(self.currentWaypoint))
     
-    
     def getStartDirection(self, boxCoords):
         index = standardcalc.returnClosestWaypointIndex(boxCoords)
         return self.getNextWptIndex(index)
-         
-         
+          
     def getNextWptIndex(self,index):
-      if gVars.instructions.rounding == "port":
-          return (index -1)%4
-      else:
-          return (index +1)%4 
+        if gVars.instructions.rounding == "port":
+            return (index -1)%4
+        else:
+            return (index +1)%4 
     
     def race(self):
         while (gVars.kill_flagCR==0):            
@@ -42,5 +39,4 @@ class ChaseRace(sailing_task.SailingTask):
             self.currentWaypoint = self.getNextWptIndex(self.currentWaypoint)
             gVars.logger.info("Current Waypoint is "+str(self.currentWaypoint))
         gVars.logger.info("ChaseRace Kill Flag initialized. ChaseRace has been stopped.")
-
-          
+        
