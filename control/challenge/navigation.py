@@ -23,9 +23,7 @@ class Navigation(sailing_task.SailingTask):
     LOG_UPDATE_INTERVAL=1
     def __init__(self):
         self.roundbuoy = roundbuoy.RoundBuoy()
-        gVars.logger.debug("navigation about to create p2p")
         self.pointtopoint = pointtopoint.PointToPoint()
-        gVars.logger.debug("navigation finished create p2p")
         
     def run(self, Waypoint1,Waypoint2,Waypoint3):
         self.nav_log_timer=0
