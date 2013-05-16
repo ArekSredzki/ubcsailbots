@@ -31,7 +31,7 @@ class RoundBuoy(sailing_task.SailingTask):
         if(self.rounding=="port"):
             gVars.logger.info("Sailing To Right Buoy Point: " + repr(rightBuoyPoint))
             if(gVars.kill_flagRB == 0):
-                self.pointtopoint.run(rightBuoyPoint, 0,6, 0, roundingLayOffset =-20)
+                self.pointtopoint.run(rightBuoyPoint, 0,6, roundingLayOffset =-20)
             #gVars.logger.info("Final Loc is:" + repr(FinalLoc))
             gVars.logger.info("Sailing To Left Buoy Point: " + repr(leftBuoyPoint))
             if(gVars.kill_flagRB == 0):
@@ -40,7 +40,7 @@ class RoundBuoy(sailing_task.SailingTask):
         elif (self.rounding=="starboard"):
             gVars.logger.info("Sailing To Left Buoy Point: " + repr(leftBuoyPoint))
             if(gVars.kill_flagRB == 0):
-                self.pointtopoint.run(leftBuoyPoint, 1,6,0, roundingLayOffset =20)
+                self.pointtopoint.run(leftBuoyPoint, 1,6, roundingLayOffset =20)
             gVars.logger.info("Sailing To Right Buoy Point: " + repr(rightBuoyPoint))
             if(gVars.kill_flagRB == 0):
                 self.pointtopoint.run(rightBuoyPoint, None, 6)

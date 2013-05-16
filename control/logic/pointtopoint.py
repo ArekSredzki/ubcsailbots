@@ -40,11 +40,10 @@ class PointToPoint(sailing_task.SailingTask):
     # --- Point to Point ---
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
     # Output: Nothing
-    def run(self, Dest, initTack = None, acceptDist=None, steerByCourse=COMPASS_METHOD, roundingLayOffset =0):
+    def run(self, Dest, initTack = None, acceptDist=None, roundingLayOffset =0):
         self.initialize()
         gVars.logger.info("Started point to pointAWA toward "+repr(Dest))
         self.Dest = Dest
-        self.STEER_METHOD = steerByCourse
         self.roundingLayOffset = roundingLayOffset
         self.updateData()
         gVars.kill_flagPTP = 0
@@ -85,10 +84,10 @@ class PointToPoint(sailing_task.SailingTask):
         return
 
     def enterBeatLoop(self, port):
-        tackAngleMultiplier = -1
         if port:
             self.tackSailing = 2
             gVars.logger.info("On port tack")
+            tackAngleMultiplier = -1
         else:
             self.tackSailing = 1
             gVars.logger.info("On starboard tack")
@@ -96,16 +95,15 @@ class PointToPoint(sailing_task.SailingTask):
         
         self.initialTack = None
         gVars.tacked_flag = 0
-
-        while(self.doWeStillWantToTack()):
+        
+        while(self.doWeStillWantToTack() and gVars.kill_flagPTP ==0):
             time.sleep(.1)
-            if(self.arrivedAtPoint()):
+            self.updateData()
+            if(self.arrivedAtPoint() or not standardcalc.isWPNoGoAWA(self.AWA, self.hog, self.Dest,self.sog,self.GPSCoord)):
                 gVars.tacked_flag=1
                 break
             else:
                 gVars.tacked_flag = 0
-            self.updateData()
-                                       
             if(self.isThereChangeToAWAorWeatherOrMode() ):
                 self.adjustSheetsAndSteerByApparentWind(tackAngleMultiplier)
    
@@ -115,13 +113,13 @@ class PointToPoint(sailing_task.SailingTask):
             if(gVars.tacked_flag):
                 break
          
-        if(gVars.tacked_flag == 0):                                                                
+        if(gVars.tacked_flag == 0 and gVars.kill_flagPTP ==0):                                                                
             gVars.arduino.tack(gVars.currentColumn,self.tackDirection)
             gVars.logger.info("Tacked from "+str(self.layAngle)+" degrees")
 
     def adjustSheetsAndSteerByCompass(self):
         gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
-        gVars.arduino.steer(self.STEER_METHOD,self.angleBetweenCoords)  
+        gVars.arduino.steer(self.COMPASS_METHOD,self.angleBetweenCoords)  
             
     def adjustSheetsAndSteerByApparentWind(self, tackAngleMultiplier):
         gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
@@ -160,11 +158,15 @@ class PointToPoint(sailing_task.SailingTask):
             self.layAngle = 75+self.roundingLayOffset
         elif self.tackSailing==2: #ie starboard tack
             self.layAngle = 75-self.roundingLayOffset
+        
+        beatEstablished =(abs(abs(self.AWA)- self.TACKING_ANGLE)<10)
 
-        if(abs(standardcalc.calculateAngleDelta(self.hog,standardcalc.angleBetweenTwoCoords(self.GPSCoord, self.Dest))) < self.layAngle and gVars.kill_flagPTP ==0):
+        if(abs(standardcalc.calculateAngleDelta(self.hog,standardcalc.angleBetweenTwoCoords(self.GPSCoord, self.Dest))) < self.layAngle):
             return 1
-        else:
+        elif beatEstablished:
             return 0
+        else:
+            return 1
         
     def isThereChangeToAWAorWeatherOrModeOrAngle(self):
         if(self.AWA != self.oldAWA or self.oldColumn != gVars.currentColumn or self.oldTackSailing != self.tackSailing or abs(self.oldAngleBetweenCoords-self.angleBetweenCoords)>self.ANGLE_CHANGE_THRESHOLD):

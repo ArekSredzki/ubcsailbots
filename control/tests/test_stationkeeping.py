@@ -36,18 +36,19 @@ class TestGetStartingDirection(unittest.TestCase):
 class TestAdjustSheetsForExit(unittest.TestCase):
     def setUp(self):
         self.stationKeeping = stationkeeping.StationKeeping()
-        self.stationKeeping.secLeft =10
+        self.stationKeeping.secLeft =8
         self.distance = 10
         self.stationKeeping.sheet_percent = 50
+        self.sheetMax = 54
     def testTooSlowAndMaxSheeting(self):
         gVars.currentData.sog =.5
-        self.assertEqual(self.stationKeeping.adjustSheetsForExit(self.distance),54)  
+        self.assertEqual(self.stationKeeping.adjustSheetsForExit(self.distance,self.sheetMax),54)  
     def testTooFast(self):
         gVars.currentData.sog =1.5
-        self.assertEqual(self.stationKeeping.adjustSheetsForExit(self.distance),self.stationKeeping.sheet_percent-25)  
+        self.assertEqual(self.stationKeeping.adjustSheetsForExit(self.distance,self.sheetMax),self.stationKeeping.sheet_percent-25)  
     def testJustRight(self):
         gVars.currentData.sog =1
-        self.assertEqual(self.stationKeeping.adjustSheetsForExit(self.distance),self.stationKeeping.sheet_percent)
+        self.assertEqual(self.stationKeeping.adjustSheetsForExit(self.distance,self.sheetMax),self.stationKeeping.sheet_percent)
       
 class TestWaypointCoords(unittest.TestCase):
 		def setUp(self):

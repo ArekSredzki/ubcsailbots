@@ -11,7 +11,7 @@ class TestPointToPoint(unittest.TestCase):
     def setUp(self):
         gVars.logger = sailbot_logger.Logger()
         self.p2p = pointtopoint.PointToPoint()
-      
+
     def testWhichTackWantedStarboardWanted(self):
         initialTack=None
     
@@ -38,6 +38,7 @@ class TestPointToPoint(unittest.TestCase):
 
         
     def testdoWeStillWantToTackReturnTrue(self):
+        self.p2p.AWA =30      
         self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
         self.p2p.Dest = datatypes.GPSCoordinate(49.1,-123) # 0 degrees, N
         self.p2p.tackSailing =1
@@ -53,6 +54,7 @@ class TestPointToPoint(unittest.TestCase):
         
         
     def testdoWeStillWantToTackReturnFalse(self):
+        self.p2p.AWA =30      
         self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
         self.p2p.Dest = datatypes.GPSCoordinate(49.1,-123) # 0 degrees, N
         self.p2p.tackSailing =1

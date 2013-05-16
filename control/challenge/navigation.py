@@ -72,10 +72,9 @@ class Navigation(sailing_task.SailingTask):
         gVars.logger.info("Heading for Finish")               
         
         if(gVars.kill_flagNav == 0):
-            steerByCOG = 1
             acceptDistance = 0.5
             thread.start_new_thread(self.printNavigationLog, ())
-            self.pointtopoint.run(self.interpolatedPoint,None,acceptDistance, steerByCOG)
+            self.pointtopoint.run(self.interpolatedPoint,None,acceptDistance)
         
         return 0
     
