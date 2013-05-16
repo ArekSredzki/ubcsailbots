@@ -79,8 +79,8 @@ class Navigation(sailing_task.SailingTask):
         return 0
     
     def printNavigationLog(self):
-      while (gVars.kill_flagNav == 0):
-          if (time.time() - self.nav_log_timer>self.LOG_UPDATE_INTERVAL):
-              self.nav_log_timer = time.time()
-              gVars.logger.info("Distance: "+ str(standardcalc.distBetweenTwoCoords(gVars.currentData.gps_coord, self.interpolatedPoint)))
-      
+        while (gVars.kill_flagNav == 0):
+            if (time.time() - self.nav_log_timer>self.LOG_UPDATE_INTERVAL):
+                self.nav_log_timer = time.time()
+                gVars.logger.info("Distance: "+ str(standardcalc.distBetweenTwoCoords(gVars.currentData.gps_coord, self.interpolatedPoint)))
+                

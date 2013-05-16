@@ -26,8 +26,8 @@ class ChaseRace(sailing_task.SailingTask):
     
     
     def getStartDirection(self, boxCoords):
-      index = standardcalc.returnClosestWaypointIndex(boxCoords)
-      return self.getNextWptIndex(index)
+        index = standardcalc.returnClosestWaypointIndex(boxCoords)
+        return self.getNextWptIndex(index)
          
          
     def getNextWptIndex(self,index):

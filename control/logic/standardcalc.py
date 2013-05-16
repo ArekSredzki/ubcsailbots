@@ -319,10 +319,10 @@ def returnMidPoint(point1, point2):
     return datatypes.GPSCoordinate( (point1.lat +point2.lat)/2.0, (point1.long +point2.long)/2.0)
   
 def returnClosestWaypointIndex(coords):
-      distances=[]
-      for coord in coords:
-          dist = distBetweenTwoCoords(gVars.currentData.gps_coord, coord)
-          distances.append(dist)
-      
-      index = distances.index(min(distances))
-      return index
+    distances=[]
+    for coord in coords:
+        dist = distBetweenTwoCoords(gVars.currentData.gps_coord, coord)
+        distances.append(dist)
+    
+    index = distances.index(min(distances))
+    return index

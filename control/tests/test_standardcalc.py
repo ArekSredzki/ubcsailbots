@@ -282,7 +282,7 @@ class TestBoundto360(unittest.TestCase):
         
 class TestBoundAngleDelta(unittest.TestCase):
     def setUp(self):
-      pass
+        pass
     
     def testTwoPossitveAngles(self):
         angle1=50
@@ -307,11 +307,11 @@ class TestBoundAngleDelta(unittest.TestCase):
 
 class TestReturnClosestWaypointIndex(unittest.TestCase):
     def setUp(self):
-      self.coords =[]
-      self.coords.append(datatypes.GPSCoordinate(1.0,3.0))
-      self.coords.append(datatypes.GPSCoordinate(1.0,2.0))
-      self.coords.append(datatypes.GPSCoordinate(2.0,2.0))
-      self.coords.append(datatypes.GPSCoordinate(2.0,3.0))
+        self.coords =[]
+        self.coords.append(datatypes.GPSCoordinate(1.0,3.0))
+        self.coords.append(datatypes.GPSCoordinate(1.0,2.0))
+        self.coords.append(datatypes.GPSCoordinate(2.0,2.0))
+        self.coords.append(datatypes.GPSCoordinate(2.0,3.0))
 
     def testClosestPointIsIndex1(self):
         gVars.currentData.gps_coord = datatypes.GPSCoordinate(2.0,2.0)
