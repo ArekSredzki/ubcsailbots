@@ -53,7 +53,6 @@ class PointToPoint(sailing_task.SailingTask):
         else:
             self.ACCEPTANCE_DISTANCE = acceptDist
         while(not self.arrivedAtPoint()) and gVars.kill_flagPTP == 0:
-            time.sleep(.1)
             self.updateData()
    
             if(standardcalc.isWPNoGoAWA(self.AWA, self.hog, self.Dest,self.sog,self.GPSCoord)):
@@ -73,6 +72,7 @@ class PointToPoint(sailing_task.SailingTask):
                 if(self.isThereChangeToAWAorWeatherOrModeOrAngle()):
                     self.adjustSheetsAndSteerByCompass()                    
                 self.handleBoundaries()
+            time.sleep(.1)
 
 
 
@@ -97,7 +97,6 @@ class PointToPoint(sailing_task.SailingTask):
         gVars.tacked_flag = 0
         
         while(self.doWeStillWantToTack() and gVars.kill_flagPTP ==0):
-            time.sleep(.1)
             self.updateData()
             if(self.arrivedAtPoint() or not standardcalc.isWPNoGoAWA(self.AWA, self.hog, self.Dest,self.sog,self.GPSCoord)):
                 gVars.tacked_flag=1
@@ -112,6 +111,7 @@ class PointToPoint(sailing_task.SailingTask):
             self.handleBoundaries()
             if(gVars.tacked_flag):
                 break
+            time.sleep(.1)
          
         if(gVars.tacked_flag == 0 and gVars.kill_flagPTP ==0):                                                                
             gVars.arduino.tack(gVars.currentColumn,self.tackDirection)
