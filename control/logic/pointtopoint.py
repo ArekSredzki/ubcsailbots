@@ -28,6 +28,7 @@ class PointToPoint(sailing_task.SailingTask):
         self.innerBoundaries = self.getInnerBoundaries(gVars.boundaries)
         self.outerBoundaries = self.getOuterBoundaries(gVars.boundaries)
         gVars.logger.info("New Point to Point object")
+        gVars.logger.info(str(len(self.innerBoundaries)) + " inner boundaries, " + str(len(self.outerBoundaries)) + " outer boundaries")
           
     def initialize(self):
         self.oldTackSailing = 0
@@ -37,7 +38,8 @@ class PointToPoint(sailing_task.SailingTask):
         self.oldAngleBetweenCoords = 0
         self.tackDirection = 0
         self.printedStraight = 0
-        self.layAngle=75
+        self.layAngle = 75
+        self.tacked_flag = 0
     
     # --- Point to Point ---
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
@@ -73,7 +75,7 @@ class PointToPoint(sailing_task.SailingTask):
                 self.tackSailing = 3
                 if(self.isThereChangeToAWAorWeatherOrModeOrAngle()):
                     self.adjustSheetsAndSteerByCompass()                    
-                self.handleBoundaries()
+                #self.handleBoundaries()
             time.sleep(.1)
 
 
@@ -96,27 +98,27 @@ class PointToPoint(sailing_task.SailingTask):
             tackAngleMultiplier = 1
         
         self.initialTack = None
-        gVars.tacked_flag = 0
+        self.tacked_flag = 0
         
         while(self.doWeStillWantToTack() and gVars.kill_flagPTP ==0):
             self.updateData()
             if(self.arrivedAtPoint() or not standardcalc.isWPNoGoAWA(self.AWA, self.hog, self.Dest,self.sog,self.GPSCoord)):
-                gVars.tacked_flag=1
+                self.tacked_flag=1
                 break
             else:
-                gVars.tacked_flag = 0
+                self.tacked_flag = 0
             
             if(self.isThereChangeToAWAorWeatherOrMode() ):
                 self.adjustSheetsAndSteerByApparentWind(tackAngleMultiplier)
    
             self.setTackDirection()
             
-            if self.checkIfBoundaryInterception() or gVars.tacked_flag:
+            if self.checkIfBoundaryInterception() or self.tacked_flag:
                 break
 
             time.sleep(.1)
          
-        if(gVars.tacked_flag == 0 and gVars.kill_flagPTP ==0):                                                                
+        if(self.tacked_flag == 0 and gVars.kill_flagPTP ==0):                                                                
             gVars.arduino.tack(gVars.currentColumn,self.tackDirection)
             gVars.logger.info("Tacked from "+str(self.layAngle)+" degrees")
 
@@ -201,6 +203,7 @@ class PointToPoint(sailing_task.SailingTask):
     
     def checkIfBoundaryInterception(self):
         if self.checkInnerBoundaryInterception() or self.checkOuterBoundaryInterception():
+            gVars.logger.info("Hit Boundary")
             return True
         else:
             return False
@@ -232,7 +235,7 @@ class PointToPoint(sailing_task.SailingTask):
                 
         gVars.logger.info("Tacked from boundary")
         gVars.arduino.tack(gVars.currentColumn,self.tackDirection)
-        gVars.tacked_flag = 1
+        self.tacked_flag = 1
         
         return
     
