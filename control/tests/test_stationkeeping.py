@@ -36,7 +36,7 @@ class TestGetStartingDirection(unittest.TestCase):
 class TestAdjustSheetsForExit(unittest.TestCase):
     def setUp(self):
         self.stationKeeping = stationkeeping.StationKeeping()
-        self.stationKeeping.secLeft =10
+        self.stationKeeping.secLeft =8
         self.distance = 10
         self.stationKeeping.sheet_percent = 50
         self.sheetMax = 54
