@@ -11,7 +11,7 @@ class TestPointToPoint(unittest.TestCase):
     def setUp(self):
         gVars.logger = sailbot_logger.Logger()
         self.p2p = pointtopoint.PointToPoint()
-
+        
     def testWhichTackWantedStarboardWanted(self):
         initialTack=None
     
@@ -64,26 +64,58 @@ class TestPointToPoint(unittest.TestCase):
         
         self.p2p.hog = -90 # NW
         self.assertFalse(self.p2p.doWeStillWantToTack())
-        
-    def testCheckHitBoundaries(self):
+    
+    def testSetInnerBoundaries(self):   
         self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
+        gVars.currentData.gps_coord = self.p2p.GPSCoord
+        coordinate = datatypes.GPSCoordinate(49,-123) #same coordinate
+        radius = 50
+        boundary1 = datatypes.Boundary(coordinate,radius)
+        coordinate = datatypes.GPSCoordinate(49,-123.1) #same coordinate
+        radius = 50
+        boundary2 = datatypes.Boundary(coordinate,radius)
+        boundaries = [boundary1, boundary2]
+        self.assertEqual(self.p2p.getInnerBoundaries(boundaries), [boundary1])
+        
+    def testSetOuterBoundaries(self):
+        self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123.1)
+        gVars.currentData.gps_coord = self.p2p.GPSCoord
+        coordinate = datatypes.GPSCoordinate(49,-123) #same coordinate
+        radius = 50
+        boundary1 = datatypes.Boundary(coordinate,radius)
+        coordinate = datatypes.GPSCoordinate(49,-123.1) #same coordinate
+        radius = 50
+        boundary2 = datatypes.Boundary(coordinate,radius)
+        boundaries = [boundary1, boundary2]
+        self.assertEqual(self.p2p.getInnerBoundaries(boundaries), [boundary2])
+         
+    def testCheckHitBoundaries(self):
+        self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123.1)
+        gVars.currentData.gps_coord = self.p2p.GPSCoord
         gVars.boundaries=[]
         coordinate = datatypes.GPSCoordinate(49,-123) #same coordinate
         radius = 50
         boundary = datatypes.Boundary(coordinate,radius)
-        gVars.boundaries.append(boundary)
-        
-        self.assertEqual(self.p2p.checkBoundaryInterception(), boundary)
+        gVars.boundaries = [boundary]
+        self.p2p.innerBoundaries = self.p2p.getInnerBoundaries(gVars.boundaries)
+        self.p2p.outerBoundaries = self.p2p.getOuterBoundaries(gVars.boundaries)
+        self.assertTrue(len(self.p2p.outerBoundaries) > 0)
+        self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
+
+        self.assertEqual(self.p2p.checkOuterBoundaryInterception(), boundary)
     
     def testOutsideHitBoundaries(self):
         self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
+        gVars.currentData.gps_coord = self.p2p.GPSCoord
         gVars.boundaries=[]
         coordinate = datatypes.GPSCoordinate(49,-123.1) #11ish km west
         radius = 50
         boundary = datatypes.Boundary(coordinate,radius)
         gVars.boundaries.append(boundary)
+        self.p2p.innerBoundaries = self.p2p.getInnerBoundaries(gVars.boundaries)
+        self.p2p.outerBoundaries = self.p2p.getOuterBoundaries(gVars.boundaries)
         
-        self.assertEqual(self.p2p.checkBoundaryInterception(), None)
+        self.assertEqual(self.p2p.checkInnerBoundaryInterception(), None)
     
     def testSetTackDirectionToPort(self):
         self.p2p.AWA = 130

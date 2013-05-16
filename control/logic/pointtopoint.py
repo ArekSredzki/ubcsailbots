@@ -25,6 +25,8 @@ class PointToPoint(sailing_task.SailingTask):
     def __init__(self):
         self.sheetList = parsing.parse(path.join(path.dirname(__file__), 'apparentSheetSetting'))
         self.initialTack = None
+        self.innerBoundaries = self.getInnerBoundaries(gVars.boundaries)
+        self.outerBoundaries = self.getOuterBoundaries(gVars.boundaries)
         gVars.logger.info("New Point to Point object")
           
     def initialize(self):
@@ -103,14 +105,15 @@ class PointToPoint(sailing_task.SailingTask):
                 break
             else:
                 gVars.tacked_flag = 0
+            
             if(self.isThereChangeToAWAorWeatherOrMode() ):
                 self.adjustSheetsAndSteerByApparentWind(tackAngleMultiplier)
    
             self.setTackDirection()
             
-            self.handleBoundaries()
-            if(gVars.tacked_flag):
+            if self.checkIfBoundaryInterception() or gVars.tacked_flag:
                 break
+
             time.sleep(.1)
          
         if(gVars.tacked_flag == 0 and gVars.kill_flagPTP ==0):                                                                
@@ -196,27 +199,57 @@ class PointToPoint(sailing_task.SailingTask):
             self.sailFromBoundary(boundary)
         return
     
-    def checkBoundaryInterception(self):
-        for boundary in gVars.boundaries:
+    def checkIfBoundaryInterception(self):
+        if self.checkInnerBoundaryInterception() or self.checkOuterBoundaryInterception():
+            return True
+        else:
+            return False
+    
+    def checkInnerBoundaryInterception(self):
+        for boundary in self.innerBoundaries:
+            if(standardcalc.distBetweenTwoCoords(boundary.coordinate, self.GPSCoord) > boundary.radius):
+                return boundary
+        return None
+    
+    def checkOuterBoundaryInterception(self):
+        for boundary in self.outerBoundaries:
             if(standardcalc.distBetweenTwoCoords(boundary.coordinate, self.GPSCoord) <= boundary.radius):
                 return boundary
         return None
     
     def sailFromBoundary(self, boundary):
-        sinAngle = standardcalc.angleBetweenTwoCoords(gVars.currentData.gps_coord,boundary.coordinate)
-        sinAngle = abs(sinAngle)
+        boundaryBoatAngle = standardcalc.angleBetweenTwoCoords(gVars.currentData.gps_coord,boundary.coordinate)
+        boundaryBoatAngle = abs(boundaryBoatAngle)
         
         dist_to_boundary = standardcalc.distBetweenTwoCoords(gVars.currentData.gps_coord, boundary.coordinate)
-        x_dist = dist_to_boundary * math.sin(math.radians(sinAngle))
+        xDist = dist_to_boundary * math.sin(math.radians(boundaryBoatAngle))
         
-        if(gVars.currentData.gps_coord.long < boundary.coordinate.long):
-            x_dist=-x_dist
-            
+        if(gVars.currentData.gps_coord.long > boundary.coordinate.long):
+            xDist = -xDist
+        
+        
+        # sailing straight to point.
+                
         gVars.logger.info("Tacked from boundary")
         gVars.arduino.tack(gVars.currentColumn,self.tackDirection)
         gVars.tacked_flag = 1
         
         return
+    
+    def getInnerBoundaries(self, boundaries):
+        boundaryList = []
+        for boundary in boundaries:
+            if(standardcalc.distBetweenTwoCoords(boundary.coordinate, gVars.currentData.gps_coord) <= boundary.radius):
+                boundaryList.append(boundary)
+        return boundaryList
+                
+    def getOuterBoundaries(self, boundaries):
+        boundaryList = []
+        for boundary in boundaries:
+            if(standardcalc.distBetweenTwoCoords(boundary.coordinate, gVars.currentData.gps_coord) > boundary.radius):
+                boundaryList.append(boundary)
+        return boundaryList
+    
     # Sets 1, or 0 for Arduino Call to Tack
     def setTackDirection(self):
         if(self.AWA > 0):
