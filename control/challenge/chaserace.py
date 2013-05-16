@@ -35,7 +35,7 @@ class ChaseRace(sailing_task.SailingTask):
     
     def race(self):
         while (gVars.kill_flagCR==0):            
-            self.roundbuoy.run(self.boxCoords[self.currentWaypoint])
+            self.roundbuoy.run(self.boxCoords[self.currentWaypoint], fullRound=False)
             self.currentWaypoint = self.getNextWptIndex(self.currentWaypoint)
             gVars.logger.info("Current Waypoint is "+str(self.currentWaypoint))
         gVars.logger.info("ChaseRace Kill Flag initialized. ChaseRace has been stopped.")
