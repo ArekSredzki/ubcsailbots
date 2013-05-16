@@ -217,9 +217,9 @@ class StationKeeping(sailing_task.SailingTask):
         sheet_delta = distance - gVars.currentData.sog*(self.secLeft)
         sheets= self.sheet_percent + sheet_delta*MULTIPLIER
         if sheets<0:
-          sheets=0
+            sheets=0
         elif sheets>SHEET_MAX:
-          sheets=SHEET_MAX
+            sheets=SHEET_MAX
         return sheets
            
     def isThereChangeInDownwindHeightOrTackingAngleOrAwa(self, tackingAngle):
@@ -276,8 +276,8 @@ class SKLogger:
         self.sailLog=''
         self.logTimer =0
     def printLog(self):
-      if (time.time() - self.logTimer>self.LOG_UPDATE_INTERVAL):
-        self.logTimer = time.time()
-        gVars.logger.sklog(self.heightLog)
-        gVars.logger.sklog(self.distanceLog)        
-        gVars.logger.sklog(self.sailLog)
+        if (time.time() - self.logTimer>self.LOG_UPDATE_INTERVAL):
+            self.logTimer = time.time()
+            gVars.logger.sklog(self.heightLog)
+            gVars.logger.sklog(self.distanceLog)        
+            gVars.logger.sklog(self.sailLog)
