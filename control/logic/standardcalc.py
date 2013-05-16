@@ -140,7 +140,7 @@ def isWPNoGoAWA (AWA, hog, dest, sog, GPS):
         else:
             return 0
     else:
-        if(isAngleBetween(hog+AWA-34,angleBetweenTwoCoords(GPS,dest),hog+AWA+34)):
+        if(isAngleBetween(hog+AWA-30,angleBetweenTwoCoords(GPS,dest),hog+AWA+30)):
             return 1
         else:
             return 0
