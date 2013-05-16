@@ -28,6 +28,7 @@ class StationKeeping(sailing_task.SailingTask):
     CRITICAL_HEIGHT_ABOVE_BOTTOM_OF_BOX = 15
     EXITING_AWA_BEARING = 68 #beam reach
     SK_WEATHER_COLUMN =1 #don suspects this weather setting will do for SK
+    TIME_BUFFER = 2
     
     def __init__(self):
         self.upwindWaypoint = 0
@@ -156,15 +157,13 @@ class StationKeeping(sailing_task.SailingTask):
                 if (not turning):
                     spdList = standardcalc.changeSpdList(spdList)
                     self.meanSpd = standardcalc.meanOfList(spdList)
-                if (boxDistList[self.currentWaypoint] >= self.meanSpd*(self.secLeft+0)):  #leeway of 0 seconds
+                if (boxDistList[self.currentWaypoint] >= self.meanSpd*(self.secLeft+self.TIME_BUFFER+0)):
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
-                    gVars.logger.info("Distance left to travel 1:" + str(self.meanSpd*(self.secLeft+0)))
                     gVars.logger.info("Seconds Left:" + str(self.secLeft))
                     exiting = True
                     gVars.logger.info("Station Keeping event is about to end. Exiting to current waypoint.")
-                elif (boxDistList[(self.currentWaypoint + 2) % 4] >= self.meanSpd*(self.secLeft+0+4) ): #leeway of 0 seconds, 4 seconds for gybe
+                elif (boxDistList[(self.currentWaypoint + 2) % 4] >= self.meanSpd*(self.secLeft+self.TIME_BUFFER+4) ): #4 seconds for gybe
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
-                    gVars.logger.info("Distance left to travel 2:" + str(self.meanSpd*(self.secLeft+0+4)))
                     gVars.logger.info("Seconds Left:" + str(self.secLeft))
                     self.currentWaypoint = (self.currentWaypoint + 2) % 4
                     gVars.logger.info("Station Keeping event is about to end. Gybing and exiting to waypoint " + str(self.currentWaypoint))
@@ -219,7 +218,7 @@ class StationKeeping(sailing_task.SailingTask):
             
     def adjustSheetsForExit(self, distance, sheetMax):
         MULTIPLIER = 5
-        sheet_delta = distance - gVars.currentData.sog*(self.secLeft)
+        sheet_delta = distance - gVars.currentData.sog*(self.secLeft+self.TIME_BUFFER)
         sheets= self.sheet_percent + sheet_delta*MULTIPLIER
         if sheets<0:
           sheets=0
