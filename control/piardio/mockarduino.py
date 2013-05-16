@@ -68,6 +68,8 @@ class arduino:
         gVars.logger.info("--------TACK----------")
         self.arduinoData.hog = hog
         self.arduinoData.awa = hog+STATIC_AWA
+        time.sleep(5)
+
     def gybe(self, x):
         tempspeed = self.arduinoData.sog
         self.arduinoData.sog = 0
