@@ -98,12 +98,12 @@ class PointToPoint(sailing_task.SailingTask):
         
         while(self.doWeStillWantToTack() and gVars.kill_flagPTP ==0):
             time.sleep(.1)
-            if(self.arrivedAtPoint()):
+            self.updateData()
+            if(self.arrivedAtPoint() or not standardcalc.isWPNoGoAWA(self.AWA, self.hog, self.Dest,self.sog,self.GPSCoord)):
                 gVars.tacked_flag=1
                 break
             else:
                 gVars.tacked_flag = 0
-            self.updateData()
             if(self.isThereChangeToAWAorWeatherOrMode() ):
                 self.adjustSheetsAndSteerByApparentWind(tackAngleMultiplier)
    
