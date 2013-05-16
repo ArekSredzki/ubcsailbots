@@ -1,7 +1,3 @@
-#datatypes.py 
-#Data type module for UBC Sailbot 2013 Control Team
-#Initialy Created: Sam Coulter, Nov. 3rd 2012
-#Last Updated: January 19th - SC
 
 class GPSCoordinate:
 	#This class will be a python representation of GPS coordinates
