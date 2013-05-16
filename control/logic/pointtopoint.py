@@ -136,7 +136,7 @@ class PointToPoint(sailing_task.SailingTask):
         standardcalc.getWeatherSetting(self.AWA,self.sog)
 
     def arrivedAtPoint(self):
-      return self.distanceToWaypoint < self.ACCEPTANCE_DISTANCE  
+        return self.distanceToWaypoint < self.ACCEPTANCE_DISTANCE  
        
     def killPointToPoint(self):
         gVars.kill_flagPTP = 1
