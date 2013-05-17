@@ -40,7 +40,7 @@ class PointToPoint(sailing_task.SailingTask):
         self.tackDirection = 0
         self.printedStraight = 0
         self.layAngle = 75
-        self.oldGPSCoord = datatypes.GPSCoordinate(gVars.currentData.gps_coord.lat, gVars.currentData.gps_coord.long)
+        self.timeSinceBoundaryIntercept = 0
                 
     # --- Point to Point ---
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
@@ -184,35 +184,30 @@ class PointToPoint(sailing_task.SailingTask):
         self.oldAngleBetweenCoords = self.angleBetweenCoords
     
     def breakFromBoundaryInterception(self):
-        boundary = self.checkBoundaryInterception()
-        if boundary:
-            if standardcalc.distBetweenTwoCoords(boundary.coordinate, self.oldGPSCoord) > standardcalc.distBetweenTwoCoords(boundary.coordinate, self.GPSCoord):
-                self.oldGPSCoord = datatypes.GPSCoordinate(self.GPSCoord.lat, self.GPSCoord.long)
-                return True
+        if self.checkBoundaryInterception() and time.time() - self.timeSinceBoundaryIntercept >20:        
+            self.timeSinceBoundaryIntercept = time.time()
+            return True
         return False
                        
     def checkBoundaryInterception(self):
-        boundary = self.checkInnerBoundaryInterception()
-        if boundary:
-            gVars.logger.info("Hit inner Boundary")
-            return boundary
-        
-        boundary = self.checkOuterBoundaryInterception()
-        if boundary:
-            gVars.logger.info("Hit outer Boundary")
-            return boundary
+        if self.checkInnerBoundaryInterception() or self.checkOuterBoundaryInterception():
+            return True
+        else:
+            return False
     
     def checkInnerBoundaryInterception(self):
         for boundary in self.innerBoundaries:
             if(standardcalc.distBetweenTwoCoords(boundary.coordinate, self.GPSCoord) > boundary.radius):
-                return boundary
-        return None
+                gVars.logger.info("Hit Inner Boundary")
+                return True
+        return False
     
     def checkOuterBoundaryInterception(self):
         for boundary in self.outerBoundaries:
             if(standardcalc.distBetweenTwoCoords(boundary.coordinate, self.GPSCoord) <= boundary.radius):
-                return boundary
-        return None
+                gVars.logger.info("Hit Outer Boundary")
+                return True
+        return False
     
     def getInnerBoundaries(self, boundaries):
         boundaryList = []

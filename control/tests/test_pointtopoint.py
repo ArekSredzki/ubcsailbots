@@ -102,7 +102,7 @@ class TestPointToPoint(unittest.TestCase):
         self.assertTrue(len(self.p2p.outerBoundaries) > 0)
         self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
 
-        self.assertEqual(self.p2p.checkOuterBoundaryInterception(), boundary)
+        self.assertTrue(self.p2p.checkOuterBoundaryInterception())
     
     def testOutsideHitBoundaries(self):
         self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
@@ -115,7 +115,7 @@ class TestPointToPoint(unittest.TestCase):
         self.p2p.innerBoundaries = self.p2p.getInnerBoundaries(gVars.boundaries)
         self.p2p.outerBoundaries = self.p2p.getOuterBoundaries(gVars.boundaries)
         
-        self.assertEqual(self.p2p.checkInnerBoundaryInterception(), None)
+        self.assertFalse(self.p2p.checkInnerBoundaryInterception())
     
     def testSetTackDirectionToPort(self):
         self.p2p.AWA = 130
