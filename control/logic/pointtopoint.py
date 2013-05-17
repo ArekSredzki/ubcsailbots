@@ -98,15 +98,16 @@ class PointToPoint(sailing_task.SailingTask):
         
         while(self.doWeStillWantToTack() and gVars.kill_flagPTP ==0):
             self.updateData()
-            if(self.arrivedAtPoint() or not standardcalc.isWPNoGoAWA(self.AWA, self.hog, self.Dest,self.sog,self.GPSCoord)):
-                gVars.tacked_flag=1
-                break
-            else:
-                gVars.tacked_flag = 0
+            gVars.tacked_flag = 0
+
             if(self.isThereChangeToAWAorWeatherOrMode() ):
                 self.adjustSheetsAndSteerByApparentWind(tackAngleMultiplier)
    
             self.setTackDirection()
+            
+            if(self.arrivedAtPoint() or self.canLayMarkWithoutTack()):
+                gVars.tacked_flag=1
+                break           
             
             self.handleBoundaries()
             if(gVars.tacked_flag):
@@ -223,3 +224,12 @@ class PointToPoint(sailing_task.SailingTask):
             self.tackDirection = 1
         else:
             self.tackDirection = 0
+            
+    def canLayMarkWithoutTack(self):
+        if standardcalc.isWPNoGoAWA(self.AWA, self.hog, self.Dest,self.sog,self.GPSCoord):
+            return False
+        else:
+            windDirection = standardcalc.boundTo180(self.AWA + self.hog)
+            bearing = standardcalc.angleBetweenTwoCoords(self.GPSCoord,self.Dest)
+            return not standardcalc.isAngleBetween(bearing,windDirection,self.hog)      
+                
