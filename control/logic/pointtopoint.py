@@ -189,7 +189,8 @@ class PointToPoint(sailing_task.SailingTask):
             if standardcalc.distBetweenTwoCoords(boundary.coordinate, self.oldGPSCoord) > standardcalc.distBetweenTwoCoords(boundary.coordinate, self.GPSCoord):
                 self.oldGPSCoord = datatypes.GPSCoordinate(self.GPSCoord.lat, self.GPSCoord.long)
                 return True
-                         
+        return False
+                       
     def checkBoundaryInterception(self):
         boundary = self.checkInnerBoundaryInterception()
         if boundary:
