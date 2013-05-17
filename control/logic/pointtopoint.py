@@ -7,11 +7,9 @@ Created on Apr 14, 2013
 from os import path
 from control.parser import parsing
 from control.logic import standardcalc
-from control.datatype import datatypes
 from control import static_vars as sVars
 from control import global_vars as gVars
 from control import sailing_task
-import math
 import time
 
 
