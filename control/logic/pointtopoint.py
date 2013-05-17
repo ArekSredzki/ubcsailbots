@@ -186,6 +186,7 @@ class PointToPoint(sailing_task.SailingTask):
     def breakFromBoundaryInterception(self):
         if self.checkBoundaryInterception() and time.time() - self.timeSinceBoundaryIntercept >20:        
             self.timeSinceBoundaryIntercept = time.time()
+            gVars.logger.info("Tacking from Boundary")
             return True
         return False
                        
@@ -198,14 +199,12 @@ class PointToPoint(sailing_task.SailingTask):
     def checkInnerBoundaryInterception(self):
         for boundary in self.innerBoundaries:
             if(standardcalc.distBetweenTwoCoords(boundary.coordinate, self.GPSCoord) > boundary.radius):
-                gVars.logger.info("Hit Inner Boundary")
                 return True
         return False
     
     def checkOuterBoundaryInterception(self):
         for boundary in self.outerBoundaries:
             if(standardcalc.distBetweenTwoCoords(boundary.coordinate, self.GPSCoord) <= boundary.radius):
-                gVars.logger.info("Hit Outer Boundary")
                 return True
         return False
     
