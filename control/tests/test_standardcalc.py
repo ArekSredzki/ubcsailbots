@@ -201,6 +201,12 @@ class TestIsWpnNoGo(unittest.TestCase):
     def testExpectNoGo(self):
         self.appWind=-131
         self.assertTrue(standardcalc.isWPNoGoAWA(self.appWind, self.heading, self.Dest, self.sog, self.GPSCoord))
+    def testExpectNotNoGoStrange(self):
+        self.appWind = 130
+        self.heading = -140
+        self.GPSCoord = datatypes.GPSCoordinate(49,-123)
+        self.Dest = datatypes.GPSCoordinate(48,-123)
+        self.assertFalse(standardcalc.isWPNoGoAWA(self.appWind, self.heading, self.Dest, self.sog, self.GPSCoord))
 
     
         
@@ -327,3 +333,4 @@ class TestIsAngleBetween(unittest.TestCase):
         self.assertFalse(standardcalc.isAngleBetween(-100,-50,-70))
         self.assertFalse(standardcalc.isAngleBetween(0,1,0))
         self.assertFalse(standardcalc.isAngleBetween(30,20,50))
+        self.assertFalse(standardcalc.isAngleBetween(-45,-170,45))

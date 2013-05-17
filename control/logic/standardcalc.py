@@ -294,7 +294,9 @@ def isAngleBetween(firstAngle, middleAngle, secondAngle):
     secondAngle = boundTo180(secondAngle)
     delta1 = calculateAngleDelta(firstAngle, middleAngle)
     delta2 = calculateAngleDelta(middleAngle,secondAngle)
-    if (delta1>0 and delta2>0):
+    if abs(delta1+delta2)>=180:
+        return False
+    elif (delta1>0 and delta2>0):
         return True
     elif (delta1<0 and delta2<0):
         return True
