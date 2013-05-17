@@ -295,18 +295,15 @@ def isAngleBetween(firstAngle, middleAngle, secondAngle):
     firstAngle = boundTo180(firstAngle)
     middleAngle = boundTo180(middleAngle)
     secondAngle = boundTo180(secondAngle)
-    
-    if(secondAngle < firstAngle):
-        secondAngle = secondAngle + 360
-    
-    if(middleAngle < firstAngle):
-        middleAngle = middleAngle + 360
-        
-    if(middleAngle > secondAngle):
-        return 0
+    delta1 = calculateAngleDelta(firstAngle, middleAngle)
+    delta2 = calculateAngleDelta(middleAngle,secondAngle)
+    if (delta1>0 and delta2>0):
+        return True
+    elif (delta1<0 and delta2<0):
+        return True
     else:
-        return 1
-      
+        return False
+
 def calculateAngleDelta(angle1, angle2):
     difference = angle1-angle2
     if difference >180:

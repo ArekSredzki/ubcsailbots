@@ -315,5 +315,15 @@ class TestReturnClosestWaypointIndex(unittest.TestCase):
 
     def testClosestPointIsIndex1(self):
         gVars.currentData.gps_coord = datatypes.GPSCoordinate(2.0,2.0)
-        self.assertEqual(standardcalc.returnClosestWaypointIndex(self.coords),2)    
+        self.assertEqual(standardcalc.returnClosestWaypointIndex(self.coords),2)  
           
+class TestIsAngleBetween(unittest.TestCase):
+    def testIsAngleBetween(self):
+        self.assertTrue(standardcalc.isAngleBetween(0,10,30))
+        self.assertTrue(standardcalc.isAngleBetween(-30,0,30))
+        self.assertTrue(standardcalc.isAngleBetween(30,0,-30))
+        self.assertTrue(standardcalc.isAngleBetween(-100,-50,-30))
+    def testIsNotAngleBetween(self):  
+        self.assertFalse(standardcalc.isAngleBetween(-100,-50,-70))
+        self.assertFalse(standardcalc.isAngleBetween(0,1,0))
+        self.assertFalse(standardcalc.isAngleBetween(30,20,50))
