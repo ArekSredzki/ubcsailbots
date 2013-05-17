@@ -40,7 +40,6 @@ class PointToPoint(sailing_task.SailingTask):
         self.tackDirection = 0
         self.printedStraight = 0
         self.layAngle = 75
-        self.okToTack = True
         self.oldGPSCoord = datatypes.GPSCoordinate(gVars.currentData.gps_coord.lat, gVars.currentData.gps_coord.long)
                 
     # --- Point to Point ---
@@ -79,8 +78,6 @@ class PointToPoint(sailing_task.SailingTask):
                     self.adjustSheetsAndSteerByCompass()                    
             time.sleep(.1)
 
-
-
         if(gVars.kill_flagPTP == 1):
             gVars.logger.info("PointToPoint is killed")
         else:
@@ -100,28 +97,18 @@ class PointToPoint(sailing_task.SailingTask):
         
         self.initialTack = None
         
-        while(self.doWeStillWantToTack() and gVars.kill_flagPTP ==0):
+        while(gVars.kill_flagPTP ==0):
             self.updateData()
-            self.okToTack = True
-            
+            if self.arrivedAtPoint() or self.canLayMarkWithoutTack():
+                break              
+            if self.readyToTack() or self.breakFromBoundaryInterception():
+                self.setTackDirection()
+                gVars.arduino.tack(gVars.currentColumn,self.tackDirection)
+                break          
             if self.isThereChangeToAWAorWeatherOrMode():
                 self.adjustSheetsAndSteerByApparentWind(tackAngleMultiplier)
-   
-            self.setTackDirection()
-            
-            if self.arrivedAtPoint() or self.canLayMarkWithoutTack():
-                self.okToTack=False
-                break           
-  
-            if self.breakFromBoundaryInterception():
-                break
-
             time.sleep(.1)
-         
-        if(self.okToTack and gVars.kill_flagPTP ==0):                                                                
-            gVars.arduino.tack(gVars.currentColumn,self.tackDirection)
-            gVars.logger.info("Tacked from "+str(self.layAngle)+" degrees")
-        
+                 
         self.oldGPSCoord = datatypes.GPSCoordinate(self.GPSCoord.lat, self.GPSCoord.long)
     
     def adjustSheetsAndSteerByCompass(self):
@@ -160,7 +147,7 @@ class PointToPoint(sailing_task.SailingTask):
         else:
             return 0
     
-    def doWeStillWantToTack(self):
+    def readyToTack(self):
         if self.tackSailing==1: #ie port tack
             self.layAngle = 75+self.roundingLayOffset
         elif self.tackSailing==2: #ie starboard tack
@@ -169,11 +156,12 @@ class PointToPoint(sailing_task.SailingTask):
         beatEstablished =(abs(abs(self.AWA)- self.TACKING_ANGLE)<10)
 
         if(abs(standardcalc.calculateAngleDelta(self.hog,standardcalc.angleBetweenTwoCoords(self.GPSCoord, self.Dest))) < self.layAngle):
-            return 1
+            return False
         elif beatEstablished:
-            return 0
+            gVars.logger.info("Hit  "+str(self.layAngle)+" degree lay line")
+            return True
         else:
-            return 1
+            return False
         
     def isThereChangeToAWAorWeatherOrModeOrAngle(self):
         if(self.AWA != self.oldAWA or self.oldColumn != gVars.currentColumn or self.oldTackSailing != self.tackSailing or abs(self.oldAngleBetweenCoords-self.angleBetweenCoords)>self.ANGLE_CHANGE_THRESHOLD):
@@ -225,24 +213,6 @@ class PointToPoint(sailing_task.SailingTask):
             if(standardcalc.distBetweenTwoCoords(boundary.coordinate, self.GPSCoord) <= boundary.radius):
                 return boundary
         return None
-    
-    def sailFromBoundary(self, boundary):
-        boundaryBoatAngle = standardcalc.angleBetweenTwoCoords(gVars.currentData.gps_coord,boundary.coordinate)
-        boundaryBoatAngle = abs(boundaryBoatAngle)
-        
-        dist_to_boundary = standardcalc.distBetweenTwoCoords(gVars.currentData.gps_coord, boundary.coordinate)
-        xDist = dist_to_boundary * math.sin(math.radians(boundaryBoatAngle))
-        
-        if(gVars.currentData.gps_coord.long > boundary.coordinate.long):
-            xDist = -xDist
-        
-        
-        # sailing straight to point.
-                
-        gVars.logger.info("Tacked from boundary")
-        gVars.arduino.tack(gVars.currentColumn,self.tackDirection)
-        
-        return
     
     def getInnerBoundaries(self, boundaries):
         boundaryList = []
