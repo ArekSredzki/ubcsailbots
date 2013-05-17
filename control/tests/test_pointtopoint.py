@@ -53,7 +53,7 @@ class TestPointToPoint(unittest.TestCase):
         self.assertFalse(self.p2p.readyToTack())
         
         
-    def testReadyToTackFalse(self):
+    def testReadyToTackFalseLarger(self):
         self.p2p.AWA =30      
         self.p2p.GPSCoord = datatypes.GPSCoordinate(49,-123)
         self.p2p.Dest = datatypes.GPSCoordinate(49.1,-123) # 0 degrees, N
