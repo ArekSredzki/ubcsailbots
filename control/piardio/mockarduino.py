@@ -83,7 +83,7 @@ class arduino:
         
     def steer(self, method, degree):
         if method == 2:
-            self.arduinoData.hog = STATIC_AWA-degree
+            self.arduinoData.hog = STATIC_AWA-degree*1.3 #very rough conversion to true wind
         else:
             self.arduinoData.hog = degree
     
