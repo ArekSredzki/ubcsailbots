@@ -7,6 +7,7 @@ Created on Apr 14, 2013
 from os import path
 from control.parser import parsing
 from control.logic import standardcalc
+from control.datatype import datatypes
 from control import static_vars as sVars
 from control import global_vars as gVars
 from control import sailing_task
@@ -40,7 +41,8 @@ class PointToPoint(sailing_task.SailingTask):
         self.printedStraight = 0
         self.layAngle = 75
         self.tacked_flag = 0
-    
+        self.oldGPSCoord = datatypes.GPSCoordinate(gVars.currentData.gps_coord.lat, gVars.currentData.gps_coord.long)
+                
     # --- Point to Point ---
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
     # Output: Nothing
@@ -75,7 +77,6 @@ class PointToPoint(sailing_task.SailingTask):
                 self.tackSailing = 3
                 if(self.isThereChangeToAWAorWeatherOrModeOrAngle()):
                     self.adjustSheetsAndSteerByCompass()                    
-                #self.handleBoundaries()
             time.sleep(.1)
 
 
@@ -113,7 +114,7 @@ class PointToPoint(sailing_task.SailingTask):
    
             self.setTackDirection()
             
-            if self.checkIfBoundaryInterception() or self.tacked_flag:
+            if self.breakFromBoundaryInterception() or self.tacked_flag:
                 break
 
             time.sleep(.1)
@@ -121,7 +122,9 @@ class PointToPoint(sailing_task.SailingTask):
         if(self.tacked_flag == 0 and gVars.kill_flagPTP ==0):                                                                
             gVars.arduino.tack(gVars.currentColumn,self.tackDirection)
             gVars.logger.info("Tacked from "+str(self.layAngle)+" degrees")
-
+        
+        self.oldGPSCoord = datatypes.GPSCoordinate(self.GPSCoord.lat, self.GPSCoord.long)
+    
     def adjustSheetsAndSteerByCompass(self):
         gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
         gVars.arduino.steer(self.COMPASS_METHOD,self.angleBetweenCoords)  
@@ -194,19 +197,23 @@ class PointToPoint(sailing_task.SailingTask):
         self.oldColumn = gVars.currentColumn
         self.oldTackSailing = self.tackSailing
         self.oldAngleBetweenCoords = self.angleBetweenCoords
-
-    def handleBoundaries(self):
-        boundary = self.checkBoundaryInterception()
-        if boundary is not None:
-            self.sailFromBoundary(boundary)
-        return
     
-    def checkIfBoundaryInterception(self):
-        if self.checkInnerBoundaryInterception() or self.checkOuterBoundaryInterception():
-            gVars.logger.info("Hit Boundary")
-            return True
-        else:
-            return False
+    def breakFromBoundaryInterception(self):
+        boundary = self.checkBoundaryInterception()
+        if boundary:
+            if standardcalc.distBetweenTwoCoords(boundary.coordinate, self.oldGPSCoord) > standardcalc.distBetweenTwoCoords(boundary.coordinate, self.GPSCoord):
+                return True
+                         
+    def checkBoundaryInterception(self):
+        boundary = self.checkInnerBoundaryInterception()
+        if boundary:
+            gVars.logger.info("Hit inner Boundary")
+            return boundary
+        
+        boundary = self.checkOuterBoundaryInterception()
+        if boundary:
+            gVars.logger.info("Hit outer Boundary")
+            return boundary
     
     def checkInnerBoundaryInterception(self):
         for boundary in self.innerBoundaries:
