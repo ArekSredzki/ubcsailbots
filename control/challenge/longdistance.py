@@ -19,7 +19,7 @@ class LongDistance(sailing_task.SailingTask):
         self.roundbuoy = roundbuoy.RoundBuoy()
     
     def run(self, waypoint1, waypoint2, waypoint3):
-        gVars.logger.info("Running Station Keeping")
+        gVars.logger.info("Running Long Distance")
         startPoint = None
         markOne = None
         markTwo = None
@@ -38,6 +38,9 @@ class LongDistance(sailing_task.SailingTask):
                 markTwo = waypoint
                 gVars.logger.info("Mark two instantiated")
         
+        if not (startPoint and markOne and markTwo):
+            gVars.logger.critical("Waypoints not inputted correctly!")
+            
         ldWaypoints = [markOne, startPoint, markTwo, startPoint, markOne, startPoint, markTwo, startPoint, markOne]
         
         markNum = 1
