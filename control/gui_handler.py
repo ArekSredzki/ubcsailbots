@@ -20,10 +20,13 @@ class GuiHandler:
     # the control code will update its instructions object
     # When the remote control signals a switch to auto then the instructions are carried out
     def setInstructions(self, instructionsData):
-        # Stores current boundaries
+        
         gVars.currentProcess = None
         gVars.boundaries = instructionsData.boundaries
         gVars.instructions = instructionsData
+        gVars.functionQueue = []
+        gVars.queueParameters = []
+        
         # Stores function queue and parameter queue
         if (instructionsData.challenge == sVars.NO_CHALLENGE):
             for waypoint in instructionsData.waypoints:
