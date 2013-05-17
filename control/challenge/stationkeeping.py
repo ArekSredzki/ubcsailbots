@@ -12,7 +12,6 @@ from control.logic import standardcalc
 from control import global_vars as gVars
 from control import sailing_task
 from control.parser import parsing
-from control.datatype import datatypes
 from os import path
 
 class StationKeeping(sailing_task.SailingTask):

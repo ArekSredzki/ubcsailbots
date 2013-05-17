@@ -28,8 +28,6 @@ SKMilliSecLeft = None
 currentColumn = 0
 logger = None
 arduino = None
-tacked_flag = 0
-TrueWindAngle = 0
 
 kill_flagPTP = 0
 kill_flagNav = 0
