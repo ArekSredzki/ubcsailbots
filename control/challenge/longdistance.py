@@ -19,6 +19,7 @@ class LongDistance(sailing_task.SailingTask):
         self.roundbuoy = roundbuoy.RoundBuoy()
     
     def run(self, waypoint1, waypoint2, waypoint3):
+        gVars.logger.info("Running Station Keeping")
         startPoint = None
         markOne = None
         markTwo = None
@@ -29,16 +30,21 @@ class LongDistance(sailing_task.SailingTask):
         for waypoint in wayList:
             if(waypoint.wtype == sVars.LD_START_FINISH):
                 startPoint = waypoint
+                gVars.logger.info("Start point instantiated")
             elif(waypoint.wtype == sVars.LD_FIRST):
                 markOne = waypoint
+                gVars.logger.info("Mark one instantiated")
             elif(waypoint.wtype == sVars.LD_SECOND):
                 markTwo = waypoint
+                gVars.logger.info("Mark two instantiated")
         
         ldWaypoints = [markOne, startPoint, markTwo, startPoint, markOne, startPoint, markTwo, startPoint, markOne]
         
+        markNum = 1
+        
         for waypoint in ldWaypoints:
             if gVars.kill_flagLD == 0:
-                gVars.logger.info("Heading toward " + waypoint.wtype + " which is mark " + str(ldWaypoints.index(waypoint)) + " of " + str(len(ldWaypoints)))
+                gVars.logger.info("Heading toward " + waypoint.wtype + " which is mark " + str(markNum) + " of " + str(len(ldWaypoints)+1))
                 
                 # Startpoint does not require a buoy rounding
                 if waypoint.coordinate != startPoint.coordinate:
@@ -47,6 +53,8 @@ class LongDistance(sailing_task.SailingTask):
                     self.roundbuoy.run(waypoint.coordinate)
                 else:
                     self.pointtopoint.run(waypoint.coordinate, None, 10)
+                
+                markNum += 1
                     
             else:
                 break
