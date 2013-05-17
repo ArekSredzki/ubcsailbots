@@ -167,7 +167,6 @@ function updateBoundaryDataDisplayTable(){
 	        		'<td> <input type="text" id="brad$NUM" size="8" onkeyup="updateBoundaries($NUM)"></td>' +
 	        		'<td><button id="deleteBoundaryButton$NUM" onclick="deleteBoundary($NUM)">X</button></td>' +
 	 '</tr>';
-	 console.log(boundaryRowString);
 	
 	// Foreach value in the length (including if there is no values), add a waypoint marker
 	for (var i=0; i<instructions.boundaries.length; i++)

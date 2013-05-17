@@ -110,9 +110,9 @@ function MapWidget(listener){
     	
     	for(var i=0; i<waypoints_list.length; i++){
     		var location = new OpenLayers.LonLat(waypoints_list[i][1], waypoints_list[i][0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-          	var point = new OpenLayers.Geometry.Point(location.lon, location.lat);
-          	var feature = new OpenLayers.Feature.Vector(point,null,style_mark);
-          	waypointsLayer.addFeatures([feature]);
+        var point = new OpenLayers.Geometry.Point(location.lon, location.lat);
+        var feature = new OpenLayers.Feature.Vector(point,null,style_mark);
+        waypointsLayer.addFeatures([feature]);
         }              	      
     }
           
@@ -122,13 +122,14 @@ function MapWidget(listener){
     	
     	for(var i=0; i<boundaries_list.length; i++){
     		var location = new OpenLayers.LonLat(boundaries_list[i][1], boundaries_list[i][0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-          	var point = new OpenLayers.Geometry.Point(location.lon, location.lat);
-         	var boundary = OpenLayers.Geometry.Polygon.createRegularPolygon(point,boundaries_list[i][2],30,10);
-          	var feature = new OpenLayers.Feature.Vector(boundary);
-          	boundariesLayer.addFeatures([feature]);
+        var point = new OpenLayers.Geometry.Point(location.lon, location.lat);
+        var radius = get_projected_radius(boundaries_list[i][2],boundaries_list[i][0])
+        var boundary = OpenLayers.Geometry.Polygon.createRegularPolygon(point,radius,30,10);
+        var feature = new OpenLayers.Feature.Vector(boundary);
+        boundariesLayer.addFeatures([feature]);
         }               
     }
-    
+ 
     this.setDraggableMode = function(draggable){
     	
     	draggable = draggable || false;
@@ -144,6 +145,13 @@ function MapWidget(listener){
     		select.deactivate();
     	}; 	
     }
+       
+    var get_projected_radius = function(radius, lat){
+      return radius/(Math.cos(lat*(Math.PI/180)));
+    }
+    var get_true_radius = function(radius, lat){
+      return radius*(Math.cos(lat*(Math.PI/180)));
+    }
     
     var getBoundaries = function(){	
     	var boundaries = new Array();
@@ -151,7 +159,8 @@ function MapWidget(listener){
     		var newBoundary = new Array();  			
   			newBoundary [0] = boundariesLayer.features[i].geometry.clone().getBounds().getCenterLonLat().transform(map.getProjectionObject(),new OpenLayers.Projection("EPSG:4326")).lat;
   			newBoundary [1] = boundariesLayer.features[i].geometry.clone().getBounds().getCenterLonLat().transform(map.getProjectionObject(),new OpenLayers.Projection("EPSG:4326")).lon;
-  			newBoundary [2] = Math.round(boundariesLayer.features[i].geometry.clone().getBounds().getHeight()/2);
+  			var radius = boundariesLayer.features[i].geometry.clone().getBounds().getHeight()/2;
+  			newBoundary [2] = Math.round(get_true_radius(radius, newBoundary[0]));
   			boundaries.push(newBoundary);  			
   		}  		
     	return boundaries;
