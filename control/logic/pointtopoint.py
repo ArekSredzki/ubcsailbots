@@ -108,9 +108,7 @@ class PointToPoint(sailing_task.SailingTask):
             if self.isThereChangeToAWAorWeatherOrMode():
                 self.adjustSheetsAndSteerByApparentWind(tackAngleMultiplier)
             time.sleep(.1)
-                 
-        self.oldGPSCoord = datatypes.GPSCoordinate(self.GPSCoord.lat, self.GPSCoord.long)
-    
+                     
     def adjustSheetsAndSteerByCompass(self):
         gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
         gVars.arduino.steer(self.COMPASS_METHOD,self.angleBetweenCoords)  
@@ -189,6 +187,7 @@ class PointToPoint(sailing_task.SailingTask):
         boundary = self.checkBoundaryInterception()
         if boundary:
             if standardcalc.distBetweenTwoCoords(boundary.coordinate, self.oldGPSCoord) > standardcalc.distBetweenTwoCoords(boundary.coordinate, self.GPSCoord):
+                self.oldGPSCoord = datatypes.GPSCoordinate(self.GPSCoord.lat, self.GPSCoord.long)
                 return True
                          
     def checkBoundaryInterception(self):
