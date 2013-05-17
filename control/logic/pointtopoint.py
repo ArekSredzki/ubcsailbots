@@ -184,7 +184,7 @@ class PointToPoint(sailing_task.SailingTask):
         self.oldAngleBetweenCoords = self.angleBetweenCoords
     
     def breakFromBoundaryInterception(self):
-        if self.checkBoundaryInterception() and time.time() - self.timeSinceBoundaryIntercept >20:        
+        if self.checkBoundaryInterception() and time.time() - self.timeSinceBoundaryIntercept >60:        
             self.timeSinceBoundaryIntercept = time.time()
             gVars.logger.info("Tacking from Boundary")
             return True
