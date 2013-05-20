@@ -13,9 +13,9 @@ class Sailor:
     def __init__(self):
         self.sheetList = parsing.parse(path.join(path.dirname(__file__), 'apparentSheetSetting'))            
 
-    def adjustSheetsAndSteerByCompass(self, AWA):
+    def adjustSheetsAndSteerByCompass(self, AWA, heading):
         gVars.arduino.adjust_sheets(self.sheetList[abs(int(AWA))][gVars.currentColumn])
-        gVars.arduino.steer(self.COMPASS_METHOD,self.angleBetweenCoords)  
+        gVars.arduino.steer(self.COMPASS_METHOD,heading)  
             
     def adjustSheetsAndSteerByApparentWind(self, tackAngleMultiplier, AWA):
         gVars.arduino.adjust_sheets(self.sheetList[abs(int(AWA))][gVars.currentColumn])

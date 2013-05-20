@@ -59,7 +59,7 @@ class PointToPoint(sailing_task.SailingTask):
             else:                    
                 self.p2pLogger.printStraight("Sailing straight to point")
                 if(self.isThereChangeToAWAorWeatherOrModeOrAngle()):
-                    self.sailor.adjustSheetsAndSteerByCompass(self.AWA)                    
+                    self.sailor.adjustSheetsAndSteerByCompass(self.AWA,self.angleBetweenCoords)                    
             time.sleep(.1)
 
         self.exitP2P()
