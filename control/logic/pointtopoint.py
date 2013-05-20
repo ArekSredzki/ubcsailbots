@@ -10,7 +10,7 @@ from control.logic import standardcalc
 from control.datatype import datatypes
 from control import global_vars as gVars
 from control import sailing_task
-from control.logic.tacking import ptackengine
+from control.logic.tacking import tackengine
 import math
 import time
 

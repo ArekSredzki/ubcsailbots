@@ -4,7 +4,7 @@ from control import global_vars as gVars
 class TackEngine:
   
     def __init__(self):
-        LAY_ANGLE_DEFAULT = 75
+        self.LAY_ANGLE_DEFAULT = 75
         
     def readyToTack(self, AWA, HOG, bearing):        
         if self.hitLayLine(HOG, bearing, self.getLayAngle()) and  self.beatEstablished(AWA):
