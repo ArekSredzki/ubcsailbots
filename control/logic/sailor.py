@@ -21,3 +21,5 @@ class Sailor:
         gVars.arduino.adjust_sheets(self.sheetList[abs(int(AWA))][gVars.currentColumn])
         gVars.arduino.steer(self.AWA_METHOD,tackAngleMultiplier*self.TACKING_ANGLE)
         
+    def tack(self, tackDirection):
+        gVars.arduino.tack(gVars.currentColumn,tackDirection)

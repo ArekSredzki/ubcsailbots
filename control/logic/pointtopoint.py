@@ -76,7 +76,7 @@ class PointToPoint(sailing_task.SailingTask):
             self.updateData()
             bearingToMark = standardcalc.angleBetweenTwoCoords(self.GPSCoord, self.Dest)            
             if self.tackEngine.readyToTack(self.AWA, self.hog, bearingToMark) or self.boundaryHandler.hitBoundary():                
-                gVars.arduino.tack(gVars.currentColumn,self.tackEngine.getTackDirection(self.AWA))
+                sailor.tack(self.tackEngine.getTackDirection(self.AWA))
                 break          
             if self.isThereChangeToAWAorWeatherOrMode():
                 self.sailor.adjustSheetsAndSteerByApparentWind(tackAngleMultiplier, self.AWA)
