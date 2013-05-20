@@ -22,6 +22,7 @@ class PointToPoint(sailing_task.SailingTask):
     AWA_METHOD = 2
     TACKING_ANGLE = 30
     ANGLE_CHANGE_THRESHOLD = 5
+    ACCEPTANCE_DISTANCE_DEFAULT = 3
 
     def __init__(self):
         self.sheetList = parsing.parse(path.join(path.dirname(__file__), 'apparentSheetSetting'))
@@ -31,9 +32,9 @@ class PointToPoint(sailing_task.SailingTask):
         gVars.logger.info("New Point to Point object")
         gVars.logger.info(str(len(self.innerBoundaries)) + " inner boundaries, " + str(len(self.outerBoundaries)) + " outer boundaries")
           
-    def initialize(self):
         self.oldTackSailing = 0
         self.tackSailing = 0
+    def initialize(self, acceptDist):
         self.oldAWA = 0
         self.oldColumn = 0
         self.oldAngleBetweenCoords = 0
@@ -46,17 +47,17 @@ class PointToPoint(sailing_task.SailingTask):
     # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
     # Output: Nothing
     def run(self, Dest, initTack = None, acceptDist=None, roundingLayOffset =0):
-        self.initialize()
+        if acceptDist == None:
+            self.ACCEPTANCE_DISTANCE = self.ACCEPTANCE_DISTANCE_DEFAULT
+        else:
+            self.ACCEPTANCE_DISTANCE = acceptDist      
+        self.initialize(acceptDist)
         gVars.logger.info("Started point to pointAWA toward "+repr(Dest))
         self.Dest = Dest
         self.roundingLayOffset = roundingLayOffset
         self.updateData()
         gVars.kill_flagPTP = 0
         self.initialTack = initTack
-        if acceptDist == None:
-            self.ACCEPTANCE_DISTANCE = sVars.ACCEPTANCE_DISTANCE_DEFAULT
-        else:
-            self.ACCEPTANCE_DISTANCE = acceptDist
         while(not self.arrivedAtPoint()) and gVars.kill_flagPTP == 0:
             self.updateData()
    
