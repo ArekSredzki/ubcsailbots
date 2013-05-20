@@ -177,7 +177,7 @@ def getTrueWindAngle(awa, sog):
         if(sVars.AWA_THRESHOLD >= 100):
             return None  
 
-def getWeatherSetting(awa, sog):
+def updateWeatherSetting(awa, sog):
     minIndex = 0
     minNum = 500
     SOGList = parsing.parse(path.join(path.dirname(__file__), 'SOGarray'))

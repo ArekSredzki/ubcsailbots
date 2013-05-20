@@ -1,35 +1,23 @@
-'''
-Created on Apr 14, 2013
-
-@author: joshandrews
-'''
-
-from os import path
-from control.parser import parsing
 from control.logic import standardcalc
-from control.datatype import datatypes
 from control import global_vars as gVars
 from control import sailing_task
 from control.logic.tacking import tackengine
 from control.logic.boundaries import circleboundaryhandler
+from control.logic import sailor
 import math
 import time
 
 
 class PointToPoint(sailing_task.SailingTask):
-    #constants
-    COMPASS_METHOD = 0
-    COG_METHOD = 1
-    AWA_METHOD = 2
-    TACKING_ANGLE = 30
+
     ANGLE_CHANGE_THRESHOLD = 5
     ACCEPTANCE_DISTANCE_DEFAULT = 3
 
     def __init__(self):
-        self.sheetList = parsing.parse(path.join(path.dirname(__file__), 'apparentSheetSetting'))
         gVars.logger.info("New Point to Point object")
         self.tackEngine = None
         self.boundaryHandler = None
+        self.sailor = sailor.Sailor()
           
     def initialize(self):
         gVars.kill_flagPTP = 0
@@ -71,7 +59,7 @@ class PointToPoint(sailing_task.SailingTask):
             else:                    
                 self.p2pLogger.printStraight("Sailing straight to point")
                 if(self.isThereChangeToAWAorWeatherOrModeOrAngle()):
-                    self.adjustSheetsAndSteerByCompass()                    
+                    self.sailor.adjustSheetsAndSteerByCompass(self.AWA)                    
             time.sleep(.1)
 
         self.exitP2P()
@@ -91,17 +79,10 @@ class PointToPoint(sailing_task.SailingTask):
                 gVars.arduino.tack(gVars.currentColumn,self.tackEngine.getTackDirection(self.AWA))
                 break          
             if self.isThereChangeToAWAorWeatherOrMode():
-                self.adjustSheetsAndSteerByApparentWind(tackAngleMultiplier)
+                self.sailor.adjustSheetsAndSteerByApparentWind(tackAngleMultiplier, self.AWA)
             time.sleep(.1)
                      
-    def adjustSheetsAndSteerByCompass(self):
-        gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
-        gVars.arduino.steer(self.COMPASS_METHOD,self.angleBetweenCoords)  
-            
-    def adjustSheetsAndSteerByApparentWind(self, tackAngleMultiplier):
-        gVars.arduino.adjust_sheets(self.sheetList[abs(int(self.AWA))][gVars.currentColumn])
-        gVars.arduino.steer(self.AWA_METHOD,tackAngleMultiplier*self.TACKING_ANGLE)
-        
+
     def updateData(self):
         self.GPSCoord = gVars.currentData.gps_coord
         self.distanceToWaypoint = standardcalc.distBetweenTwoCoords(self.GPSCoord, self.Dest)
@@ -110,7 +91,7 @@ class PointToPoint(sailing_task.SailingTask):
         self.hog = gVars.currentData.hog
         self.sog = gVars.currentData.sog * 100
         self.angleBetweenCoords = standardcalc.angleBetweenTwoCoords(self.GPSCoord,self.Dest)
-        standardcalc.getWeatherSetting(self.AWA,self.sog)
+        standardcalc.updateWeatherSetting(self.AWA,self.sog)
 
     def arrivedAtPoint(self):
         return self.distanceToWaypoint < self.acceptDist  
