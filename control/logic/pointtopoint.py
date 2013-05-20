@@ -10,7 +10,7 @@ from control.logic import standardcalc
 from control.datatype import datatypes
 from control import global_vars as gVars
 from control import sailing_task
-from control.logic.tacking import p2ptackengine
+from control.logic.tacking import ptackengine
 import math
 import time
 
@@ -41,7 +41,7 @@ class PointToPoint(sailing_task.SailingTask):
         self.printedStraight = 0
         self.timeSinceBoundaryIntercept = 0 
         if self.tackEngine == None:
-            self.tackEngine = p2ptackengine.P2PTackEngine()       
+            self.tackEngine = tackengine.TackEngine()       
         if acceptDist == None:
             self.ACCEPTANCE_DISTANCE = self.ACCEPTANCE_DISTANCE_DEFAULT
         else:

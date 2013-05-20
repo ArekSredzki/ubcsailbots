@@ -5,47 +5,41 @@ class RoundingTackEngine(tackengine.TackEngine):
     
     def __init__(self, rounding):
         self.rounding =rounding
-        self.initialTack = rounding        
-        
-    def readyToTack(self, AWA, HOG, bearing): 
-        self.setLayAngle(AWA)
-        if self.hitLayLine(HOG, bearing, self.layAngle) and  self.beatEstablished(AWA):
-            gVars.logger.info("Hit  "+str(self.layAngle)+" degree lay line")
-            return True
-        else:
-            return False
-    
-    def setLayAngle(self, AWA):
-        if self.onStarboardTack(AWA):
-            self.setLayAngleStarboard()
-        else:
-            self.setLayAnglePort()
+        self.initialTack = rounding                
+
+    def getLayAngle(self):
+        if self.currentTack =="starboard":
+            return self.setLayAngleStarboard()
+        elif self.currentTack =="port":
+            return self.setLayAnglePort()
                 
     def setLayAngleStarboard(self):
         if self.rounding == "starboard":
-            self.layAngle = 90
+            return 90
         else: #ie starboard tack
-            self.layAngle = 45
+            return 45
 
     def setLayAnglePort(self):
         if self.rounding == "starboard":
-            self.layAngle = 45
+            return 45
         else: #ie starboard tack
-            self.layAngle = 90        
+            return 90        
                        
             
     def onStarboardTack(self,AWA):
-        if self.initialTack == "starboard":
+        if self.initialTack == "starboard" or  tackengine.TackEngine.onStarboardTack(self,AWA):
             self.initialTack = None
+            self.currentTack = "starboard"
             return True
         else:
-            return  tackengine.TackEngine.onStarboardTack(self,AWA)
+            return False 
             
     def onPortTack(self,AWA):
-        if self.initialTack == "port":
+        if self.initialTack == "port" or tackengine.TackEngine.onPortTack(self,AWA):
             self.initialTack = None
+            self.currentTack = "port"
             return True
         else:
-            return tackengine.TackEngine.onPortTack(self,AWA)
+            return False
             
               

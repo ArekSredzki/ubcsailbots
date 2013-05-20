@@ -1,7 +1,21 @@
 from control.logic import standardcalc
+from control import global_vars as gVars
 
 class TackEngine:
-
+  
+    def __init__(self):
+        LAY_ANGLE_DEFAULT = 75
+        
+    def readyToTack(self, AWA, HOG, bearing):        
+        if self.hitLayLine(HOG, bearing, self.getLayAngle()) and  self.beatEstablished(AWA):
+            gVars.logger.info("Hit  "+str(self.getLayAngle())+" degree lay line")
+            return True
+        else:
+            return False
+          
+    def getLayAngle(self):
+        return self.LAY_ANGLE_DEFAULT
+         
     def hitLayLine(self, HOG, bearing, layAngle):
         angleDelta = abs(standardcalc.calculateAngleDelta(HOG,bearing))
         return angleDelta > layAngle
@@ -24,12 +38,3 @@ class TackEngine:
             return 1
         else:
             return 0
-          
-    def canLayMarkWithoutTack(self, AWA, hog, Dest, sog, GPSCoord):
-        if standardcalc.isWPNoGoAWA(self.AWA, self.hog, self.Dest,self.sog,self.GPSCoord):
-            return False
-        else:
-            windDirection = standardcalc.boundTo180(self.AWA + self.hog)
-            bearing = standardcalc.angleBetweenTwoCoords(self.GPSCoord,self.Dest)
-            return not standardcalc.isAngleBetween(bearing,windDirection,self.hog)      
-              
