@@ -8,9 +8,9 @@ from os import path
 from control.parser import parsing
 from control.logic import standardcalc
 from control.datatype import datatypes
-from control import static_vars as sVars
 from control import global_vars as gVars
 from control import sailing_task
+from control.logic.tacking import p2ptackengine
 import math
 import time
 
@@ -31,80 +31,65 @@ class PointToPoint(sailing_task.SailingTask):
         self.outerBoundaries = self.getOuterBoundaries(gVars.boundaries)
         gVars.logger.info("New Point to Point object")
         gVars.logger.info(str(len(self.innerBoundaries)) + " inner boundaries, " + str(len(self.outerBoundaries)) + " outer boundaries")
+        self.tackEngine = None
           
-        self.oldTackSailing = 0
-        self.tackSailing = 0
     def initialize(self, acceptDist):
+        gVars.kill_flagPTP = 0
         self.oldAWA = 0
         self.oldColumn = 0
         self.oldAngleBetweenCoords = 0
-        self.tackDirection = 0
         self.printedStraight = 0
-        self.layAngle = 75
-        self.timeSinceBoundaryIntercept = 0
-                
-    # --- Point to Point ---
-    # Input: Destination GPS Coordinate, initialTack: 0 for port, 1 for starboard, nothing calculates on own, TWA = 0 for sailing using only AWA and 1 for attempting to find TWA.
-    # Output: Nothing
-    def run(self, Dest, initTack = None, acceptDist=None, roundingLayOffset =0):
+        self.timeSinceBoundaryIntercept = 0 
+        if self.tackEngine == None:
+            self.tackEngine = p2ptackengine.P2PTackEngine()       
         if acceptDist == None:
             self.ACCEPTANCE_DISTANCE = self.ACCEPTANCE_DISTANCE_DEFAULT
         else:
             self.ACCEPTANCE_DISTANCE = acceptDist      
+
+    def withTackEngine(self, tackEngine):
+        self.tackEngine = tackEngine
+        return self
+      
+    def run(self, Dest, acceptDist=None):
         self.initialize(acceptDist)
         gVars.logger.info("Started point to pointAWA toward "+repr(Dest))
         self.Dest = Dest
-        self.roundingLayOffset = roundingLayOffset
         self.updateData()
-        gVars.kill_flagPTP = 0
-        self.initialTack = initTack
+
         while(not self.arrivedAtPoint()) and gVars.kill_flagPTP == 0:
             self.updateData()
    
             if(standardcalc.isWPNoGoAWA(self.AWA, self.hog, self.Dest,self.sog,self.GPSCoord)):
-                self.printedStraight = 0
-                
-                if(self.starboardTackWanted(self.initialTack)):
-                    self.enterBeatLoop(False)
-                    
-                elif(self.portTackWanted(self.initialTack)):
+                self.printedStraight = 0          
+                if(self.tackEngine.onStarboardTack(self.AWA)):
+                    self.enterBeatLoop(False)                 
+                elif(self.tackEngine.onPortTack(self.AWA)):
                     self.enterBeatLoop(True) 
                     
             else:                    
                 if(self.printedStraight == 0):
                     gVars.logger.info("Sailing straight to point")
                     self.printedStraight = 1
-                self.tackSailing = 3
                 if(self.isThereChangeToAWAorWeatherOrModeOrAngle()):
                     self.adjustSheetsAndSteerByCompass()                    
             time.sleep(.1)
 
-        if(gVars.kill_flagPTP == 1):
-            gVars.logger.info("PointToPoint is killed")
-        else:
-            gVars.logger.info("Finished Point to Point")
-
-        return
+        self.exitP2P()
 
     def enterBeatLoop(self, port):
         if port:
-            self.tackSailing = 2
             gVars.logger.info("On port tack")
             tackAngleMultiplier = -1
         else:
-            self.tackSailing = 1
             gVars.logger.info("On starboard tack")
             tackAngleMultiplier = 1
-        
-        self.initialTack = None
-        
-        while(gVars.kill_flagPTP ==0):
+           
+        while gVars.kill_flagPTP ==0 and not (self.arrivedAtPoint() or self.canLayMarkWithoutTack() ):
             self.updateData()
-            if self.arrivedAtPoint() or self.canLayMarkWithoutTack():
-                break              
-            if self.readyToTack() or self.breakFromBoundaryInterception():
-                self.setTackDirection()
-                gVars.arduino.tack(gVars.currentColumn,self.tackDirection)
+            bearingToMark = standardcalc.angleBetweenTwoCoords(self.GPSCoord, self.Dest)            
+            if self.tackEngine.readyToTack(self.AWA, self.hog, bearingToMark) or self.breakFromBoundaryInterception():                
+                gVars.arduino.tack(gVars.currentColumn,self.tackEngine.getTackDirection(self.AWA))
                 break          
             if self.isThereChangeToAWAorWeatherOrMode():
                 self.adjustSheetsAndSteerByApparentWind(tackAngleMultiplier)
@@ -134,36 +119,9 @@ class PointToPoint(sailing_task.SailingTask):
     def killPointToPoint(self):
         gVars.kill_flagPTP = 1
         
-    def starboardTackWanted(self,initialTack):
-        if( (self.AWA>=0 and initialTack is None) or initialTack == 1 ):
-            return 1
-        else:
-            return 0
-            
-    def portTackWanted(self,initialTack):
-        if( (self.AWA<0 and initialTack is None) or initialTack == 0 ):
-            return 1
-        else:
-            return 0
-    
-    def readyToTack(self):
-        if self.tackSailing==1: #ie port tack
-            self.layAngle = 75+self.roundingLayOffset
-        elif self.tackSailing==2: #ie starboard tack
-            self.layAngle = 75-self.roundingLayOffset
-        
-        beatEstablished =(abs(abs(self.AWA)- self.TACKING_ANGLE)<10)
 
-        if(abs(standardcalc.calculateAngleDelta(self.hog,standardcalc.angleBetweenTwoCoords(self.GPSCoord, self.Dest))) < self.layAngle):
-            return False
-        elif beatEstablished:
-            gVars.logger.info("Hit  "+str(self.layAngle)+" degree lay line")
-            return True
-        else:
-            return False
-        
     def isThereChangeToAWAorWeatherOrModeOrAngle(self):
-        if(self.AWA != self.oldAWA or self.oldColumn != gVars.currentColumn or self.oldTackSailing != self.tackSailing or abs(self.oldAngleBetweenCoords-self.angleBetweenCoords)>self.ANGLE_CHANGE_THRESHOLD):
+        if(self.AWA != self.oldAWA or self.oldColumn != gVars.currentColumn or abs(self.oldAngleBetweenCoords-self.angleBetweenCoords)>self.ANGLE_CHANGE_THRESHOLD):
             self.updateOldData()
             return 1
         else:
@@ -171,7 +129,7 @@ class PointToPoint(sailing_task.SailingTask):
             return 0
 
     def isThereChangeToAWAorWeatherOrMode(self):
-        if(self.AWA != self.oldAWA or self.oldColumn != gVars.currentColumn or self.oldTackSailing != self.tackSailing):
+        if(self.AWA != self.oldAWA or self.oldColumn != gVars.currentColumn):
             self.updateOldData()
             return 1
         else:
@@ -181,7 +139,6 @@ class PointToPoint(sailing_task.SailingTask):
     def updateOldData(self):
         self.oldAWA = self.AWA
         self.oldColumn = gVars.currentColumn
-        self.oldTackSailing = self.tackSailing
         self.oldAngleBetweenCoords = self.angleBetweenCoords
     
     def breakFromBoundaryInterception(self):
@@ -223,12 +180,7 @@ class PointToPoint(sailing_task.SailingTask):
                 boundaryList.append(boundary)
         return boundaryList
     
-    # Sets 1, or 0 for Arduino Call to Tack
-    def setTackDirection(self):
-        if(self.AWA > 0):
-            self.tackDirection = 1
-        else:
-            self.tackDirection = 0
+
             
     def canLayMarkWithoutTack(self):
         if standardcalc.isWPNoGoAWA(self.AWA, self.hog, self.Dest,self.sog,self.GPSCoord):
@@ -237,4 +189,11 @@ class PointToPoint(sailing_task.SailingTask):
             windDirection = standardcalc.boundTo180(self.AWA + self.hog)
             bearing = standardcalc.angleBetweenTwoCoords(self.GPSCoord,self.Dest)
             return not standardcalc.isAngleBetween(bearing,windDirection,self.hog)      
-                
+    
+    def exitP2P(self):
+        self.tackEngine = None
+        if(gVars.kill_flagPTP == 1):
+            gVars.logger.info("PointToPoint is killed")
+        else:
+            gVars.logger.info("Finished Point to Point")
+            

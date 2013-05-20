@@ -7,6 +7,7 @@ Created on Apr 14, 2013
 import math
 from control.logic import standardcalc
 from control.logic import pointtopoint
+from control.logic.tacking import roundingtackengine
 from control.datatype import datatypes
 from control import global_vars as gVars
 from control import sailing_task
@@ -36,12 +37,13 @@ class RoundBuoy(sailing_task.SailingTask):
         
         gVars.logger.info("Sailing To 1st Rounding Point: " + repr(point1))
         if(gVars.kill_flagRB == 0):
-            self.pointtopoint.run(point1, initialTack,6, roundingLayOffset)
+            roundingTackEngine = roundingtackengine.RoundingTackEngine(self.rounding)
+            self.pointtopoint.withTackEngine(roundingTackEngine).run(point1,6)
             
         if fullRound:
             gVars.logger.info("Sailing To 2nd Rounding Point: " + repr(point2))
             if(gVars.kill_flagRB == 0):
-                self.pointtopoint.run(point2, None, 6)
+                self.pointtopoint.run(point2, 6)
        
         gVars.logger.info("Finished RoundBuoy")
 
