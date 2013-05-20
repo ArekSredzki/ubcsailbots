@@ -11,6 +11,7 @@ from control.datatype import datatypes
 from control import global_vars as gVars
 from control import sailing_task
 from control.logic.tacking import tackengine
+from control.logic.boundaries import circleboundaryhandler
 import math
 import time
 
@@ -26,32 +27,34 @@ class PointToPoint(sailing_task.SailingTask):
 
     def __init__(self):
         self.sheetList = parsing.parse(path.join(path.dirname(__file__), 'apparentSheetSetting'))
-        self.innerBoundaries = self.getInnerBoundaries(gVars.boundaries)
-        self.outerBoundaries = self.getOuterBoundaries(gVars.boundaries)
         gVars.logger.info("New Point to Point object")
-        gVars.logger.info(str(len(self.innerBoundaries)) + " inner boundaries, " + str(len(self.outerBoundaries)) + " outer boundaries")
         self.tackEngine = None
+        self.boundaryHandler = None
           
-    def initialize(self, acceptDist):
+    def initialize(self):
         gVars.kill_flagPTP = 0
         self.p2pLogger = P2PLogger()
         self.oldAWA = 0
         self.oldColumn = 0
         self.oldAngleBetweenCoords = 0
-        self.timeSinceBoundaryIntercept = 0 
+        if self.boundaryHandler == None:
+            self.boundaryHandler = circleboundaryhandler.CircleBoundaryHandler()
         if self.tackEngine == None:
             self.tackEngine = tackengine.TackEngine()       
-        if acceptDist == None:
-            self.ACCEPTANCE_DISTANCE = self.ACCEPTANCE_DISTANCE_DEFAULT
-        else:
-            self.ACCEPTANCE_DISTANCE = acceptDist      
+        if self.acceptDist == None:
+            self.acceptDist = self.ACCEPTANCE_DISTANCE_DEFAULT
+  
 
     def withTackEngine(self, tackEngine):
         self.tackEngine = tackEngine
         return self
+    def withBoundaryHandler(self, boundaryHandler):
+        self.boundaryHandler = boundaryHandler
+        return self
       
     def run(self, Dest, acceptDist=None):
-        self.initialize(acceptDist)
+        self.acceptDist = acceptDist
+        self.initialize()
         gVars.logger.info("Started point to pointAWA toward "+repr(Dest))
         self.Dest = Dest
         self.updateData()
@@ -84,7 +87,7 @@ class PointToPoint(sailing_task.SailingTask):
         while gVars.kill_flagPTP ==0 and not (self.arrivedAtPoint() or self.canLayMarkWithoutTack() ):
             self.updateData()
             bearingToMark = standardcalc.angleBetweenTwoCoords(self.GPSCoord, self.Dest)            
-            if self.tackEngine.readyToTack(self.AWA, self.hog, bearingToMark) or self.breakFromBoundaryInterception():                
+            if self.tackEngine.readyToTack(self.AWA, self.hog, bearingToMark) or self.boundaryHandler.hitBoundary():                
                 gVars.arduino.tack(gVars.currentColumn,self.tackEngine.getTackDirection(self.AWA))
                 break          
             if self.isThereChangeToAWAorWeatherOrMode():
@@ -110,7 +113,7 @@ class PointToPoint(sailing_task.SailingTask):
         standardcalc.getWeatherSetting(self.AWA,self.sog)
 
     def arrivedAtPoint(self):
-        return self.distanceToWaypoint < self.ACCEPTANCE_DISTANCE  
+        return self.distanceToWaypoint < self.acceptDist  
        
     def killPointToPoint(self):
         gVars.kill_flagPTP = 1
@@ -136,46 +139,6 @@ class PointToPoint(sailing_task.SailingTask):
         self.oldAWA = self.AWA
         self.oldColumn = gVars.currentColumn
         self.oldAngleBetweenCoords = self.angleBetweenCoords
-    
-    def breakFromBoundaryInterception(self):
-        if self.checkBoundaryInterception() and time.time() - self.timeSinceBoundaryIntercept >60:        
-            self.timeSinceBoundaryIntercept = time.time()
-            gVars.logger.info("Tacking from Boundary")
-            return True
-        return False
-                       
-    def checkBoundaryInterception(self):
-        if self.checkInnerBoundaryInterception() or self.checkOuterBoundaryInterception():
-            return True
-        else:
-            return False
-    
-    def checkInnerBoundaryInterception(self):
-        for boundary in self.innerBoundaries:
-            if(standardcalc.distBetweenTwoCoords(boundary.coordinate, self.GPSCoord) > boundary.radius):
-                return True
-        return False
-    
-    def checkOuterBoundaryInterception(self):
-        for boundary in self.outerBoundaries:
-            if(standardcalc.distBetweenTwoCoords(boundary.coordinate, self.GPSCoord) <= boundary.radius):
-                return True
-        return False
-    
-    def getInnerBoundaries(self, boundaries):
-        boundaryList = []
-        for boundary in boundaries:
-            if(standardcalc.distBetweenTwoCoords(boundary.coordinate, gVars.currentData.gps_coord) <= boundary.radius):
-                boundaryList.append(boundary)
-        return boundaryList
-                
-    def getOuterBoundaries(self, boundaries):
-        boundaryList = []
-        for boundary in boundaries:
-            if(standardcalc.distBetweenTwoCoords(boundary.coordinate, gVars.currentData.gps_coord) > boundary.radius):
-                boundaryList.append(boundary)
-        return boundaryList
-    
 
             
     def canLayMarkWithoutTack(self):
@@ -188,6 +151,7 @@ class PointToPoint(sailing_task.SailingTask):
     
     def exitP2P(self):
         self.tackEngine = None
+        self.boundaryHandler = None
         if(gVars.kill_flagPTP == 1):
             gVars.logger.info("PointToPoint is killed")
         else:
