@@ -66,7 +66,7 @@ class PointToPoint(sailing_task.SailingTask):
                     self.enterBeatLoop(True) 
                     
             else:                    
-                p2pLogger.printStraight("Sailing straight to point")
+                self.p2pLogger.printStraight("Sailing straight to point")
                 if(self.isThereChangeToAWAorWeatherOrModeOrAngle()):
                     self.adjustSheetsAndSteerByCompass()                    
             time.sleep(.1)
@@ -75,10 +75,10 @@ class PointToPoint(sailing_task.SailingTask):
 
     def enterBeatLoop(self, port):
         if port:
-            p2pLogger.printTacking("On port tack")
+            self.p2pLogger.printTacking("On port tack")
             tackAngleMultiplier = -1
         else:
-            p2pLogger.printTacking("On starboard tack")
+            self.p2pLogger.printTacking("On starboard tack")
             tackAngleMultiplier = 1
            
         while gVars.kill_flagPTP ==0 and not (self.arrivedAtPoint() or self.canLayMarkWithoutTack() ):
@@ -199,8 +199,8 @@ class P2PLogger:
 
     def printStraight(self, msg):
         if self.printedStraight == 0:
-            gVars.logger.info(ms)
+            gVars.logger.info(msg)
             self.printedStraight = 1
     def printTacking(self, msg):      
-        gVars.logger.info(ms)
+        gVars.logger.info(msg)
         self.printedStraight = 0
