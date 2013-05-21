@@ -39,7 +39,7 @@ class LongDistance(sailing_task.SailingTask):
                 gVars.logger.info("Mark two instantiated")
         
         if not (startPoint and markOne and markTwo):
-            gVars.logger.critical("Waypoints not inputted correctly!")
+            gVars.logger.error("Waypoints not inputted correctly!")
             
         ldWaypoints = [markOne, startPoint, markTwo, startPoint, markOne, startPoint, markTwo, startPoint, markOne]
         

@@ -4,13 +4,13 @@ Created on Jan 19, 2013
 @author: joshandrews
 '''
 import time
-import math
 import thread
 import sys
 sys.path.append("..")
 from control.logic import standardcalc
 from control.datatype import datatypes
 from control import global_vars as gVars
+from control import static_vars as sVars
 from control.logic import roundbuoy
 from control.logic import pointtopoint
 from control import sailing_task
@@ -44,13 +44,13 @@ class Navigation(sailing_task.SailingTask):
             wayList.append(waypoint4)
         
         for waypoint in wayList:
-            if(waypoint.wtype == "nav_first"):
+            if(waypoint.wtype == sVars.NAV_FIRST):
                 buoyCoords = waypoint.coordinate
-            elif(waypoint.wtype == "nav_start_port"):
+            elif(waypoint.wtype == sVars.NAV_START_PORT):
                 portStartInnerPoint = waypoint.coordinate
-            elif(waypoint.wtype == "nav_start_stbd"):
+            elif(waypoint.wtype == sVars.NAV_START_STARBOARD):
                 starboardStartInnerPoint = waypoint.coordinate
-            elif(waypoint.wtype == "nav_midpoint"):
+            elif(waypoint.wtype == sVars.NAV_MIDPOINT):
                 navMidpoint = waypoint.coordinate
         
         if not (buoyCoords and portStartInnerPoint and starboardStartInnerPoint):
