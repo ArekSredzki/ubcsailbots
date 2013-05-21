@@ -90,8 +90,20 @@ class TestRoundingTackEngine(unittest.TestCase):
     def testWhichTackWantedPortWanted(self):
         AWA = 0
         self.tackengine.initialTack = "port"
+        self.assertFalse(self.tackengine.onStarboardTack(AWA))
+        self.assertTrue(self.tackengine.onPortTack(AWA))
+    
+    def testWhichTackWantedAfterInitialStarboardWanted(self):
+        AWA = 30
+        self.tackengine.initialTack = None
         self.assertTrue(self.tackengine.onStarboardTack(AWA))
         self.assertFalse(self.tackengine.onPortTack(AWA))
+
+    def testWhichTackWantedAfterInitialPortWanted(self):
+        AWA = -30
+        self.tackengine.initialTack = None
+        self.assertFalse(self.tackengine.onStarboardTack(AWA))
+        self.assertTrue(self.tackengine.onPortTack(AWA))
     
     def testLayAngle90(self):
         self.tackengine.rounding ="starboard"
