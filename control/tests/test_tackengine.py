@@ -6,6 +6,7 @@ from control import global_vars as gVars
 from control import sailbot_logger
 import control.datatype.datatypes as datatypes
 from control.logic.tacking import tackengine
+from control.logic.tacking import roundingtackengine
 from control.logic import standardcalc
 
 
@@ -73,4 +74,41 @@ class TestTackEngine(unittest.TestCase):
         AWA = -20
         starboard=0
         self.assertEqual(self.tackengine.getTackDirection(AWA), starboard)
+
+class TestRoundingTackEngine(unittest.TestCase):
+    def setUp(self):
+        self.tackengine = roundingtackengine.RoundingTackEngine("starboard")
+        gVars.logger = sailbot_logger.Logger()
+    
+    def testWhichTackWantedStarboardWanted(self):
+    
+        AWA = 0
+        self.tackengine.initialTack = "starboard"
+        self.assertTrue(self.tackengine.onStarboardTack(AWA))
+        self.assertFalse(self.tackengine.onPortTack(AWA))
+
+    def testWhichTackWantedPortWanted(self):
+        AWA = 0
+        self.tackengine.initialTack = "port"
+        self.assertTrue(self.tackengine.onStarboardTack(AWA))
+        self.assertFalse(self.tackengine.onPortTack(AWA))
+    
+    def testLayAngle90(self):
+        self.tackengine.rounding ="starboard"
+        self.tackengine.currentTack = "starboard"
+        self.assertEqual(self.tackengine.layAngle, 90)
         
+        self.tackengine.rounding ="port"
+        self.tackengine.currentTack = "port"
+        self.assertEqual(self.tackengine.layAngle, 90)
+
+    def testLayAngle45(self):
+        self.tackengine.rounding ="starboard"
+        self.tackengine.currentTack = "port"
+        self.assertEqual(self.tackengine.layAngle, 45)
+        
+        self.tackengine.rounding ="port"
+        self.tackengine.currentTack = "starboard"
+        self.assertEqual(self.tackengine.layAngle, 45)
+
+                

@@ -2,30 +2,18 @@ from control.logic.tacking import tackengine
 from control import global_vars as gVars
 
 class RoundingTackEngine(tackengine.TackEngine):
-    
+
     def __init__(self, rounding):
         self.rounding =rounding
         self.initialTack = rounding                
-
-    def getLayAngle(self):
-        if self.currentTack =="starboard":
-            return self.setLayAngleStarboard()
-        elif self.currentTack =="port":
-            return self.setLayAnglePort()
-                
-    def setLayAngleStarboard(self):
-        if self.rounding == "starboard":
+    
+    @property
+    def layAngle(self):
+        if self.currentTack ==self.rounding:
             return 90
-        else: #ie starboard tack
+        else:
             return 45
 
-    def setLayAnglePort(self):
-        if self.rounding == "starboard":
-            return 45
-        else: #ie starboard tack
-            return 90        
-                       
-            
     def onStarboardTack(self,AWA):
         if self.initialTack == "starboard" or  super(RoundingTackEngine, self).onStarboardTack(AWA):
             self.initialTack = None
