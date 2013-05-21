@@ -1,7 +1,7 @@
 from control.logic import standardcalc
 from control import global_vars as gVars
 
-class TackEngine:
+class TackEngine(object):
   
     def __init__(self):
         self.LAY_ANGLE_DEFAULT = 75

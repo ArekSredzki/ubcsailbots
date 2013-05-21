@@ -27,7 +27,7 @@ class RoundingTackEngine(tackengine.TackEngine):
                        
             
     def onStarboardTack(self,AWA):
-        if self.initialTack == "starboard" or  tackengine.TackEngine.onStarboardTack(self,AWA):
+        if self.initialTack == "starboard" or  super(RoundingTackEngine, self).onStarboardTack(AWA):
             self.initialTack = None
             self.currentTack = "starboard"
             return True
@@ -35,7 +35,7 @@ class RoundingTackEngine(tackengine.TackEngine):
             return False 
             
     def onPortTack(self,AWA):
-        if self.initialTack == "port" or tackengine.TackEngine.onPortTack(self,AWA):
+        if self.initialTack == "port" or super(RoundingTackEngine, self).onPortTack(AWA):
             self.initialTack = None
             self.currentTack = "port"
             return True
