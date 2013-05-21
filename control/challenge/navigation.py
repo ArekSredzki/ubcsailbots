@@ -11,7 +11,6 @@ sys.path.append("..")
 from control.logic import standardcalc
 from control.datatype import datatypes
 from control import global_vars as gVars
-from control import static_vars as sVars
 from control.logic import roundbuoy
 from control.logic import pointtopoint
 from control import sailing_task
@@ -25,51 +24,50 @@ class Navigation(sailing_task.SailingTask):
         self.roundbuoy = roundbuoy.RoundBuoy()
         self.pointtopoint = pointtopoint.PointToPoint()
         
-    def run(self, Waypoint1,Waypoint2,Waypoint3,Waypoint4=None):
+    def run(self, waypoint1,waypoint2,waypoint3,waypoint4=None):
         self.nav_log_timer=0
-        GPSCoord = gVars.currentData.gps_coord
+        
+        buoyCoords = None
+        portStartInnerPoint = None
+        starboardStartInnerPoint = None
         navMidpoint = None
         
         gVars.kill_flagNav = 0
         
-        num_nav_first = 0
-        num_nav_start_port = 0
-        num_nav_start_stbd = 0
-        
         wayList = list()
         
-        wayList.append(Waypoint1)
-        wayList.append(Waypoint2)
-        wayList.append(Waypoint3)
-        wayList.append(Waypoint4)
+        wayList.append(waypoint1)
+        wayList.append(waypoint2)
+        wayList.append(waypoint3)
+        
+        if waypoint4:
+            wayList.append(waypoint4)
         
         for waypoint in wayList:
             if(waypoint.wtype == "nav_first"):
-                BuoyCoords = waypoint.coordinate
-                num_nav_first+=1
+                buoyCoords = waypoint.coordinate
             elif(waypoint.wtype == "nav_start_port"):
-                PortStartInnerPoint = waypoint.coordinate
-                num_nav_start_port+=1
+                portStartInnerPoint = waypoint.coordinate
             elif(waypoint.wtype == "nav_start_stbd"):
-                StarboardStartInnerPoint = waypoint.coordinate
-                num_nav_start_stbd+=1
+                starboardStartInnerPoint = waypoint.coordinate
             elif(waypoint.wtype == "nav_midpoint"):
                 navMidpoint = waypoint.coordinate
         
-        if(num_nav_start_port > 1 or num_nav_start_stbd > 1 or num_nav_first > 1):
-            gVars.logger.error("Repeating or too many arguments")
+        if not (buoyCoords and portStartInnerPoint and starboardStartInnerPoint):
+            gVars.logger.error("Arguments Incorrect!")
         
-        self.interpolatedPoint = standardcalc.returnMidPoint(PortStartInnerPoint,StarboardStartInnerPoint)
-        angleOfCourse = standardcalc.angleBetweenTwoCoords(self.interpolatedPoint, BuoyCoords)
+        self.interpolatedPoint = standardcalc.returnMidPoint(portStartInnerPoint,starboardStartInnerPoint)
 
         if not navMidpoint:
-            halfwayBackPoint = datatypes.GPSCoordinate((self.interpolatedPoint.lat+BuoyCoords.lat)/2,(self.interpolatedPoint.long+BuoyCoords.long)/2)
+            halfwayBackPoint = datatypes.GPSCoordinate((self.interpolatedPoint.lat+buoyCoords.lat)/2,(self.interpolatedPoint.long+buoyCoords.long)/2)
+            gVars.logger.info("Using dynamically created midpoint.")
         else:
             halfwayBackPoint = navMidpoint
+            gVars.logger.info("Using user given midpoint")
             
         gVars.logger.info("Rounding Buoy")      
         if(gVars.kill_flagNav == 0):
-            self.roundbuoy.run(BuoyCoords)
+            self.roundbuoy.run(buoyCoords)
         gVars.logger.info("Heading for Midpoint ")
         
         if(gVars.kill_flagNav == 0):
