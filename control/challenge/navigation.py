@@ -25,9 +25,10 @@ class Navigation(sailing_task.SailingTask):
         self.roundbuoy = roundbuoy.RoundBuoy()
         self.pointtopoint = pointtopoint.PointToPoint()
         
-    def run(self, Waypoint1,Waypoint2,Waypoint3):
+    def run(self, Waypoint1,Waypoint2,Waypoint3,Waypoint4=None):
         self.nav_log_timer=0
         GPSCoord = gVars.currentData.gps_coord
+        navMidpoint = None
         
         gVars.kill_flagNav = 0
         
@@ -40,6 +41,7 @@ class Navigation(sailing_task.SailingTask):
         wayList.append(Waypoint1)
         wayList.append(Waypoint2)
         wayList.append(Waypoint3)
+        wayList.append(Waypoint4)
         
         for waypoint in wayList:
             if(waypoint.wtype == "nav_first"):
@@ -51,6 +53,8 @@ class Navigation(sailing_task.SailingTask):
             elif(waypoint.wtype == "nav_start_stbd"):
                 StarboardStartInnerPoint = waypoint.coordinate
                 num_nav_start_stbd+=1
+            elif(waypoint.wtype == "nav_midpoint"):
+                navMidpoint = waypoint.coordinate
         
         if(num_nav_start_port > 1 or num_nav_start_stbd > 1 or num_nav_first > 1):
             gVars.logger.error("Repeating or too many arguments")
@@ -58,8 +62,11 @@ class Navigation(sailing_task.SailingTask):
         self.interpolatedPoint = standardcalc.returnMidPoint(PortStartInnerPoint,StarboardStartInnerPoint)
         angleOfCourse = standardcalc.angleBetweenTwoCoords(self.interpolatedPoint, BuoyCoords)
 
-        halfwayBackPoint = datatypes.GPSCoordinate((self.interpolatedPoint.lat+BuoyCoords.lat)/2,(self.interpolatedPoint.long+BuoyCoords.long)/2)
-        
+        if not navMidpoint:
+            halfwayBackPoint = datatypes.GPSCoordinate((self.interpolatedPoint.lat+BuoyCoords.lat)/2,(self.interpolatedPoint.long+BuoyCoords.long)/2)
+        else:
+            halfwayBackPoint = navMidpoint
+            
         gVars.logger.info("Rounding Buoy")      
         if(gVars.kill_flagNav == 0):
             self.roundbuoy.run(BuoyCoords)
@@ -72,7 +79,7 @@ class Navigation(sailing_task.SailingTask):
         if(gVars.kill_flagNav == 0):
             acceptDistance = 1
             thread.start_new_thread(self.printNavigationLog, ())
-            self.pointtopoint.run(self.interpolatedPoint,None,acceptDistance)
+            self.pointtopoint.run(self.interpolatedPoint,acceptDistance)
         
         return 0
     
