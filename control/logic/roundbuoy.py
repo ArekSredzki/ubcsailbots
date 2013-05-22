@@ -27,13 +27,9 @@ class RoundBuoy(sailing_task.SailingTask):
         if(self.rounding=="port"):
             point1 = self.findRightBuoyPoint(BuoyLoc)
             point2 = self.findLeftBuoyPoint(BuoyLoc)
-            initialTack = 0
-            roundingLayOffset =-20
         else:
             point1 = self.findLeftBuoyPoint(BuoyLoc)
             point2 = self.findRightBuoyPoint(BuoyLoc)
-            initialTack = 1
-            roundingLayOffset =20
         
         gVars.logger.info("Sailing To 1st Rounding Point: " + repr(point1))
         if(gVars.kill_flagRB == 0):
