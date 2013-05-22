@@ -13,8 +13,8 @@ class ChaseRace(sailing_task.SailingTask):
     def __init__(self):
         pass
 
-    def run(self,wpt0, wpt1, wpt2, wpt3):
-        self.initialize(wpt0.coordinate, wpt1.coordinate, wpt2.coordinate, wpt3.coordinate)
+    def run(self, wayList):
+        self.initialize(wayList[0].coordinate, wayList[1].coordinate, wayList[2].coordinate, wayList[3].coordinate)
         self.race()
  
     def initialize(self,c0, c1, c2, c3):

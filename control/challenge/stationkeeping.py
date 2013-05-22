@@ -91,12 +91,12 @@ class StationKeeping(sailing_task.SailingTask):
         index = (index+2)%4
         return index
                                                                                             
-    def run(self, topLeftWaypnt, topRightWaypnt, botLeftWaypnt, botRightWaypnt):
+    def run(self, wayList):
         
-        topLeftCoord = topLeftWaypnt.coordinate
-        topRightCoord = topRightWaypnt.coordinate
-        botLeftCoord = botLeftWaypnt.coordinate
-        botRightCoord = botRightWaypnt.coordinate
+        topLeftCoord = wayList[0].coordinate
+        topRightCoord = wayList[1].coordinate
+        botLeftCoord = wayList[2].coordinate
+        botRightCoord = wayList[3].coordinate
         
         boxCoords = standardcalc.setBoxCoords(topLeftCoord, topRightCoord, botLeftCoord, botRightCoord)   #boxCoords[0] = TL, boxCoords[1] = TR, boxCoords[2] = BR, boxCoords[3] = BL
         self.wayPtCoords = self.setWayPtCoords(boxCoords)  #top, right, bottom, left

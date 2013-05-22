@@ -24,7 +24,7 @@ class Navigation(sailing_task.SailingTask):
         self.roundbuoy = roundbuoy.RoundBuoy()
         self.pointtopoint = pointtopoint.PointToPoint()
         
-    def run(self, waypoint1,waypoint2,waypoint3,waypoint4=None):
+    def run(self, wayList):
         self.nav_log_timer=0
         
         buoyCoords = None
@@ -33,15 +33,6 @@ class Navigation(sailing_task.SailingTask):
         navMidpoint = None
         
         gVars.kill_flagNav = 0
-        
-        wayList = list()
-        
-        wayList.append(waypoint1)
-        wayList.append(waypoint2)
-        wayList.append(waypoint3)
-        
-        if waypoint4:
-            wayList.append(waypoint4)
         
         for waypoint in wayList:
             if(waypoint.wtype == sVars.NAV_FIRST):

@@ -48,7 +48,6 @@ def run(argv=None):
         # When the function queue has waiting calls, and there is no currently running process,
         # switch processes to the next function in the queue (FIFO)
         
-        #TODO build function calling wrapper like getattr(coresailinglogic, gVars.currentProcess)(*gVars.currentParams)
         if (len(gVars.functionQueue) > 0 and gVars.currentProcess is None and gVars.currentData.auto == 1):
             killAllFunctions()
             time.sleep(.5)
@@ -60,7 +59,7 @@ def run(argv=None):
             gVars.taskStartTime = datetime.now()
             
             try:
-                task.run(*gVars.currentParams)
+                task.run(gVars.currentParams)
             except Exception, errtext:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
