@@ -1,5 +1,4 @@
 from control.parser import parsing
-from control.logic import standardcalc
 from control import global_vars as gVars
 from os import path
 
