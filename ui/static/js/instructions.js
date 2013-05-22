@@ -107,7 +107,7 @@ function updateWaypointDataDisplayTable()
 	        		'<td>lon:</td>' +
 	        		'<td><input type="text" id="lon$NUM" size="8" onkeyup="updateWaypoints($NUM)"></td>' +
 	        		'<td>type:</td>' +
-	        		'<td><select id="waypointtype$NUM" onchange="updateWaypoints($NUM)"><option value="none"></option><option value="pointToPoint">Point to Point</option><option value="roundbuoy">Round Buoy</option><option value="ld_start_finish">ld Start Finish</option><option value="ld_first">ld First</option><option value="ld_second">ld Second</option><option value="nav_first">nav First</option><option value="nav_midpoint">nav midpoint</option><option value="nav_start_port">nav start port</option><option value="nav_start_stbd">nav start stb</option><option value="station_keeping">Station Keeping</option></select></td>' +
+	        		'<td><select id="waypointtype$NUM" onchange="updateWaypoints($NUM)"><option value="none"></option><option value="pointToPoint">Point to Point</option><option value="roundbuoy">Round Buoy</option><option value="nav_first">nav First</option><option value="nav_midpoint">nav midpoint</option><option value="nav_start_port">nav start port</option><option value="nav_start_stbd">nav start stb</option><option value="station_keeping">Station Keeping</option></select></td>' +
 	        		'<td><button id="deleteWaypointButton$NUM" onclick="deleteWaypoint($NUM)">X</button></td>' +
 	 '</tr>';	
 	// Foreach value in the length (including if there is no values), add a waypoint marker
@@ -141,11 +141,11 @@ function  getDefaultChallengeWptType(){
     break;
     
     case "longdistance":
-      return "ld_first";
+      return "roundbuoy";
     break;
     
     case "chaserace":
-    //**TODO
+      return "roundbuoy";
     break;
     
     default:
