@@ -125,7 +125,7 @@ class StationKeeping(sailing_task.SailingTask):
         inTurnZone = True
         turning = True
         
-        while ((gVars.kill_flagSK == 0)):
+        while gVars.kill_flagSK == 0:
             time.sleep(.1)
             
             self.secLeft = self.CHALLENGE_TIME - (datetime.now() - gVars.taskStartTime).seconds
@@ -174,19 +174,12 @@ class StationKeeping(sailing_task.SailingTask):
                     exiting = True 
             else:
                 boxDistListNoAbs = self.getBoxDist(boxCoords, False)
-                if boxDistListNoAbs[self.currentWaypoint] < 0 and self.secLeft <= 0:
+                if boxDistListNoAbs[self.currentWaypoint] <= 0:
                     gVars.kill_flagSK = 1;
-                
-        if (gVars.kill_flagSK == 1):
+                    gVars.logger.info("Boat has exited box at " + str(gVars.SKSecLeft) + " seconds.")
+                    
+        if gVars.kill_flagSK == 1:
             gVars.logger.info("Station Keeping Kill Flag initialized. Station Keeping Challenge has been stopped.")
-        else:
-            gVars.logger.info("Station Keeping Challenge timer has ended.")
-        
-        boxDistList = self.getBoxDist(boxCoords)
-        gVars.SKMinLeft = 0
-        gVars.SKSecLeft = 0
-        gVars.SKMilliSecLeft = 0
-        self.currentWaypoint = None
     
     # StationKeepings sail method.  This function steers and adjusts the sheets
     def sailByApparentWind(self, boxDistList,exiting):
