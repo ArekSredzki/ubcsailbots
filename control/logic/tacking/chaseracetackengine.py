@@ -6,8 +6,8 @@ class ChaseRaceTackEngine(RoundingTackEngine):
     
     BEARING_DELTA_THRESHOLD = 2
     def __init__(self, rounding,edgeBearing):
-          self.edgeBearing = edgeBearing
-          super(ChaseRaceTackEngine,self).__init__(rounding)
+        self.edgeBearing = edgeBearing
+        super(ChaseRaceTackEngine,self).__init__(rounding)
       
     def readyToTack(self, AWA, HOG, bearing):
         return super(ChaseRaceTackEngine,self).readyToTack(AWA, HOG, bearing) or self.hitBoxBoundary(bearing)
