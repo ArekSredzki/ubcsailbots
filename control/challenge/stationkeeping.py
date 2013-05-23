@@ -205,7 +205,7 @@ class StationKeeping(sailing_task.SailingTask):
     def updateMeanSpeed(self, turning, spdList):
         if (not turning):
             spdList = standardcalc.changeSpdList(spdList)
-            self.meanSpd = 1.8  #standardcalc.meanOfList(spdList)
+            self.meanSpd = 2  #standardcalc.meanOfList(spdList)
         return spdList
     
     def isThereChangeInDownwindHeightOrTackingAngleOrAwa(self, tackingAngle):
