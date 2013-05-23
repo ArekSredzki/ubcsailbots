@@ -140,7 +140,7 @@ class StationKeeping(sailing_task.SailingTask):
                     inTurnZone = False
                     turning = False
                     
-                if (boxDistList[self.currentWaypoint] >= self.meanSpd*(self.secLeft+self.TIME_BUFFER+0)):
+                if (boxDistList[self.currentWaypoint] >= self.meanSpd*self.MEAN_SPEED_MULITPLIER*(self.secLeft+self.TIME_BUFFER+0)):
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
                     gVars.logger.info("Seconds Left:" + str(self.secLeft))
                     exiting = True
