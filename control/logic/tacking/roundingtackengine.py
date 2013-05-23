@@ -1,11 +1,13 @@
 from control.logic.tacking import tackengine
 from control import global_vars as gVars
 
-class RoundingTackEngine(tackengine.TackEngine):
+class RoundingTackEngine(tackengine.TackEngine, object):
 
     def __init__(self, rounding):
         self.rounding =rounding
-        self.initialTack = rounding                
+        self.initialTack = rounding
+        self.currentTack = self.initialTack
+             
     
     @property
     def layAngle(self):
