@@ -70,7 +70,10 @@ class Navigation(sailing_task.SailingTask):
             thread.start_new_thread(self.printNavigationLog, ())
             self.pointtopoint.run(self.interpolatedPoint,acceptDistance)
         
-        return 0
+        if gVars.kill_flagNav == 1:
+            gVars.logger.info("Nav Kill Flag initialized. Nav has been stopped.")
+        else:
+            gVars.logger.info("Navigation challenge finished")  
     
     def printNavigationLog(self):
         while (gVars.kill_flagNav == 0):

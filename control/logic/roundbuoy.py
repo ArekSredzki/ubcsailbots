@@ -21,7 +21,7 @@ class RoundBuoy(sailing_task.SailingTask):
         self.rounding = gVars.instructions.rounding
         self.pointtopoint = pointtopoint.PointToPoint()
         
-    def run(self, BuoyLoc, fullRound = True):
+    def run(self, BuoyLoc):
         gVars.kill_flagRB = 0
         gVars.logger.info("Rounding to " + self.rounding)
         if(self.rounding=="port"):
@@ -36,10 +36,9 @@ class RoundBuoy(sailing_task.SailingTask):
             roundingTackEngine = roundingtackengine.RoundingTackEngine(self.rounding)
             self.pointtopoint.withTackEngine(roundingTackEngine).run(point1,6)
             
-        if fullRound:
-            gVars.logger.info("Sailing To 2nd Rounding Point: " + repr(point2))
-            if(gVars.kill_flagRB == 0):
-                self.pointtopoint.run(point2, 6)
+        gVars.logger.info("Sailing To 2nd Rounding Point: " + repr(point2))
+        if(gVars.kill_flagRB == 0):
+            self.pointtopoint.run(point2, 6)
        
         gVars.logger.info("Finished RoundBuoy")
 

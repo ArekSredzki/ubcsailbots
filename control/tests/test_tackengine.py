@@ -7,6 +7,7 @@ from control import sailbot_logger
 import control.datatype.datatypes as datatypes
 from control.logic.tacking import tackengine
 from control.logic.tacking import roundingtackengine
+from control.logic.tacking import chaseracetackengine
 from control.logic import standardcalc
 
 
@@ -53,7 +54,7 @@ class TestTackEngine(unittest.TestCase):
         self.assertFalse(self.tackengine.readyToTack(AWA, hog, bearingToMark))
         
         
-    def testReadyToTackFalse(self):
+    def testReadyToTackTrue(self):
         AWA =30      
         GPSCoord = datatypes.GPSCoordinate(49,-123)
         Dest = datatypes.GPSCoordinate(49.1,-123) # 0 degrees, N
@@ -123,4 +124,42 @@ class TestRoundingTackEngine(unittest.TestCase):
         self.tackengine.currentTack = "starboard"
         self.assertEqual(self.tackengine.layAngle, 45)
 
-                
+class TestChaseRaceTackEngine(unittest.TestCase):
+    def setUp(self):
+        edgeBearing = 0
+        rounding = "starboard"
+        self.tackengine = chaseracetackengine.ChaseRaceTackEngine(rounding,edgeBearing)
+        
+    def testHitEdge(self):
+        AWA =30
+        bearingToMark = 0
+        hog = 0 # N
+        self.tackengine.rounding = "starboard"
+        self.tackengine.currentTack = "port"
+        self.assertTrue(self.tackengine.readyToTack(AWA, hog, bearingToMark))
+        
+        self.tackengine.rounding = "port"
+        self.tackengine.currentTack = "starboard"
+        self.assertTrue(self.tackengine.readyToTack(AWA, hog, bearingToMark))
+        
+    def testHitEdgeOnTheOKTack(self):
+        AWA =30
+        bearingToMark = 0            
+        hog = 0 # N
+        self.tackengine.rounding = "port"
+        self.tackengine.currentTack = "port"
+        self.assertFalse(self.tackengine.readyToTack(AWA, hog, bearingToMark))
+        
+        self.tackengine.rounding = "starboard"
+        self.tackengine.currentTack = "starboard"
+        self.assertFalse(self.tackengine.readyToTack(AWA, hog, bearingToMark))
+        
+    def testDidntHitEdge(self):
+        AWA =30
+        bearingToMark = 30
+        hog = 0 # N
+        self.tackengine.rounding = "port"
+        self.tackengine.currentTack = "port"
+        self.assertFalse(self.tackengine.readyToTack(AWA, hog, bearingToMark))
+        
+             
