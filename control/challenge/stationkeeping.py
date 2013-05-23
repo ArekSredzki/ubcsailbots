@@ -27,6 +27,7 @@ class StationKeeping(sailing_task.SailingTask):
     CRITICAL_HEIGHT_ABOVE_BOTTOM_OF_BOX = 15
     SK_WEATHER_COLUMN =1 #don suspects this weather setting will do for SK
     TIME_BUFFER = 2
+    MEAN_SPEED_MULITPLIER = 1.1 # Artificially inflates the mean speed when checking to exit.
     
     def __init__(self):
         self.upwindWaypoint = 0
@@ -145,7 +146,7 @@ class StationKeeping(sailing_task.SailingTask):
                     exiting = True
                     gVars.logger.info("Station Keeping event is about to end. Exiting to current waypoint.")
                 
-                elif (boxDistList[(self.currentWaypoint + 2) % 4] >= self.meanSpd*(self.secLeft+self.TIME_BUFFER+4) ): #4 seconds for gybe
+                elif (boxDistList[(self.currentWaypoint + 2) % 4] >= self.meanSpd*self.MEAN_SPEED_MULITPLIER*(self.secLeft+self.TIME_BUFFER+4) ): #4 seconds for gybe
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
                     gVars.logger.info("Seconds Left:" + str(self.secLeft))
                     self.currentWaypoint = (self.currentWaypoint + 2) % 4
