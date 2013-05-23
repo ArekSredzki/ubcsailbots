@@ -59,7 +59,10 @@ def run(argv=None):
             gVars.taskStartTime = datetime.now()
             
             try:
-                task.run(gVars.currentParams)
+                if gVars.currentProcess == sVars.GO_AROUND or gVars.currentProcess == sVars.GO_TO:
+                    task.run(*gVars.currentParams)
+                else:
+                    task.run(gVars.currentParams)
             except Exception, errtext:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 gVars.logger.critical("Caught exception in " + str(gVars.currentProcess) + ":<br>" + str(errtext) + "<br> Trace: " + "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)).replace('\n', '<br>'+'&nbsp '*3))
