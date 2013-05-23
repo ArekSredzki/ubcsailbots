@@ -27,7 +27,7 @@ class StationKeeping(sailing_task.SailingTask):
     CRITICAL_HEIGHT_ABOVE_BOTTOM_OF_BOX = 15
     SK_WEATHER_COLUMN =1 #don suspects this weather setting will do for SK
     TIME_BUFFER = 2
-    MEAN_SPEED_MULITPLIER = 1.1 # Artificially inflates the mean speed when checking to exit.
+    MEAN_SPEED_MULITPLIER = 1 # Artificially inflates the mean speed when checking to exit.
     
     def __init__(self):
         self.upwindWaypoint = 0
@@ -205,7 +205,7 @@ class StationKeeping(sailing_task.SailingTask):
     def updateMeanSpeed(self, turning, spdList):
         if (not turning):
             spdList = standardcalc.changeSpdList(spdList)
-            self.meanSpd = standardcalc.meanOfList(spdList)
+            self.meanSpd = 1.8  #standardcalc.meanOfList(spdList)
         return spdList
     
     def isThereChangeInDownwindHeightOrTackingAngleOrAwa(self, tackingAngle):
