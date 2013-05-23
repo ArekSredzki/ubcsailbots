@@ -1,5 +1,4 @@
 from control.logic import standardcalc
-from control import static_vars as sVars
 from control import global_vars as gVars
 from control import sailing_task
 from control.logic.tacking import tackengine
