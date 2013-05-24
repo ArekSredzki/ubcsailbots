@@ -11,6 +11,8 @@ instructions.challenge = "NONE";
 instructions.waypoints = new Array();
 instructions.boundaries = new Array();
 instructions.rounding = "port";
+instructions.SK_exit_speed = 0;
+
 var mapWidget;
 
 $(function () {
