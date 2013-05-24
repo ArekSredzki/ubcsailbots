@@ -13,7 +13,7 @@ class TestStartDirection(unittest.TestCase):
         self.coords.append(datatypes.GPSCoordinate(2.0,2.0))
         self.coords.append(datatypes.GPSCoordinate(2.0,1.0))
         self.chaseRace = chaserace.ChaseRace()
-        gVars.instructions = datatypes.Instructions("none",[],[],"port")
+        gVars.instructions = datatypes.Instructions("none",[],[],"port",0)
         gVars.currentData = datatypes.ArduinoData(0, 1, 2, 3, datatypes.GPSCoordinate(4, 4) , 5, 6, 7, 0, 20)
     def testStarboardRounding(self):
         gVars.instructions.rounding = "starboard"

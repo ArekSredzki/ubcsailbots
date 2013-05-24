@@ -83,13 +83,13 @@ class TestRoundingTackEngine(unittest.TestCase):
     
     def testWhichTackWantedStarboardWanted(self):
     
-        AWA = 0
+        AWA = 90
         self.tackengine.initialTack = "starboard"
         self.assertTrue(self.tackengine.onStarboardTack(AWA))
         self.assertFalse(self.tackengine.onPortTack(AWA))
 
     def testWhichTackWantedPortWanted(self):
-        AWA = 0
+        AWA = 90
         self.tackengine.initialTack = "port"
         self.assertFalse(self.tackengine.onStarboardTack(AWA))
         self.assertTrue(self.tackengine.onPortTack(AWA))

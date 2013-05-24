@@ -21,7 +21,7 @@ class TestGuiHandler(unittest.TestCase):
           
     def testSetInstructionsWithNoChallenge(self):
         self.resetGlobVar()
-        self.instructions = datatypes.Instructions(sVars.NO_CHALLENGE, [datatypes.Waypoint(datatypes.GPSCoordinate(1, 1), sVars.GO_TO)], [datatypes.Boundary(datatypes.GPSCoordinate(1, 1), 1)],"port")
+        self.instructions = datatypes.Instructions(sVars.NO_CHALLENGE, [datatypes.Waypoint(datatypes.GPSCoordinate(1, 1), sVars.GO_TO)], [datatypes.Boundary(datatypes.GPSCoordinate(1, 1), 1)],"port",0)
         self.gui_handler.setInstructions(self.instructions)
         self.assertTrue(gVars.instructions, self.instructions)
         self.assertListEqual(gVars.functionQueue, [sVars.GO_TO])
@@ -29,7 +29,7 @@ class TestGuiHandler(unittest.TestCase):
     
     def testSetInstructionsWithNavChallenge(self):
         self.resetGlobVar()
-        self.instructions = datatypes.Instructions(sVars.NAVIGATION_CHALLENGE, [datatypes.Waypoint(datatypes.GPSCoordinate(1, 1), sVars.GO_TO)], [datatypes.Boundary(datatypes.GPSCoordinate(1, 1), 1)],"port")
+        self.instructions = datatypes.Instructions(sVars.NAVIGATION_CHALLENGE, [datatypes.Waypoint(datatypes.GPSCoordinate(1, 1), sVars.GO_TO)], [datatypes.Boundary(datatypes.GPSCoordinate(1, 1), 1)],"port",0)
         self.gui_handler.setInstructions(self.instructions)
         self.assertTrue(gVars.instructions, self.instructions)
         self.assertListEqual(gVars.functionQueue, [sVars.NAVIGATION_CHALLENGE])
@@ -37,7 +37,7 @@ class TestGuiHandler(unittest.TestCase):
     
     def testSetInstructionsWithStationKeepChallenge(self):
         self.resetGlobVar()
-        self.instructions = datatypes.Instructions(sVars.STATION_KEEPING_CHALLENGE, [datatypes.Waypoint(datatypes.GPSCoordinate(1, 1), sVars.GO_TO)], [datatypes.Boundary(datatypes.GPSCoordinate(1, 1), 1)],"port")
+        self.instructions = datatypes.Instructions(sVars.STATION_KEEPING_CHALLENGE, [datatypes.Waypoint(datatypes.GPSCoordinate(1, 1), sVars.GO_TO)], [datatypes.Boundary(datatypes.GPSCoordinate(1, 1), 1)],"port",0)
         self.gui_handler.setInstructions(self.instructions)
         self.assertTrue(gVars.instructions, self.instructions)
         self.assertListEqual(gVars.functionQueue, [sVars.STATION_KEEPING_CHALLENGE])
@@ -45,7 +45,7 @@ class TestGuiHandler(unittest.TestCase):
     
     def testSetInstructionsWithLDChallenge(self):
         self.resetGlobVar()
-        self.instructions = datatypes.Instructions(sVars.LONG_DISTANCE_CHALLENGE, [datatypes.Waypoint(datatypes.GPSCoordinate(1, 1), sVars.GO_TO)], [datatypes.Boundary(datatypes.GPSCoordinate(1, 1), 1)], "port")
+        self.instructions = datatypes.Instructions(sVars.LONG_DISTANCE_CHALLENGE, [datatypes.Waypoint(datatypes.GPSCoordinate(1, 1), sVars.GO_TO)], [datatypes.Boundary(datatypes.GPSCoordinate(1, 1), 1)], "port",0)
         self.gui_handler.setInstructions(self.instructions)
         self.assertTrue(gVars.instructions, self.instructions)
         self.assertListEqual(gVars.functionQueue, [sVars.LONG_DISTANCE_CHALLENGE])
