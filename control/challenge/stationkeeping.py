@@ -156,7 +156,7 @@ class StationKeeping(sailing_task.SailingTask):
                         gVars.arduino.gybe(0)
                     exiting = True 
             else:
-                if round(boxDistList[self.currentWaypoint]) <1:
+                if boxDistList[self.currentWaypoint] <1:
                     gVars.kill_flagSK = 1;
                     gVars.logger.info("Boat has exited box at " + str(self.secLeft) + " seconds.")
                     
