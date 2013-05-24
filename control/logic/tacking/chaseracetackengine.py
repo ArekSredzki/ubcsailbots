@@ -4,7 +4,7 @@ from control.logic import standardcalc
 
 class ChaseRaceTackEngine(RoundingTackEngine):
     
-    BEARING_DELTA_THRESHOLD = 2
+    BEARING_DELTA_THRESHOLD = 5
     def __init__(self, rounding,edgeBearing):
         self.edgeBearing = edgeBearing
         super(ChaseRaceTackEngine,self).__init__(rounding)

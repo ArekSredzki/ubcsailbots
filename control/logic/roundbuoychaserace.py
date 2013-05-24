@@ -5,7 +5,8 @@ from control import global_vars as gVars
 from control.logic import standardcalc
 
 class RoundBuoyChaseRace(RoundBuoy):
-
+    TargetToBuoyDist =14
+    
     def run(self, BuoyLoc):
         gVars.kill_flagRB = 0
         gVars.logger.info("Rounding to " + self.rounding)
