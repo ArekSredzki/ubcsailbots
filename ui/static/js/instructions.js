@@ -95,6 +95,11 @@ function setRounding(sel){
 	console.log(instructions.rounding);
 }
 
+function setSK_exit_speed(input){
+  instructions.SK_exit_speed = parseFloat(input.value);
+  console.log(instructions.SK_exit_speed);
+}
+
 function updateWaypointDataDisplayTable()
 {
 	// First remove all rows from table

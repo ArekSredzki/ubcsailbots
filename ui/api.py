@@ -52,5 +52,5 @@ class ApiControl:
       for bnd in instructions['boundaries']:
         coordinate = control.GPSCoordinate(bnd[0],bnd[1])
         boundariesList.append(control.Boundary(coordinate,bnd[2]))
-      controlInstructions = control.Instructions(instructions['challenge'],waypointsList,boundariesList,instructions['rounding'])
+      controlInstructions = control.Instructions(instructions['challenge'],waypointsList,boundariesList,instructions['rounding'],instructions['SK_exit_speed'])
       return controlInstructions
