@@ -16,7 +16,7 @@ from os import path
 
 class StationKeeping(sailing_task.SailingTask):
     
-    CHALLENGE_TIME = 180 #temporarily 3 minutes for testing. CHANGE THIS BACK FOR COMPETITION!!!
+    CHALLENGE_TIME = 300
     DISTANCE_TO_EDGE = 15
     COMPASS_METHOD = 0
     AWA_METHOD = 2
@@ -179,8 +179,7 @@ class StationKeeping(sailing_task.SailingTask):
             target = windAngleMultiplier*target
             
         else:
-            self.STEER_METHOD = self.COMPASS_METHOD           
-            target = standardcalc.angleBetweenTwoCoords(self.wayPtCoords[(self.currentWaypoint+2)%4], self.wayPtCoords[self.currentWaypoint])
+            target = self.calculateHeadingForExit()
             sheetMax = self.sheetList[abs(int(gVars.currentData.awa))][self.SK_WEATHER_COLUMN]
             self.sheet_percent = self.adjustSheetsForExit(boxDistList[self.currentWaypoint],sheetMax)
 
@@ -200,6 +199,18 @@ class StationKeeping(sailing_task.SailingTask):
         elif sheets>sheetMax:
             sheets=sheetMax
         return sheets
+      
+    def calculateHeadingForExit(self):
+        if standardcalc.isWPNoGoAWA(gVars.currentData.awa, gVars.currentData.hog, self.wayPtCoords[self.currentWaypoint],gVars.currentData.sog,self.wayPtCoords[(self.currentWaypoint+2)%4]):
+            self.STEER_METHOD = self.AWA_METHOD
+            if gVars.currentData.awa<0:
+                tackAngleMultiplier = -1
+            else:
+                tackAngleMultiplier = 1
+            return tackAngleMultiplier*34
+        else:
+            self.STEER_METHOD = self.COMPASS_METHOD                       
+            return standardcalc.angleBetweenTwoCoords(self.wayPtCoords[(self.currentWaypoint+2)%4], self.wayPtCoords[self.currentWaypoint])
            
     def updateMeanSpeed(self, turning, spdList):
         if (not turning):
@@ -271,7 +282,7 @@ class StationKeeping(sailing_task.SailingTask):
         
     def printSailingLog(self, sheet_percent, wind_bearing):
         self.SKLogger.sailLog="Sheet Percent:" + str(sheet_percent) +"  Course:" + str(wind_bearing)
-        gVars.logger.debug("meanSpd: "+str(self.meanSpd)+ " secLeft:"+ str(self.secLeft))
+        self.SKLogger.spdLog="meanSpd: "+str(self.meanSpd)+ " secLeft:"+ str(self.secLeft)
         self.SKLogger.printLog()
 
 class SKLogger:
@@ -280,6 +291,7 @@ class SKLogger:
         self.heightLog =''
         self.distanceLog=''
         self.sailLog=''
+        self.spdLog=''
         self.logTimer =0
     def printLog(self):
         if (time.time() - self.logTimer>self.LOG_UPDATE_INTERVAL):
@@ -287,3 +299,5 @@ class SKLogger:
             gVars.logger.sklog(self.heightLog)
             gVars.logger.sklog(self.distanceLog)        
             gVars.logger.sklog(self.sailLog)
+            gVars.logger.sklog(self.spdLog)
+
