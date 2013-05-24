@@ -27,7 +27,6 @@ class StationKeeping(sailing_task.SailingTask):
     CRITICAL_HEIGHT_ABOVE_BOTTOM_OF_BOX = 15
     SK_WEATHER_COLUMN =1 #don suspects this weather setting will do for SK
     TIME_BUFFER = 2
-    MEAN_SPEED_MULITPLIER = 1 # Artificially inflates the mean speed when checking to exit.
     
     def __init__(self):
         self.upwindWaypoint = 0
@@ -40,7 +39,7 @@ class StationKeeping(sailing_task.SailingTask):
         self.SKLogger = SKLogger()
         self.sheet_percent = 0
         self.STEER_METHOD = self.AWA_METHOD           
-
+        self.exitSpeed = gVars.instructions.SK_exit_speed
 
     def setWayPtCoords(self, boxCoords): #sets the waypoints of the challenge
         wayPtCoords = []    #order = top face, right face, bottom face, left face
@@ -140,13 +139,13 @@ class StationKeeping(sailing_task.SailingTask):
                     inTurnZone = False
                     turning = False
                     
-                if (boxDistList[self.currentWaypoint] >= self.meanSpd*self.MEAN_SPEED_MULITPLIER*(self.secLeft+self.TIME_BUFFER+0)):
+                if (boxDistList[self.currentWaypoint] >= self.exitSpeed*(self.secLeft+self.TIME_BUFFER+0)):
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
                     gVars.logger.info("Seconds Left:" + str(self.secLeft))
                     exiting = True
                     gVars.logger.info("Station Keeping event is about to end. Exiting to current waypoint.")
                 
-                elif (boxDistList[(self.currentWaypoint + 2) % 4] >= self.meanSpd*self.MEAN_SPEED_MULITPLIER*(self.secLeft+self.TIME_BUFFER+4) ): #4 seconds for gybe
+                elif (boxDistList[(self.currentWaypoint + 2) % 4] >= self.exitSpeed*(self.secLeft+self.TIME_BUFFER+4) ): #4 seconds for gybe
                     gVars.logger.info("distances: N: " + str(boxDistList[0]) + " E: " + str(boxDistList[1]) + " S: " + str(boxDistList[2]) + " W: " + str(boxDistList[3]))
                     gVars.logger.info("Seconds Left:" + str(self.secLeft))
                     self.currentWaypoint = (self.currentWaypoint + 2) % 4
@@ -205,7 +204,7 @@ class StationKeeping(sailing_task.SailingTask):
     def updateMeanSpeed(self, turning, spdList):
         if (not turning):
             spdList = standardcalc.changeSpdList(spdList)
-            self.meanSpd = 2  #standardcalc.meanOfList(spdList)
+            self.meanSpd = standardcalc.meanOfList(spdList)
         return spdList
     
     def isThereChangeInDownwindHeightOrTackingAngleOrAwa(self, tackingAngle):
