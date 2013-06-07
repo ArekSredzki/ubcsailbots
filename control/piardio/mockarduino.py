@@ -46,10 +46,10 @@ class arduino:
         cog = 90
         hog = cog - round(random.uniform(-2, 2), 2)
         self.arduinoData = datatypes.ArduinoData(hog, cog, 0,
-                          round(random.uniform(-179, 180), 2), datatypes.GPSCoordinate(49.27480, -123.18960), 0, 
+                          round(random.uniform(-179, 180), 2), datatypes.GPSCoordinate(42.608, -70.67), 0, 
                           15, 80, 1, 20)
         print(self.arduinoData)
-        
+
     def getFromArduino(self):
         self._updateAll()
         return self.arduinoData
