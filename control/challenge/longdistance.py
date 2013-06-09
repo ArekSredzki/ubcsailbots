@@ -20,17 +20,17 @@ class LongDistance(sailing_task.SailingTask):
     
     def run(self, wayList):
         gVars.logger.info("Running Long Distance")
-                
-        for waypoint in wayList:
-            if gVars.kill_flagLD == 0:
-                gVars.logger.info("Heading toward " + waypoint.wtype + " which is mark " + str(wayList.index(waypoint)+1) + " of " + str(len(wayList)+1))
-                
-                if waypoint.wtype == sVars.GO_AROUND:
-                    self.pointtopoint.run(waypoint.coordinate, 30)
-                    # Currently will round all buoys port.  May need to be changed for course outline
-                    self.roundbuoy.run(waypoint.coordinate)
+        while gVars.kill_flagLD == 0:        
+            for waypoint in wayList:
+                if gVars.kill_flagLD == 0:
+                    gVars.logger.info("Heading toward " + waypoint.wtype + " which is mark " + str(wayList.index(waypoint)+1) + " of " + str(len(wayList)+1))
+                    
+                    if waypoint.wtype == sVars.GO_AROUND:
+                        self.pointtopoint.run(waypoint.coordinate, 30)
+                        # Currently will round all buoys port.  May need to be changed for course outline
+                        self.roundbuoy.run(waypoint.coordinate)
+                    else:
+                        self.pointtopoint.run(waypoint.coordinate, 20)
+                                        
                 else:
-                    self.pointtopoint.run(waypoint.coordinate, 20)
-                                    
-            else:
-                break
+                    break
